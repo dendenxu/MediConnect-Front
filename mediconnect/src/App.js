@@ -1,38 +1,21 @@
 import React from "react";
-import { Button, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles({
-  helloThereStyle: {
-    fontFamily: "Futura",
-    fontStyle: "oblique",
-    color: "Orange",
-  },
-  buttonStyles: {
-    fontFamily: "PingFang SC"
-  },
-});
+import { Grid, Typography } from "@material-ui/core";
+import Header from "./Header";
+import Content from "./Content";
 
 export default function App() {
-  const classes = useStyles();
-
   return (
-    <div className="App">
-      <Typography
-        className={classes.helloThereStyle}
-        variant="h1"
-        color="primary"
-      >
-        Hello, there.
-      </Typography>
-
-      <Button
-        className={classes.buttonStyles}
-        variant="outlined"
-        color="primary"
-      >
-        下一步
-      </Button>
-    </div>
+    <Grid container direction="column">
+      <Grid item>
+        <Header />
+      </Grid>
+      <Grid item container>
+        <Grid item xs={0} sm={2} />
+        <Grid item xs={12} sm={8}>
+          <Content />
+        </Grid>
+        <Grid item xs={0} sm={2} />
+      </Grid>
+    </Grid>
   );
 }

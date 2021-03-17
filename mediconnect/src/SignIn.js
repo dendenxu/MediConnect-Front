@@ -8,7 +8,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import {ReactComponent as Icon} from "./Icon.svg"
+import { ReactComponent as Icon } from "./Icon.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -50,16 +50,16 @@ export default function SignIn() {
   const classes = useStyles();
   const NextBtn = withStyles({
     root: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        borderRadius: "5px",
-        border: 0,
-        color: "white",
-        padding: "0 30px",
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+      borderRadius: "5px",
+      border: 0,
+      color: "white",
+      padding: "0 30px",
+      boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
     },
     label: {
-        textTransform: "capitalize",
-    }
+      textTransform: "capitalize",
+    },
   })(Button);
 
   return (

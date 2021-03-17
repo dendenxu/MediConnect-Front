@@ -1,6 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { blue, purple, green } from "@material-ui/core/colors"
-
+import { blue, purple, green } from "@material-ui/core/colors";
 
 const theme = createMuiTheme({
   palette: {
@@ -8,8 +7,11 @@ const theme = createMuiTheme({
     secondary: blue,
   },
   status: {
-    danger: "orange"
-  }
+    danger: "orange",
+  },
+  typography: {
+    fontFamily: "Josefin Sans",
+  },
 });
 
 export default theme;
