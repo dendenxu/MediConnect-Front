@@ -34,15 +34,13 @@ const useStyles = makeStyles({
 const CoffeeCard = (props) => {
   const classes = useStyles();
   const bullet = <span className={classes.bullet}>•</span>;
-  const { avatarIcon, imgSrc, title, subtitle, description } = props;
+  const { avatarUrl, imageUrl, title, price, description } = props;
 
   return (
     <Card className={classes.root} variant="outlined">
       <CardHeader
         avatar={
-          <IconButton>
-            {avatarIcon}
-          </IconButton>
+          <Avatar src={avatarUrl}/>
         }
         action={
           <IconButton aria-label="Settings">
@@ -50,31 +48,17 @@ const CoffeeCard = (props) => {
           </IconButton>
         }
         title={title}
-        subheader={subtitle}
+        subheader={price}
       />
-      <CardMedia style={{ height: "150px" }} image={imgSrc} />
+      <CardMedia style={{ height: "150px" }} image={imageUrl} />
       <CardContent>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-        >
-          Word of the Day
-        </Typography>
-        <Typography variant="h5" component="h2">
-          be{bullet}nev{bullet}o{bullet}lent
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          adjective
-        </Typography>
         <Typography variant="body2" component="p">
-          well meaning and kindly.
-          <br />
-          "a benevolent smile"
+          {description}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="small">Buy Now</Button>
+        <Button size="small">Offer</Button>
       </CardActions>
     </Card>
   );
