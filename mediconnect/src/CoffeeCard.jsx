@@ -9,10 +9,10 @@ import {
   Typography,
   Button,
   makeStyles,
+  CardMedia,
 } from "@material-ui/core";
 import ShareIcon from "@material-ui/icons/Share";
 import { SvgIcon } from "@material-ui/core";
-import { ReactComponent as GoogleIcon } from "./google-icon.svg";
 
 const useStyles = makeStyles({
   root: {
@@ -34,14 +34,14 @@ const useStyles = makeStyles({
 const CoffeeCard = (props) => {
   const classes = useStyles();
   const bullet = <span className={classes.bullet}>•</span>;
-  const { avatarSrc, imgSrc, title, subtitle, description } = props;
+  const { avatarIcon, imgSrc, title, subtitle, description } = props;
 
   return (
     <Card className={classes.root} variant="outlined">
       <CardHeader
         avatar={
           <IconButton>
-              <GoogleIcon width="24px" height="24px"/>
+            {avatarIcon}
           </IconButton>
         }
         action={
@@ -52,6 +52,7 @@ const CoffeeCard = (props) => {
         title={title}
         subheader={subtitle}
       />
+      <CardMedia style={{ height: "150px" }} image={imgSrc} />
       <CardContent>
         <Typography
           className={classes.title}

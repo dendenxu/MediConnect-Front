@@ -1,6 +1,7 @@
 import { Card, Grid, Typography } from "@material-ui/core";
 import React from "react";
 import CoffeeCard from "./CoffeeCard";
+import { ReactComponent as GoogleIcon } from "./google-icon.svg";
 
 const Content = () => {
   return (
@@ -10,7 +11,8 @@ const Content = () => {
         <CoffeeCard
           title="Shrimp And Chorizo Paella"
           subtitle="September 14, 2016"
-          avatarSrc="https://worldvectorlogo.com/download/google-icon.svg"
+          avatarIcon={<GoogleIcon width="24px" height="24px" />}
+          imgSrc="https://www.bing.com/th?id=OHR.Inisheer_EN-US8680602205_1920x1200.jpg&rf=LaDigue_1920x1200.jpg"
         />
       </Grid>
     </Grid>
