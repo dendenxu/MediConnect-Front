@@ -70,44 +70,56 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           欢迎
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="输入您的密码"
-            name="email"
-            // autoComplete="email"
-            autoFocus
-          />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="输入您的密码"
+          name="email"
+          // autoComplete="email"
+          autoFocus
+        />
+        <Container>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="显示密码"
           />
+        </Container>
+
+        <Container
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link href="https://neon-cubes.xyz" variant="body2">
+            忘记了密码？
+          </Link>
           <NextBtn
             type="submit"
-            fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
           >
             下一步
           </NextBtn>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                忘记了密码？
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
+        </Container>
+
+        <Grid container>
+          <Grid item xs>
+            <Link href="#" variant="body2">
+              忘记了密码？
+            </Link>
           </Grid>
-        </form>
+          <Grid item>
+            <Link href="#" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Grid>
+        </Grid>
       </div>
       <Box mt={8}>
         <Copyright />
