@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -27,8 +27,7 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => {
-  console.log([`& fieldSet`]);
-  return ({
+  return {
     paper: {
       marginTop: theme.spacing(8),
       display: "flex",
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => {
       marginTop: theme.spacing(1),
     },
     submit: {
-      margin: theme.spacing(3, 0, 10),
+      margin: theme.spacing(3, 0, 20),
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
@@ -53,17 +52,11 @@ const useStyles = makeStyles((theme) => {
       margin: theme.spacing(3, 0, 3),
     },
     input: {
-      ["& fieldset"]: {
+      "& fieldset": {
         borderRadius: 20,
       },
     },
-  });
-});
-
-export default function SignIn() {
-  const classes = useStyles();
-  const NextBtn = withStyles({
-    root: {
+    nextButton: {
       background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
       borderRadius: "10px",
       border: 0,
@@ -71,11 +64,29 @@ export default function SignIn() {
       padding: "30 30px",
       boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
     },
-    label: {
-      textTransform: "capitalize",
-    },
-  })(Button);
+  };
+});
 
+export default function SignIn() {
+  const classes = useStyles();
+  const [clicked, setClicked] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [name, setName] = useState("");
+  const handleClick = () => {
+    const newVal = !clicked;
+    setClicked(newVal);
+    console.log(`clicked: ${newVal}`);
+  };
+  const handleChange = (event) => {
+    const sel = event.target.checked;
+    setSelected(sel);
+    console.log(`selected: ${sel}`);
+  };
+  const handleNameChange = (event) => {
+    const newName = event.target.value;
+    setName(newName);
+    console.log(`Getting new name: ${newName}`);
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -87,36 +98,44 @@ export default function SignIn() {
         <TextField
           variant="outlined"
           margin="normal"
-          required
           fullWidth
-          id="email"
+          id="password"
           label="输入您的密码"
-          name="email"
-          // autoComplete="email"
+          name="password"
           autoFocus
           className={classes.input}
+          value={name}
+          onChange={handleNameChange}
         />
         <Container>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="显示密码"
+            checked={selected}
+            onChange={handleChange}
           />
         </Container>
 
         <Container className={classes.submit}>
           <Link href="https://neon-cubes.xyz" variant="body2">
-            忘记了密码？
+            {clicked ? "你点我！" : "忘记了密码?"}
           </Link>
-          <NextBtn type="submit" variant="contained" color="primary">
+          <Button
+            className={classes.nextButton}
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={handleClick}
+          >
             下一步
-          </NextBtn>
+          </Button>
         </Container>
 
         <Container>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                忘记了密码？
+                {name === "" ? "忘记了密码？" : `Got: ${name}`}
               </Link>
             </Grid>
             <Grid item>
