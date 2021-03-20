@@ -34,8 +34,9 @@ You should divide your work into specific, recognizable blocks of coding to make
 ## Other Stuff
 
 1. We use `React` and `Material UI` for our project, be sure to understand every line of code you commit into the project. If you don't, look it up, and comment on what their functionality works or how to look it up.
-2. You should follow the spefications provided to you by the designer and *Requirement Specification*, but feel free to contact the corresponding person for more information (If, as a requirement specifier, you're contacted, your specification isn't thorough enough and you should improve upon that by providing a better one on the next specification.)
+2. You should follow the spefications provided to you by the designer and _Requirement Specification_, but feel free to contact the corresponding person for more information (If, as a requirement specifier, you're contacted, your specification isn't thorough enough and you should improve upon that by providing a better one on the next specification.)
 3. Again, feel free to contact anyone for unexplained stuff. We just want to have fun writing this stuff right?
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
