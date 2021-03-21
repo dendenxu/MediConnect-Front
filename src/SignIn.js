@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => {
       justifyContent: "center",
       alignItems: "center",
       // ! special operation for Josefin Sans
-      transform: "translate(0px,1.5px)"
+      transform: "translate(0px,1.5px)",
     },
   };
 });
@@ -178,20 +178,13 @@ export default function SignIn() {
 
         <Container>
           <FormControlLabel
-            control={
-              <Checkbox
-                value="remember"
-                color="primary"
-                size="small"
-
-              />
-            }
+            control={<Checkbox value="remember" color="primary" size="small" />}
             label={
               <Typography
                 className={classes.centeredText}
                 variant="body2"
                 style={{
-                  marginLeft: -5
+                  marginLeft: -5,
                 }}
               >
                 显示密码
