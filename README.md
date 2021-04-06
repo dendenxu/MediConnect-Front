@@ -2,6 +2,23 @@
 
 This is the front-end repository for our 2021 Software Engineering course project.
 
+We use the [project board](https://github.com/dendenxu/MediConnect-Front/projects/1) to track the progress of development. We create [issues](https://github.com/dendenxu/MediConnect-Front/issues) on the board and assign them to assignees to email them, so be sure to ==check your relevant mailbox== and feel free to add miscellaneous issues.
+
+These should be the main workflow issues to be created on the board by the [administrators](https://github.com/dendenxu/MediConnect-Front/wiki/%E5%89%8D%E7%AB%AF%E5%90%84%E6%A8%A1%E5%9D%97%E5%88%86%E5%B7%A5) of a certain module:
+
+1. Module UI Design requirements (including **Specific Requirements(详细需求文档)**), [example](https://github.com/dendenxu/MediConnect-Front/issues/4)
+   - This issue should provide a link to the **Specific Development Requirements**, like [this](https://github.com/dendenxu/MediConnect-Front/wiki/%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90)
+   - Assign this issue to the [UI/Prototype Designers](https://github.com/dendenxu/MediConnect-Front/wiki/%E5%89%8D%E7%AB%AF%E5%90%84%E6%A8%A1%E5%9D%97%E5%88%86%E5%B7%A5)
+   - And post any additional information if needed.
+2. Module development requirements (including **Prototypes(原型图)**, **UI Design(设计稿)**, **Specific Requirements(详细需求文档)**, **API Requirements(详细接口文档)**), [example](https://github.com/dendenxu/MediConnect-Front/issues/6)
+   - This issue should provide a link to the **Specific Development Requirements**, like [this](https://github.com/dendenxu/MediConnect-Front/wiki/%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90)
+   - And if this module involves communicating with the backend, you should also include a **API Requirements**, like [this](https://github.com/dendenxu/MediConnect-Front/wiki/%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90)
+   - And to the **Prototype Design**
+   - And to the **UI Design**, like [this](https://lanhuapp.com/web/#/item/project/stage?pid=3c75f213-cbd7-4615-ba52-6c5a8b2a27c8)
+   - Note if **UI Design** is provided, we can discard the **Prototype Design**
+   - Assign this issue to the [Developers](https://github.com/dendenxu/MediConnect-Front/wiki/%E5%89%8D%E7%AB%AF%E5%90%84%E6%A8%A1%E5%9D%97%E5%88%86%E5%B7%A5)
+   - And post any additional information if needed.
+
 ## Creating Branches
 
 Use `git checkout -b <branch name>` to create a new branch for your specific module or a chunk of functionality development.
@@ -36,74 +53,4 @@ You should divide your work into specific, recognizable blocks of coding to make
 1. We use `React` and `Material UI` for our project, be sure to understand every line of code you commit into the project. If you don't, look it up, and comment on what their functionality works or how to look it up.
 2. You should follow the spefications provided to you by the designer and _Requirement Specification_, but feel free to contact the corresponding person for more information (If, as a requirement specifier, you're contacted, your specification isn't thorough enough and you should improve upon that by providing a better one on the next specification.)
 3. Again, feel free to contact anyone for unexplained stuff. We just want to have fun writing this stuff right?
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+4. This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), click the link to see more.
