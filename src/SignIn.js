@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme) => {
       // ! special operation for Josefin Sans
       transform: "translate(0px,1.5px)",
     },
+    HelperText: {
+      color: 'red',
+    }
   };
 });
 
@@ -128,6 +131,7 @@ const AvatarBar = (props) => {
 };
 
 export default function SignIn() {
+  const [match, setMatch] = useState(false);
   const classes = useStyles();
   const [clicked, setClicked] = useState(false);
   const [selected, setSelected] = useState(false);
@@ -136,6 +140,13 @@ export default function SignIn() {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
+    let password = document.getElementById('password').value;
+    if (password == 123456) {
+      setMatch(true);
+    }
+    else {
+      setMatch(false);
+    }
   };
   const handleChange = (event) => {
     const sel = event.target.checked;
@@ -170,6 +181,7 @@ export default function SignIn() {
             id="password"
             label="输入您的密码"
             name="password"
+            helperText={match ? "密码正确" : "您输入的密码和账户不匹配"}
             autoFocus
             value={name}
             onChange={handleNameChange}
