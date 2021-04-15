@@ -71,8 +71,8 @@ const useStyles = makeStyles((theme) => {
       transform: "translate(0px,1.5px)",
     },
     HelperText: {
-      color: 'red',
-    }
+      color: "red",
+    },
   };
 });
 
@@ -140,11 +140,10 @@ export default function SignIn() {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
-    let password = document.getElementById('password').value;
+    let password = document.getElementById("password").value;
     if (password == 123456) {
       setMatch(true);
-    }
-    else {
+    } else {
       setMatch(false);
     }
   };
