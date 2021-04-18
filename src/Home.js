@@ -94,43 +94,28 @@ function Copyright() {
 const BottomBar = (props) => {
     const { name } = props;
     return (
-        <Container>
-            <Grid container spacing={2}>
-                <Grid item xs>
-                    <Link href="#" variant="body2">
-                        {name === "" ? "帮助" : `Got: ${name}`}
-                    </Link>
-                </Grid>
-                <Grid item>
-                    <Link href="#" variant="body2">
-                        {"使用条款"}
-                    </Link>
-                </Grid>
-                <Grid item>
-                    <Link href="#" variant="body2">
-                        {"隐私协议"}
-                    </Link>
-                </Grid>
-            </Grid>
-        </Container>
+      <Container>
+        <Grid container spacing={2}>
+          <Grid item xs>
+            <Link href="#" variant="body2">
+              {name === "" ? "帮助" : `Got: ${name}`}
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link href="#" variant="body2">
+              {"使用条款"}
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link href="#" variant="body2">
+              {"隐私协议"}
+            </Link>
+          </Grid>
+        </Grid>
+      </Container>
     );
 };
-          
-const AvatarBar = (props) => {
-    const { email, avatarSrc, handleAvatarClick } = props;
-    const classes = useStyles();
-    return (
-        <Button
-            variant="outlined"
-            size="small"
-            className={classes.avatarButton}
-            startIcon={<Avatar src={avatarSrc} className={classes.smallAvatar} />}
-            onClick={handleAvatarClick}
-        >
-            {email}
-        </Button>
-    );
-};
+
 export default function Home() {
     const classes = useStyles();
     const [clicked, setClicked] = useState(false);
@@ -143,10 +128,8 @@ export default function Home() {
         const username = document.getElementById('username').value;
         console.log({ username: username });
         let history = createBrowserHistory();
-        if (username == 123456) {
-            history.push('/SignIn');
-            history.go();
-        }
+        history.push('/SignIn');
+        history.go();
     };
     const handleChange = (event) => {
         const sel = event.target.checked;
@@ -167,9 +150,12 @@ export default function Home() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Icon />
-                <Typography component="h1" variant="h5" className={classes.welcome}>登录</Typography>
-                <Typography component="h1" variant="h6" className={classes.welcome}>使用您的MediConnect账号</Typography>
+                <Box pb={5}><Icon /></Box>
+                <Box border={1} borderRadius={16} boxShadow={3} py={5} px={10} justifyContent='center' borderColor="primary.main" width='30rem' height='33rem'>
+                <Typography>
+                        <Box component="h1" fontSize="h4.fontSize" textAlign='center' letterSpacing={6}>登录</Box>
+                        <Box component="h1" fontSize="h6.fontSize" textAlign='center' >使用您的MediConnect账号</Box>
+                </Typography>
                 <Container className={classes.input}>
                     <TextField
                         variant="outlined"
@@ -182,13 +168,13 @@ export default function Home() {
                         onChange={handleNameChange}
                     />
                 </Container>
-                <Container className={classes.submit}>
+                <Container className={classes.submit}>  
                     <Link
                         href="https://neon-cubes.xyz"
                         variant="body2"
                         className={classes.centeredText}
                     >
-                    创建新账号
+                                创建新账号
                     </Link>
                     <Button
                         className={classes.nextButton}
@@ -197,14 +183,13 @@ export default function Home() {
                         color="primary"
                         onClick={handleClick}
                     >
-                        下一步
+                            下一步
                     </Button>
-                </Container>
-                <BottomBar name={name} />
-            </div>
-            <Box mt={8}>
-                <Copyright />
-            </Box>
+                    </Container>
+                    <BottomBar name={name} />
+                </Box>
+                <Box mt={8}><Copyright /></Box>
+            </div>    
         </Container>
     );
 }

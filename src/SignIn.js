@@ -118,7 +118,7 @@ const AvatarBar = (props) => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
   return (
-    <Button
+      <Button
       variant="outlined"
       size="small"
       className={classes.avatarButton}
@@ -126,7 +126,7 @@ const AvatarBar = (props) => {
       onClick={handleAvatarClick}
     >
       {email}
-    </Button>
+      </Button>   
   );
 };
 
@@ -165,15 +165,20 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Icon />
-        <Typography component="h1" variant="h5" className={classes.welcome}>
-          欢迎
-        </Typography>
+        <Box pb={5}><Icon /></Box>
+        <Box border={1} borderRadius={16} boxShadow={3} pt={5} pb={5} px={10} justifyContent='center' borderColor="primary.main" width='30rem' height='35rem'>
+        <Typography>
+          <Box component="h1" fontSize="h5.fontSize" textAlign='center' letterSpacing={6}>
+            欢迎
+          </Box>
+          </Typography>
+        <Box pl={7}>
         <AvatarBar
           email="3180105504@zju.edu.cn"
           avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
           handleAvatarClick={handleAvatarClick}
-        />
+            />
+        </Box>
         <Container className={classes.input}>
           <TextField
             variant="outlined"
@@ -224,13 +229,11 @@ export default function SignIn() {
           >
             下一步
           </Button>
-        </Container>
-
-        <BottomBar name={name} />
+          </Container>
+          <BottomBar name={name} />
+        </Box>
+        <Box mt={8}><Copyright /></Box>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }
