@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1920 1920" style="enable-background:new 0 0 1920 1920;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#52C41A;stroke:#000000;stroke-miterlimit:10;}
+	.st1{fill:#FFFFFF;}
+	.st2{display:none;}
+	.st3{display:inline;fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+	.st4{display:inline;fill:#52C41A;stroke:#000000;stroke-miterlimit:10;}
+</style>
+<g id="图层_1">
+	<circle class="st0" cx="959.5" cy="959.5" r="960"/>
+	<path class="st1" d="M901.32,1320.96L433.27,913.11l199.04-12.81l255.43,222.57l445.16-510.77l197.96-13.61L901.32,1320.96z"/>
+</g>
+<g id="图层_2" class="st2">
+	<circle class="st3" cx="959.5" cy="959.5" r="960"/>
+	<rect x="281.22" y="281.29" class="st3" width="1357.65" height="1357.65"/>
+	<circle class="st3" cx="959.59" cy="959.6" r="678.82"/>
+	<rect x="480" y="480" class="st3" width="960" height="960"/>
+	<circle class="st3" cx="960" cy="960" r="480"/>
+	<path class="st3" d="M1638.87,281.29"/>
+	<path class="st4" d="M1638.87,1638.94H759.31L960,1440h480l0.08-959.92l198.79-198.79V1638.94z"/>
+</g>
+</svg>
