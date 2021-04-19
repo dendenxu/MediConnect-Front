@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme) => {
       // ! special operation for Josefin Sans
       transform: "translate(0px,1.5px)",
     },
+    HelperText: {
+      color: 'red',
+    }
   };
 });
 
@@ -115,7 +118,7 @@ const AvatarBar = (props) => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
   return (
-    <Button
+      <Button
       variant="outlined"
       size="small"
       className={classes.avatarButton}
@@ -123,11 +126,12 @@ const AvatarBar = (props) => {
       onClick={handleAvatarClick}
     >
       {email}
-    </Button>
+      </Button>   
   );
 };
 
 export default function SignIn() {
+  const [match, setMatch] = useState(false);
   const classes = useStyles();
   const [clicked, setClicked] = useState(false);
   const [selected, setSelected] = useState(false);
@@ -136,6 +140,13 @@ export default function SignIn() {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
+    let password = document.getElementById('password').value;
+    if (password == 123456) {
+      setMatch(true);
+    }
+    else {
+      setMatch(false);
+    }
   };
   const handleChange = (event) => {
     const sel = event.target.checked;
@@ -154,15 +165,20 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Icon />
-        <Typography component="h1" variant="h5" className={classes.welcome}>
-          欢迎
-        </Typography>
+        <Box pb={5}><Icon /></Box>
+        <Box border={1} borderRadius={16} boxShadow={3} pt={5} pb={5} px={10} justifyContent='center' borderColor="primary.main" width='30rem' height='35rem'>
+        <Typography>
+          <Box component="h1" fontSize="h5.fontSize" textAlign='center' letterSpacing={6}>
+            欢迎
+          </Box>
+          </Typography>
+        <Box pl={7}>
         <AvatarBar
           email="3180105504@zju.edu.cn"
           avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
           handleAvatarClick={handleAvatarClick}
-        />
+            />
+        </Box>
         <Container className={classes.input}>
           <TextField
             variant="outlined"
@@ -170,6 +186,7 @@ export default function SignIn() {
             id="password"
             label="输入您的密码"
             name="password"
+            helperText={match ? "密码正确" : "您输入的密码和账户不匹配"}
             autoFocus
             value={name}
             onChange={handleNameChange}
@@ -212,13 +229,11 @@ export default function SignIn() {
           >
             下一步
           </Button>
-        </Container>
-
-        <BottomBar name={name} />
+          </Container>
+          <BottomBar name={name} />
+        </Box>
+        <Box mt={8}><Copyright /></Box>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }
