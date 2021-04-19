@@ -234,7 +234,7 @@ export default function Home() {
               className={classes.welcome}
             >
               使用您的 MediConnect 账号
-             </Typography>
+            </Typography>
           )}
 
           <Container className={classes.checkboxInput}>
@@ -266,7 +266,7 @@ export default function Home() {
                       }}
                     >
                       显示密码
-                     </Typography>
+                    </Typography>
                   }
                   checked={selected}
                   onChange={handleChange}
@@ -287,7 +287,7 @@ export default function Home() {
               className={classes.centeredText}
             >
               创建新账号
-             </Link>
+            </Link>
             <Button
               className={classes.nextButton}
               type="submit"
@@ -296,7 +296,7 @@ export default function Home() {
               onClick={handleClick}
             >
               下一步
-             </Button>
+            </Button>
           </Container>
           <BottomBar name={name} />
         </Box>
