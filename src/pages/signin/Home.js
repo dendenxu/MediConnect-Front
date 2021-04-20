@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ReactComponent as Icon } from '../../assets/images/Icon.svg';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   borderedContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -117,15 +117,13 @@ function Copyright() {
       {'Copyright © '}
       <Link color="inherit" href="https://github.com/dendenxu">
         dendenxu
-      </Link>
-      {' '}
-      {new Date().getFullYear()}
-      .
+      </Link>{' '}
+      {new Date().getFullYear()}.
     </Typography>
   );
 }
 
-const BottomBar = (props) => {
+const BottomBar = props => {
   const { name } = props;
   return (
     <Container>
@@ -150,7 +148,7 @@ const BottomBar = (props) => {
   );
 };
 
-const AvatarBar = (props) => {
+const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
   return (
@@ -176,7 +174,7 @@ export default function Home() {
 
   const history = useHistory();
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
@@ -196,13 +194,13 @@ export default function Home() {
     // history.go();
     // }
   };
-  const handleChange = (event) => {
+  const handleChange = event => {
     const sel = event.target.checked;
     setSelected(sel);
     console.log(`selected: ${sel}`);
   };
 
-  const handleNameChange = (event) => {
+  const handleNameChange = event => {
     const newName = event.target.value;
     setName(newName);
     console.log(`Getting new name: ${newName}`);
@@ -276,7 +274,7 @@ export default function Home() {
                   control={
                     <Checkbox value="remember" color="secondary" size="small" />
                   }
-                  label={(
+                  label={
                     <Typography
                       className={classes.centeredText}
                       variant="caption"
@@ -286,7 +284,7 @@ export default function Home() {
                     >
                       显示密码
                     </Typography>
-                  )}
+                  }
                   checked={selected}
                   onChange={handleChange}
                   style={{

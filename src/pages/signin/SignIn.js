@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ReactComponent as Icon } from './assets/images/Icon.svg';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -82,15 +82,13 @@ function Copyright() {
       {'Copyright © '}
       <Link color="inherit" href="https://github.com/dendenxu">
         dendenxu
-      </Link>
-      {' '}
-      {new Date().getFullYear()}
-      .
+      </Link>{' '}
+      {new Date().getFullYear()}.
     </Typography>
   );
 }
 
-const BottomBar = (props) => {
+const BottomBar = props => {
   const { name } = props;
   return (
     <Container>
@@ -115,7 +113,7 @@ const BottomBar = (props) => {
   );
 };
 
-const AvatarBar = (props) => {
+const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
   return (
@@ -148,12 +146,12 @@ export default function SignIn() {
       setMatch(false);
     }
   };
-  const handleChange = (event) => {
+  const handleChange = event => {
     const sel = event.target.checked;
     setSelected(sel);
     console.log(`selected: ${sel}`);
   };
-  const handleNameChange = (event) => {
+  const handleNameChange = event => {
     const newName = event.target.value;
     setName(newName);
     console.log(`Getting new name: ${newName}`);
@@ -216,7 +214,7 @@ export default function SignIn() {
               control={
                 <Checkbox value="remember" color="primary" size="small" />
               }
-              label={(
+              label={
                 <Typography
                   className={classes.centeredText}
                   variant="body2"
@@ -226,7 +224,7 @@ export default function SignIn() {
                 >
                   显示密码
                 </Typography>
-              )}
+              }
               checked={selected}
               onChange={handleChange}
             />
