@@ -2,6 +2,15 @@
 
 This is the front-end repository for our 2021 Software Engineering course project.
 
+## Quick Start
+
+1. `git pull` to make sure you're up to date
+2. Optionally, `git checkout <your-branch-name>` (the **master** branch should always be working fine)
+3. `npm install` in case some dependencies are added
+4. `npm start` to compile and run the project, your browser should open up automatically
+
+## Administrative
+
 We use the [project board](https://github.com/dendenxu/MediConnect-Front/projects/1) to track the progress of development. We create [issues](https://github.com/dendenxu/MediConnect-Front/issues) on the board and assign them to assignees to email them, so be sure to `check your relevant mailbox` and feel free to add miscellaneous issues.
 
 These should be the main workflow issues to be created on the board by the [administrators](https://github.com/dendenxu/MediConnect-Front/wiki/%E5%89%8D%E7%AB%AF%E5%90%84%E6%A8%A1%E5%9D%97%E5%88%86%E5%B7%A5) of a certain module:
