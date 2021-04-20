@@ -1,25 +1,25 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createMuiTheme } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#4e89ae",
+      main: '#4e89ae',
     },
     secondary: {
-      main: "#43658b",
+      main: '#43658b',
     },
     error: {
-      main: "#ed6663",
+      main: '#ed6663',
     },
     warning: {
-      main: "#ffa372",
+      main: '#ffa372',
     },
   },
   status: {
-    danger: "orange",
+    danger: 'orange',
   },
   typography: {
-    fontFamily: ["Josefin Sans", "PingFang SC", "sans-serif"].join(", "),
+    fontFamily: ['Josefin Sans', 'PingFang SC', 'sans-serif'].join(', '),
   },
 });
 
