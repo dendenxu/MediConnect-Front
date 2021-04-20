@@ -8,12 +8,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { ReactComponent as Icon } from "./Icon.svg";
+import { ReactComponent as Icon } from "./assets/images/Icon.svg";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Radio } from "@material-ui/core";
-
 const useStyles = makeStyles((theme) => {
   return {
     paper: {
@@ -71,8 +69,8 @@ const useStyles = makeStyles((theme) => {
       transform: "translate(0px,1.5px)",
     },
     HelperText: {
-      color: 'red',
-    }
+      color: "red",
+    },
   };
 });
 
@@ -118,7 +116,7 @@ const AvatarBar = (props) => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
   return (
-      <Button
+    <Button
       variant="outlined"
       size="small"
       className={classes.avatarButton}
@@ -126,7 +124,7 @@ const AvatarBar = (props) => {
       onClick={handleAvatarClick}
     >
       {email}
-      </Button>   
+    </Button>
   );
 };
 
@@ -140,11 +138,10 @@ export default function SignIn() {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
-    let password = document.getElementById('password').value;
-    if (password == 123456) {
+    let password = document.getElementById("password").value;
+    if (password === 123456) {
       setMatch(true);
-    }
-    else {
+    } else {
       setMatch(false);
     }
   };
@@ -165,74 +162,96 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Box pb={5}><Icon /></Box>
-        <Box border={1} borderRadius={16} boxShadow={3} pt={5} pb={5} px={10} justifyContent='center' borderColor="primary.main" width='30rem' height='35rem'>
-        <Typography>
-          <Box component="h1" fontSize="h5.fontSize" textAlign='center' letterSpacing={6}>
-            欢迎
-          </Box>
-          </Typography>
-        <Box pl={7}>
-        <AvatarBar
-          email="3180105504@zju.edu.cn"
-          avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
-          handleAvatarClick={handleAvatarClick}
-            />
+        <Box pb={5}>
+          <Icon />
         </Box>
-        <Container className={classes.input}>
-          <TextField
-            variant="outlined"
-            fullWidth
-            id="password"
-            label="输入您的密码"
-            name="password"
-            helperText={match ? "密码正确" : "您输入的密码和账户不匹配"}
-            autoFocus
-            value={name}
-            onChange={handleNameChange}
-          />
-        </Container>
+        <Box
+          border={1}
+          borderRadius={16}
+          boxShadow={3}
+          pt={5}
+          pb={5}
+          px={10}
+          justifyContent="center"
+          borderColor="primary.main"
+          width="30rem"
+          height="35rem"
+        >
+          <Typography>
+            <Box
+              component="h1"
+              fontSize="h5.fontSize"
+              textAlign="center"
+              letterSpacing={6}
+            >
+              欢迎
+            </Box>
+          </Typography>
+          <Box pl={7}>
+            <AvatarBar
+              email="3180105504@zju.edu.cn"
+              avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
+              handleAvatarClick={handleAvatarClick}
+            />
+          </Box>
+          <Container className={classes.input}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              id="password"
+              label="输入您的密码"
+              name="password"
+              helperText={match ? "密码正确" : "您输入的密码和账户不匹配"}
+              autoFocus
+              value={name}
+              onChange={handleNameChange}
+            />
+          </Container>
 
-        <Container>
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" size="small" />}
-            label={
-              <Typography
-                className={classes.centeredText}
-                variant="body2"
-                style={{
-                  marginLeft: -5,
-                }}
-              >
-                显示密码
-              </Typography>
-            }
-            checked={selected}
-            onChange={handleChange}
-          />
-        </Container>
+          <Container>
+            <FormControlLabel
+              control={
+                <Checkbox value="remember" color="primary" size="small" />
+              }
+              label={
+                <Typography
+                  className={classes.centeredText}
+                  variant="body2"
+                  style={{
+                    marginLeft: -5,
+                  }}
+                >
+                  显示密码
+                </Typography>
+              }
+              checked={selected}
+              onChange={handleChange}
+            />
+          </Container>
 
-        <Container className={classes.submit}>
-          <Link
-            href="https://neon-cubes.xyz"
-            variant="body2"
-            className={classes.centeredText}
-          >
-            {clicked ? "你点我！" : "忘记了密码?"}
-          </Link>
-          <Button
-            className={classes.nextButton}
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={handleClick}
-          >
-            下一步
-          </Button>
+          <Container className={classes.submit}>
+            <Link
+              href="https://neon-cubes.xyz"
+              variant="body2"
+              className={classes.centeredText}
+            >
+              {clicked ? "你点我！" : "忘记了密码?"}
+            </Link>
+            <Button
+              className={classes.nextButton}
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={handleClick}
+            >
+              下一步
+            </Button>
           </Container>
           <BottomBar name={name} />
         </Box>
-        <Box mt={8}><Copyright /></Box>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
       </div>
     </Container>
   );
