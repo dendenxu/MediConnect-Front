@@ -10,7 +10,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { ReactComponent as Icon } from "./Icon.svg";
+import { ReactComponent as Icon } from "./assets/images/Icon.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -177,6 +177,9 @@ export default function Home() {
   const [clicked, setClicked] = useState(false);
   const [selected, setSelected] = useState(false);
   const [name, setName] = useState("");
+
+  const history = useHistory();
+
   const handleClick = (event) => {
     const newVal = !clicked;
     setClicked(newVal);
@@ -211,6 +214,16 @@ export default function Home() {
   const handleAvatarClick = () => {
     console.log("Avatar Clicked!");
   };
+  const handleSignUpClick = () => {
+    const location = {
+      pathname: "/result",
+      state: {
+        data1: { sep: name },
+      },
+    };
+    history.push(location);
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -234,7 +247,7 @@ export default function Home() {
               className={classes.welcome}
             >
               使用您的 MediConnect 账号
-             </Typography>
+            </Typography>
           )}
 
           <Container className={classes.checkboxInput}>
@@ -266,7 +279,7 @@ export default function Home() {
                       }}
                     >
                       显示密码
-                     </Typography>
+                    </Typography>
                   }
                   checked={selected}
                   onChange={handleChange}
@@ -282,12 +295,12 @@ export default function Home() {
 
           <Container className={classes.submit}>
             <Link
-              href="https://neon-cubes.xyz"
               variant="caption"
               className={classes.centeredText}
+              onClick={handleSignUpClick}
             >
               创建新账号
-             </Link>
+            </Link>
             <Button
               className={classes.nextButton}
               type="submit"
@@ -296,7 +309,7 @@ export default function Home() {
               onClick={handleClick}
             >
               下一步
-             </Button>
+            </Button>
           </Container>
           <BottomBar name={name} />
         </Box>
