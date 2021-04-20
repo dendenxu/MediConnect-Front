@@ -32,7 +32,7 @@ const theme = createMuiTheme({
 
 class Success extends React.Component {
   componentDidMount() {
-    console.log(this.props.location)
+    console.log(this.props.location);
   }
 
   render() {

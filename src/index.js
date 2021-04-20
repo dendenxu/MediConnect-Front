@@ -4,11 +4,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme/theme";
 import App from "./App";
 import "./style/index.css";
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
