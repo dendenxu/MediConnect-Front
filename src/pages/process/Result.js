@@ -6,8 +6,8 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import React from "react";
-import { ReactComponent as SuccessIcon } from "../../assets/images/success.svg";
-import { ReactComponent as FailIcon } from "../../assets/images/fail.svg";
+import { ReactComponent as SuccessIcon } from "../../assets/images/Success.svg";
+import { ReactComponent as FailIcon } from "../../assets/images/Fail.svg";
 const theme = createMuiTheme({
   palette: {
     primary: {
