@@ -150,12 +150,9 @@ class Success extends React.Component {
                     fontSize={window.innerHeight / 40}
                     color="info.main"
                   >
-                    {this.props.location.state.data1.year}
-                    年
-                    {this.props.location.state.data1.mon}
-                    月
-                    {this.props.location.state.data1.day}
-                    日
+                    {this.props.location.state.data1.year}年
+                    {this.props.location.state.data1.mon}月
+                    {this.props.location.state.data1.day}日
                     {this.props.location.state.data1.tim === 0
                       ? '上午'
                       : '下午'}
