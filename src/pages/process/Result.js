@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable import/no-unresolved */
 import {
   Box,
   Button,
@@ -8,6 +11,7 @@ import {
 import React from 'react';
 import { ReactComponent as SuccessIcon } from '../../assets/images/Success.svg';
 import { ReactComponent as FailIcon } from '../../assets/images/Fail.svg';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -37,7 +41,7 @@ class Success extends React.Component {
 
   render() {
     if (this.props.location.state !== undefined) {
-      if (this.props.location.state.data1.dep !== undefined)
+      if (this.props.location.state.data1.dep !== undefined) {
         return (
           <ThemeProvider theme={theme}>
             <Box
@@ -146,9 +150,12 @@ class Success extends React.Component {
                     fontSize={window.innerHeight / 40}
                     color="info.main"
                   >
-                    {this.props.location.state.data1.year}年
-                    {this.props.location.state.data1.mon}月
-                    {this.props.location.state.data1.day}日
+                    {this.props.location.state.data1.year}
+                    年
+                    {this.props.location.state.data1.mon}
+                    月
+                    {this.props.location.state.data1.day}
+                    日
                     {this.props.location.state.data1.tim === 0
                       ? '上午'
                       : '下午'}
@@ -170,7 +177,7 @@ class Success extends React.Component {
                   <Button
                     variant="outlined"
                     color="primary"
-                    fullWidth={true}
+                    fullWidth
                     height={window.innerHeight / 25}
                   >
                     确认
@@ -191,93 +198,94 @@ class Success extends React.Component {
             </Box>
           </ThemeProvider>
         );
-      else
-        return (
-          <ThemeProvider theme={theme}>
+      }
+      return (
+        <ThemeProvider theme={theme}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            height={window.innerHeight}
+            bgcolor="primary"
+          >
             <Box
               display="flex"
-              flexDirection="column"
-              height={window.innerHeight}
-              bgcolor="primary"
+              height={window.innerHeight / 10}
+              width={window.innerWidth}
+              bgcolor="#09a4d8"
             >
               <Box
                 display="flex"
-                height={window.innerHeight / 10}
-                width={window.innerWidth}
-                bgcolor="#09a4d8"
-              >
-                <Box
-                  display="flex"
-                  fontSize={window.innerHeight / 30}
-                  fontWeight="bold"
-                  color="success.main"
-                  marginY="auto"
-                  marginX="3vh"
-                >
-                  挂号结果
-                </Box>
-              </Box>
-              <Box marginX="auto" marginTop="3vh" marginBottom="1vh">
-                <FailIcon
-                  width={Math.min(window.innerWidth, window.innerHeight) / 3}
-                />
-              </Box>
-              <Box
-                marginX="auto"
-                marginBottom="2vh"
-                fontWeight="bold"
                 fontSize={window.innerHeight / 30}
-                color="secondary.main"
+                fontWeight="bold"
+                color="success.main"
+                marginY="auto"
+                marginX="3vh"
               >
-                挂号失败
+                挂号结果
               </Box>
-              <Divider />
-              <Box marginX="3vh" marginY="2vh">
-                <Box display="flex" flexDirection="row">
-                  <Box
-                    fontWeight="bold"
-                    fontSize={window.innerHeight / 40}
-                    color="secondary.main"
-                    width={window.innerWidth / 4}
-                    height={window.innerHeight / 20}
-                  >
-                    原因
-                  </Box>
-                </Box>
+            </Box>
+            <Box marginX="auto" marginTop="3vh" marginBottom="1vh">
+              <FailIcon
+                width={Math.min(window.innerWidth, window.innerHeight) / 3}
+              />
+            </Box>
+            <Box
+              marginX="auto"
+              marginBottom="2vh"
+              fontWeight="bold"
+              fontSize={window.innerHeight / 30}
+              color="secondary.main"
+            >
+              挂号失败
+            </Box>
+            <Divider />
+            <Box marginX="3vh" marginY="2vh">
+              <Box display="flex" flexDirection="row">
                 <Box
                   fontWeight="bold"
                   fontSize={window.innerHeight / 40}
-                  color="info.main"
+                  color="secondary.main"
+                  width={window.innerWidth / 4}
+                  height={window.innerHeight / 20}
                 >
-                  {this.props.location.state.data1.reason}
+                  原因
                 </Box>
               </Box>
               <Box
-                display="flex"
-                flexDirection="column-reverse"
-                height={window.innerHeight / 2}
+                fontWeight="bold"
+                fontSize={window.innerHeight / 40}
+                color="info.main"
               >
-                <Box
-                  marginX="auto"
-                  marginY="1.5vh"
-                  marginBottom="3vh"
-                  width={window.innerWidth / 2.5}
-                  height={window.innerHeight / 25}
-                >
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    fullWidth={true}
-                    height={window.innerHeight / 25}
-                  >
-                    确认
-                  </Button>
-                </Box>
+                {this.props.location.state.data1.reason}
               </Box>
             </Box>
-          </ThemeProvider>
-        );
-    } else return <div>invalid access!</div>;
+            <Box
+              display="flex"
+              flexDirection="column-reverse"
+              height={window.innerHeight / 2}
+            >
+              <Box
+                marginX="auto"
+                marginY="1.5vh"
+                marginBottom="3vh"
+                width={window.innerWidth / 2.5}
+                height={window.innerHeight / 25}
+              >
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                  height={window.innerHeight / 25}
+                >
+                  确认
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </ThemeProvider>
+      );
+    }
+    return <div>invalid access!</div>;
   }
 }
 
