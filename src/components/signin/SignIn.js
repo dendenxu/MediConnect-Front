@@ -10,10 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import { ReactComponent as Icon } from "./assets/images/Icon.svg";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Radio } from "@material-ui/core";
-
 const useStyles = makeStyles((theme) => {
   return {
     paper: {
@@ -141,7 +139,7 @@ export default function SignIn() {
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
     let password = document.getElementById("password").value;
-    if (password == 123456) {
+    if (password === 123456) {
       setMatch(true);
     } else {
       setMatch(false);

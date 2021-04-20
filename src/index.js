@@ -1,14 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "@material-ui/core/styles";
-import theme from "./theme";
+import theme from "./theme/theme";
 import App from "./App";
-import "./index.css";
+import "./style/index.css";
 import {
   HashRouter as Router,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 
 ReactDOM.render(

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -10,14 +9,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { ReactComponent as Icon } from "./assets/images/Icon.svg";
+import { ReactComponent as Icon } from "../../assets/images/Icon.svg";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Radio } from "@material-ui/core";
-import { render } from "@testing-library/react";
-import { red } from "@material-ui/core/colors";
-import SignIn from "./SignIn";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -218,7 +213,17 @@ export default function Home() {
     const location = {
       pathname: "/result",
       state: {
-        data1: { sep: name },
+        // 页面跳转要传递的数据，如下
+
+        data1: {
+          doc: "子沐",
+          name: name,
+          dep: "推拿房",
+          year: 1999,
+          mon: 1,
+          day: 1,
+          tim: 0,
+        },
       },
     };
     history.push(location);

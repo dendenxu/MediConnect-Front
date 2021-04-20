@@ -1,18 +1,14 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import SignIn from "./SignIn";
-import Home from "./Home";
-import result from "./result";
+import Home from "./components/signin/Home";
+import Result from "./components/process/Result";
 
 export default function App() {
-  const cool = false;
   return (
     <Router history={createBrowserHistory()}>
       <Route exact path="/" component={Home} />
-      <Route path="/SignIn" component={SignIn} />
-      <Route path="/Result" component={result} />
+      <Route exact path="/Result" component={Result} />
     </Router>
   );
 }
