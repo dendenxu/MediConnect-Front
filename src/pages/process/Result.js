@@ -4,26 +4,26 @@ import {
   createMuiTheme,
   Divider,
   ThemeProvider,
-} from "@material-ui/core";
-import React from "react";
-import { ReactComponent as SuccessIcon } from "../../assets/images/Success.svg";
-import { ReactComponent as FailIcon } from "../../assets/images/Fail.svg";
+} from '@material-ui/core';
+import React from 'react';
+import { ReactComponent as SuccessIcon } from '../../assets/images/Success.svg';
+import { ReactComponent as FailIcon } from '../../assets/images/Fail.svg';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: "#09a4d8",
-      main: "#09a4d8",
-      dark: "#09a4d8",
-      contrastText: "#09a4d8",
+      light: '#09a4d8',
+      main: '#09a4d8',
+      dark: '#09a4d8',
+      contrastText: '#09a4d8',
     },
     secondary: {
-      main: "#0f1c49",
+      main: '#0f1c49',
     },
     info: {
-      main: "#707893",
+      main: '#707893',
     },
     success: {
-      main: "#ffffff",
+      main: '#ffffff',
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,
@@ -150,8 +150,8 @@ class Success extends React.Component {
                     {this.props.location.state.data1.mon}月
                     {this.props.location.state.data1.day}日
                     {this.props.location.state.data1.tim === 0
-                      ? "上午"
-                      : "下午"}
+                      ? '上午'
+                      : '下午'}
                   </Box>
                 </Box>
               </Box>

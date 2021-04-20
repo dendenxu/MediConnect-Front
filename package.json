@@ -7,8 +7,15 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "./node_modules/.bin/eslint",
-    "format": "prettier --write 'src/*.js' 'src/*/*.js'"
+    "lint": "eslint",
+    "fix": "eslint --fix",
+    "format": "prettier --write 'src/*.js' 'src/*/*.js' 'src/*/*/*.js'"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -18,12 +25,6 @@
     "*.{json,yml,yaml,css,scss,md}": [
       "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
   },
   "browserslist": {
     "production": [
