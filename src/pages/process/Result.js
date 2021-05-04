@@ -9,22 +9,22 @@ import {
   ThemeProvider,
 } from '@material-ui/core';
 import React from 'react';
-import { ReactComponent as SuccessIcon } from '../../assets/images/Success.svg';
-import { ReactComponent as FailIcon } from '../../assets/images/Fail.svg';
+import { ReactComponent as SuccessIcon } from '../../assets/images/success.svg';
+import { ReactComponent as FailIcon } from '../../assets/images/fail.svg';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#09a4d8',
-      main: '#09a4d8',
-      dark: '#09a4d8',
-      contrastText: '#09a4d8',
+      light: '#469CDF',
+      main: '#469CDF',
+      dark: '#469CDF',
+      contrastText: '#469CDF',
     },
     secondary: {
       main: '#0f1c49',
     },
     info: {
-      main: '#707893',
+      main: '#878DA4',
     },
     success: {
       main: '#ffffff',
@@ -54,7 +54,7 @@ class Success extends React.Component {
                 display="flex"
                 height={window.innerHeight / 10}
                 width={window.innerWidth}
-                bgcolor="#09a4d8"
+                bgcolor="#469CDF"
               >
                 <Box
                   display="flex"

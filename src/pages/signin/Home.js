@@ -210,10 +210,16 @@ export default function Home() {
   };
   const handleSignUpClick = () => {
     const location = {
-      pathname: '/result',
+      pathname: '/GuideResult',
       state: {
+        deps:[
+          { id: 1, dep: '感染内科', intro: '感染内科主治各种由于病毒引起的疾病', path: '/Result' },
+          { id: 2, dep: '呼吸科', intro: '科室共有13位专家医师，为您提供专业的诊疗', path: '/Result' },
+          { id: 3, dep: '太平间', intro: '共有4位专业抬棺黑人，遗体整容、异域风情葬礼、高科技火化一条龙服务。', path: '/Result' },
+          { id: 4, dep: '急诊', intro: '第一时间为您诊治，保证准确而及时地给出治疗方案', path: '/Result' },
+          ]
         // 页面跳转要传递的数据，如下
-
+        /*
         data1: {
           doc: '子沐',
           name,
@@ -223,6 +229,7 @@ export default function Home() {
           day: 1,
           tim: 0,
         },
+        */
       },
     };
     history.push(location);
