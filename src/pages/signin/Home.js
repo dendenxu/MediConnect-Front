@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -8,10 +10,14 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import { ReactComponent as Icon } from "./Icon.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { ReactComponent as Icon } from "./Icon.svg";
+import { Radio } from "@material-ui/core";
+import { render } from "@testing-library/react";
+import { red } from "@material-ui/core/colors";
+import SignIn from "./SignIn";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -171,27 +177,27 @@ export default function Home() {
   const [clicked, setClicked] = useState(false);
   const [selected, setSelected] = useState(false);
   const [name, setName] = useState("");
-  const [name1, setName1]= useState("");
+  const [getName, getName]= useState("");
   const handleClick = (event) => {
     const newVal = !clicked;
     setClicked(newVal);
     console.log(`clicked: ${newVal}`);
     const username = document.getElementById("username").value;
     document.getElementById('username').value = '';
-    // console.log(
-    // `Getting new email: ${name}, enter 3180105504@zju.edu.cn to get a preview`
-    //) ;
+    //console.log(
+    //`Getting new email: ${name}, enter 3180105504@zju.edu.cn to get a preview`
+    //);
     // console.log(event);
-    // if (name === "3180105504@zju.edu.cn") {
-    // }
+    //if (name === "3180105504@zju.edu.cn") {
+    //}
     setEmailCheck(true);
     setName("")
-    fetch('url', {// url：服务器地址
+    fetch('url', {//url：服务器地址
       method: "post",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({// 请求的参数
+      body: JSON.stringify({//请求的参数
         username: username,
       })
     }).then(res => {
@@ -215,7 +221,7 @@ export default function Home() {
     setName(newName);
     console.log(`Getting new name: ${newName}`);
     if (!emailCheck) {
-      setName1(newName)
+      getName(newName)
     }    
   };
   const handleAvatarClick = () => {
@@ -233,7 +239,7 @@ export default function Home() {
           </Typography>
           {emailCheck ? (
             <AvatarBar
-              email={name1}
+              email={getName}
               avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
               handleAvatarClick={handleAvatarClick}
             />
