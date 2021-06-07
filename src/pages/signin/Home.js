@@ -8,11 +8,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { ReactComponent as Icon } from "./Icon.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
+import { ReactComponent as Icon } from "./Icon.svg";
 const useStyles = makeStyles((theme) => {
   return {
     borderedContainer: {
