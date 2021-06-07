@@ -192,12 +192,12 @@ export default function Home() {
     // }
     setEmailCheck(true);
     setName("")
-    fetch('url', {//url：服务器地址
+    fetch('url', {// url：服务器地址
       method: "post",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({//请求的参数
+      body: JSON.stringify({// 请求的参数
         username: username,
       })
     }).then(res => {
