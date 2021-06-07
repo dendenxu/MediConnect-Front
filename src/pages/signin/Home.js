@@ -184,12 +184,12 @@ export default function Home() {
     console.log(`clicked: ${newVal}`);
     const username = document.getElementById("username").value;
     document.getElementById('username').value = '';
-    //console.log(
-    //`Getting new email: ${name}, enter 3180105504@zju.edu.cn to get a preview`
-    //);
+    // console.log(
+    // `Getting new email: ${name}, enter 3180105504@zju.edu.cn to get a preview`
+    //) ;
     // console.log(event);
-    //if (name === "3180105504@zju.edu.cn") {
-    //}
+    // if (name === "3180105504@zju.edu.cn") {
+    // }
     setEmailCheck(true);
     setName("")
     fetch('url', {//url：服务器地址
