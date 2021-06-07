@@ -11,7 +11,8 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { ReactComponent as Icon } from "./Icon.svg";
+import { ReactComponent as Icon } from "./src/assets/images/Icon.svg";
+
 const useStyles = makeStyles((theme) => {
   return {
     borderedContainer: {
