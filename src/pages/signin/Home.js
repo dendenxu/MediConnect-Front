@@ -12,10 +12,6 @@ import { ReactComponent as Icon } from "./Icon.svg";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Radio } from "@material-ui/core";
-import { render } from "@testing-library/react";
-import { red } from "@material-ui/core/colors";
-import SignIn from "./SignIn";
 
 const useStyles = makeStyles((theme) => {
   return {
