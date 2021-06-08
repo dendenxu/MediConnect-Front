@@ -13,16 +13,15 @@ export default () => {
             { some: 'header' },
             { message: 'Hello, zjuer', exists: true },
           );
-        } 
-          return new Response(
-            404,
-            { some: 'header' },
-            {
-              message: 'Only zju.edu.cn emails are allowed to login',
-              exists: false,
-            },
-          );
-        
+        }
+        return new Response(
+          404,
+          { some: 'header' },
+          {
+            message: 'Only zju.edu.cn emails are allowed to login',
+            exists: false,
+          },
+        );
       });
     },
   });
