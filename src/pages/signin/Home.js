@@ -20,6 +20,20 @@ import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
+  verticalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    maxWidth: '600px',
+  },
+  paper: {
+    marginTop: -theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   borderedContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -29,12 +43,7 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
     width: '90%',
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    marginTop: theme.spacing(1),
   },
   avatar: {
     margin: theme.spacing(1),
@@ -214,10 +223,10 @@ export default function Home() {
       inputBoxHelpterText = '您输入的密码不正确';
     }
   } else if (emailFormInvalid) {
-      inputBoxHelpterText = '您输入的邮箱格式不正确';
-    } else if (emailInvalid) {
-      inputBoxHelpterText = '您输入的邮箱不在数据库中';
-    }
+    inputBoxHelpterText = '您输入的邮箱格式不正确';
+  } else if (emailInvalid) {
+    inputBoxHelpterText = '您输入的邮箱不在数据库中';
+  }
 
   const handleClick = async () => {
     const throwableHandle = async () => {
@@ -281,7 +290,7 @@ export default function Home() {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
