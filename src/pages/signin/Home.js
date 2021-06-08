@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '600px',
   },
   paper: {
-    marginTop: -theme.spacing(8),
+    marginTop: -theme.spacing(12),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -131,7 +131,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
   },
   copyrightText: {
-    fontWeight: 300,
+    // fontWeight: 300,
   },
 }));
 

@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core';
 
 const captionStyle = {
-  fontWeight: '300',
+  // fontWeight: '300',
 };
 
 const theme = createMuiTheme({
