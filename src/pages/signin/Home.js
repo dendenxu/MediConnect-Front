@@ -376,7 +376,8 @@ export default function Home() {
 
           <Container className={classes.submit}>
             <Link
-              href="https://neon-cubes.xyz"
+              href="/Signup"
+              // href="https://neon-cubes.xyz"
               variant="caption"
               className={classes.centeredText}
             >
