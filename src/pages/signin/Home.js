@@ -380,7 +380,7 @@ export default function Home() {
                 />
               </Container>
             ) : (
-              <Container />
+              <div />
             )}
           </Container>
 

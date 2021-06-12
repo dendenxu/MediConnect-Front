@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => {
     },
 
     signUpContainer: {
-      marginTop: -theme.spacing(12),
+      marginTop: theme.spacing(-8),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -166,8 +166,8 @@ const useStyles = makeStyles(theme => {
 
     passwordContainer: {
       margin: theme.spacing(0),
-      // marginBottom: theme.spacing(2),
       padding: gridPadding,
+      marginBottom: theme.spacing(0),
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
@@ -211,7 +211,8 @@ const useStyles = makeStyles(theme => {
     label: {},
 
     jumpContainer: {
-      margin: theme.spacing(2, 0, 4),
+      margin: theme.spacing(0, 0, 2),
+      padding: gridPadding,
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -233,60 +234,81 @@ const useStyles = makeStyles(theme => {
 
     copyright: {
       marginTop: theme.spacing(3),
-      // marginRight: theme.spacing(3),
+      display: 'flex',
+      justifyContent: 'flex-end',
       width: '90%',
     },
     copyrightText: {},
+
+    buttomBar: {
+      marginTop: theme.spacing(1),
+      display: 'flex',
+      justifyContent: 'flex-end',
+      width: '90%',
+    },
+
+    checkboxContainer: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      margin: theme.spacing(0),
+      marginTop: theme.spacing(-1),
+      padding: gridPadding,
+      paddingTop: theme.spacing(0),
+      paddingBottom: theme.spacing(0),
+    },
+
+    centeredText: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // ! special operation for Josefin Sans
+      transform: 'translate(0px,1.5px)',
+    },
   };
 });
 
 const BottomBar = props => {
   const { name } = props;
+  const classes = useStyles();
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            {/* {name === '' ? '帮助' : `Got: ${name}`} */}
-            帮助
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            使用条款
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            隐私协议
-          </Link>
-        </Grid>
+    <Grid container spacing={2} className={classes.buttomBar}>
+      <Grid item>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          帮助
+        </Link>
       </Grid>
-    </Container>
+      <Grid item>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          使用条款
+        </Link>
+      </Grid>
+      <Grid item>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          隐私协议
+        </Link>
+      </Grid>
+    </Grid>
   );
 };
 
 function Copyright() {
   const classes = useStyles();
   return (
-    <Grid
-      container
-      spacing={2}
-      justify="flex-end"
-      className={classes.copyright}
-    >
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        align="center"
-        className={classes.copyrightText}
-      >
-        {'Copyright © '}
-        <Link color="inherit" href="https://github.com/dendenxu">
-          dendenxu
-        </Link>{' '}
-        {new Date().getFullYear()}.
-      </Typography>
+    <Grid container spacing={2} className={classes.copyright}>
+      <Grid item>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          // align="center"
+          // className={classes.copyrightText}
+        >
+          {'Copyright © '}
+          <Link color="inherit" href="https://github.com/dendenxu">
+            dendenxu
+          </Link>{' '}
+          {new Date().getFullYear()}.
+        </Typography>
+      </Grid>
     </Grid>
   );
 }
@@ -364,11 +386,12 @@ export default function home() {
       if (response.ok) {
         console.log(`The server says your email is OK:`);
         console.log(message);
+        allchecked = false;
       } else {
         setEmailInvalid(true);
-        console.log(`Your email doesn't exist, check again my boy:`);
+        console.log(`Your email doesn't exist, check again my boy`);
+        console.log("But I know you're registering, so that's OK.");
         console.log(message);
-        allchecked = false;
       }
       if (!firstName) {
         setFirstNameInvalid(true);
@@ -448,6 +471,12 @@ export default function home() {
 
   const handleLogin = event => {
     history.push('/');
+  };
+
+  const handleCheckBoxChange = event => {
+    const selected = event.target.checked;
+    setShowPassword(selected);
+    console.log(`selected show password: ${selected}`);
   };
 
   return (
@@ -605,6 +634,30 @@ export default function home() {
             </Container>
           </Container>
 
+          <Container className={classes.checkboxContainer}>
+            <FormControlLabel
+              control={
+                <Checkbox value="remember" color="secondary" size="small" />
+              }
+              label={
+                <Typography
+                  className={classes.centeredText}
+                  variant="caption"
+                  style={{
+                    marginLeft: -5,
+                  }}
+                >
+                  显示密码
+                </Typography>
+              }
+              checked={showPassword}
+              onChange={handleCheckBoxChange}
+              style={{
+                marginRight: 0,
+              }}
+            />
+          </Container>
+
           <Container className={classes.jumpContainer}>
             <Link
               onClick={handleLogin}
@@ -623,8 +676,9 @@ export default function home() {
               下一步
             </Button>
           </Container>
-          <BottomBar name={inputContent} />
         </Box>
+
+        <BottomBar name={inputContent} />
         <Copyright />
       </Container>
     </Container>
