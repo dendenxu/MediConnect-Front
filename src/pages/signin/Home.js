@@ -111,7 +111,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     // ! special operation for Josefin Sans
-    transform: 'translate(0px,1.5px)',
+    // transform: 'translate(0px,1.5px)',
   },
   icon: {
     width: '100%',
@@ -122,6 +122,7 @@ const useStyles = makeStyles(theme => ({
     // fontSize: '0.8rem',
     // padding: theme.spacing(1),
     color: 'rgba(0, 0, 0, 0.35)',
+    // transform: 'translate(0px,1.5px)',
   },
   labelFocused: {
     // fontSize: '1rem',
@@ -332,9 +333,11 @@ export default function Home() {
                   focused: classes.labelFocused,
                 },
               }}
-              label={
-                !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
-              }
+              label=// {
+              // <Typography className={classes.centeredText}>
+              {!afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'}
+              // </Typography>
+              // }
               helperText={inputBoxHelpterText}
               name="username"
               autoFocus

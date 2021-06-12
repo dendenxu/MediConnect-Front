@@ -113,12 +113,11 @@ const useStyles = makeStyles(theme => ({
 
   emailInputBox: {
     padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0),
+    margin: theme.spacing(0, 4.5, 0, 4.5),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '92.5%',
-    height: '100%',
+    // height: '100%',
   },
 
   emailInput: {
@@ -129,10 +128,10 @@ const useStyles = makeStyles(theme => ({
 
   passwordContainer: {
     padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0, 2.5),
+    margin: theme.spacing(0, 0, 0, 4.5),
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'left',
+    alignItems: 'center',
   },
 
   passwordInputBox: {
@@ -249,15 +248,8 @@ export default function home() {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleAccountTypeClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleAccountTypeClose = () => {
-    setAnchorEl(null);
-  };
   const ITEM_HEIGHT = 48;
-  const options = ['患者', '医生'];
+  const options = ['医生', '患者'];
 
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -336,6 +328,29 @@ export default function home() {
     }
   };
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userType, setUserType] = useState(0);
+
+  const open = Boolean(anchorEl);
+  const handleAccountTypeClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuItemClick = idx => event => {
+    setAnchorEl(null);
+    setUserType(idx);
+  };
+  const handleFirstNameInput = event => {
+    const text = event.target.value;
+    setFirstName(text);
+  };
+
+  const handleLastNameInput = event => {
+    const text = event.target.value;
+    setLastName(text);
+  };
+
   const handleEmailInput = event => {
     const text = event.target.value;
     setInputContent(text);
@@ -373,18 +388,12 @@ export default function home() {
                 variant="outlined"
                 size="medium"
                 id="user_second_name"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.labelRoot,
-                    focused: classes.labelFocused,
-                  },
-                }}
                 label="姓氏"
                 helperText={secondNameHelperText}
                 name="user_second_name"
                 autoFocus
-                fullWidth
-                value={inputContent}
+                value={firstName}
+                onChange={handleFirstNameInput}
               />
             </Container>
 
@@ -394,18 +403,12 @@ export default function home() {
                 variant="outlined"
                 size="medium"
                 id="user_first_name"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.labelRoot,
-                    focused: classes.labelFocused,
-                  },
-                }}
                 label="名字"
                 helperText={firstNameHelperText}
                 name="user_first_name"
                 autoFocus
-                fullWidth
-                value={inputContent}
+                value={lastName}
+                onChange={handleLastNameInput}
               />
             </Container>
 
@@ -415,18 +418,14 @@ export default function home() {
                 variant="outlined"
                 size="medium"
                 id="user_account_type"
-                InputLabelProps={{
-                  classes: {
-                    labelRoot: classes.labelRoot,
-                    focused: classes.labelFocused,
-                  },
-                }}
                 label="账户类型"
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                fullWidth
-                value={inputContent}
+                value={options[userType]}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Container>
             <IconButton
@@ -442,7 +441,7 @@ export default function home() {
               anchorEl={anchorEl}
               keepMounted
               open={open}
-              onClose={handleAccountTypeClose}
+              onClose={handleMenuItemClick(0)}
               PaperProps={{
                 style: {
                   maxHeight: ITEM_HEIGHT * 2,
@@ -450,13 +449,13 @@ export default function home() {
                 },
               }}
             >
-              {options.map(option => (
+              {[...options.keys()].map(key => (
                 <MenuItem
-                  key={option}
-                  selected={option === '患者'}
-                  onClick={handleAccountTypeClose}
+                  key={key}
+                  selected={key === 0}
+                  onClick={handleMenuItemClick(key)}
                 >
-                  {option}
+                  {options[key]}
                 </MenuItem>
               ))}
             </Menu>
@@ -473,12 +472,6 @@ export default function home() {
               variant="outlined"
               size="medium"
               id="username"
-              InputLabelProps={{
-                classes: {
-                  root: classes.labelRoot,
-                  focused: classes.labelFocused,
-                },
-              }}
               label="邮箱账号"
               helperText={emailBoxHelperText}
               name="username"
@@ -488,24 +481,17 @@ export default function home() {
             />
           </Container>
 
-          <container className={classes.passwordContainer}>
+          <Container className={classes.passwordContainer}>
             <Container className={classes.passwordInputBox}>
               <TextField
                 className={classes.passwordInput}
                 variant="outlined"
                 size="medium"
                 id="user_password"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.labelRoot,
-                    focused: classes.labelFocused,
-                  },
-                }}
                 label="密码"
                 helperText={passwordHelperText}
                 name="user_password"
                 autoFocus
-                fullWidth
                 value={inputContent}
               />
             </Container>
@@ -516,21 +502,14 @@ export default function home() {
                 variant="outlined"
                 size="medium"
                 id="user_password_confirm"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.labelRoot,
-                    focused: classes.labelFocused,
-                  },
-                }}
                 label="确认密码"
                 helperText={passwordConfirmHelperText}
                 name="user_password_confirm"
                 autoFocus
-                fullWidth
                 value={inputContent}
               />
             </Container>
-          </container>
+          </Container>
 
           <Container className={classes.jumpContainer}>
             <Link href="/" variant="caption" className={classes.jumpToSignIn}>
