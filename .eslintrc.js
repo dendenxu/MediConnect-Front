@@ -21,5 +21,11 @@ module.exports = {
         extensions: ['.js', '.jsx', '.tsx'],
       },
     ],
+    'react/prop-types': 'warn',
+    'no-unused-vars': 'warn',
+    'no-useless-escape': 'warn',
+    'jsx-a11y/anchor-is-valid': 'warn',
+    'no-lonely-if': 'warn',
+    'no-else-return': 'warn',
   },
 };

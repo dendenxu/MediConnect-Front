@@ -6,6 +6,7 @@ import Result from './pages/process/Result';
 import DepList from './pages/process/dep_list';
 import GuideResult from './pages/process/guid_result';
 import MediSearch from './pages/process/MediSearch';
+import DeptInfo from './pages/process/DeptInfo';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route exact path="/Deps" component={DepList} />
       <Route exact path="/GuideResult" component={GuideResult} />
       <Route exact path="/search" component={MediSearch} />
+      <Route exact path="/deptinfo" component={DeptInfo} />
     </Router>
   );
 }
