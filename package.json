@@ -44,12 +44,12 @@
     "eslint-config-prettier": "^8.2.0",
     "history": "^5.0.0",
     "jquery": "^3.6.0",
+    "miragejs": "^0.1.41",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1",
-    "miragejs": "^0.1.41"
+    "web-vitals": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -63,6 +63,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.2.1"
+    "prettier": "2.3.1"
   }
 }
