@@ -295,50 +295,53 @@ export default function home() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const ITEM_HEIGHT = 48;
-  const options = ['医生', '患者'];
+  const options = ['患者', '医生'];
 
-  const [afterEmailCheck, setAfterEmailCheck] = useState(false);
+  // const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validEmail, setValidEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
-  const [noSecondName, setNoSecondName] = useState(false);
-  const [noFirstName, setNoFirstName] = useState(false);
-  const [passwordNotEqual, setPassWordNotEqual] = useState(false);
-  const [noAccountType, setNoAccountType] = useState(false);
+  const [lastNameInvalid, setLastNameInvalid] = useState(false);
+  const [firstNameInvalid, setFirstNameInvalid] = useState(false);
+  const [accountTypeInvalid, setAccountTypeInvalid] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userType, setUserType] = useState(-1);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  let secondNameHelperText = '　';
+  let lastNameHelperText = '　';
   let firstNameHelperText = '　';
   let accountTypeHelperText = '　';
   let emailBoxHelperText = '　'; // some white spaces to take up the width
   let passwordHelperText = '　';
   let passwordConfirmHelperText = '　';
 
-  if (afterEmailCheck) {
-    if (passwordInvalid) {
-      passwordHelperText = '您输入的密码格式不正确';
-    } else if (emailFormInvalid) {
-      emailBoxHelperText = '请输入有效的邮箱地址';
-    } else if (emailInvalid) {
-      emailBoxHelperText = '您输入的邮箱已注册';
-    }
+  if (passwordInvalid) {
+    passwordHelperText = '密码应有至少8个字符';
   }
-  if (noSecondName) {
-    secondNameHelperText = '请填写姓氏';
+  if (passwordInput !== passwordConfirm) {
+    passwordConfirmHelperText = '两次输入密码不一致';
   }
-  if (noFirstName) {
+  if (emailFormInvalid) {
+    // check the form first
+    emailBoxHelperText = '请输入有效的邮箱地址';
+  } else if (emailInvalid) {
+    emailBoxHelperText = '您输入的邮箱已注册';
+  }
+  if (lastNameInvalid) {
+    lastNameHelperText = '请填写姓氏';
+  }
+  if (firstNameInvalid) {
     firstNameHelperText = '请填写名字';
   }
-  if (noAccountType) {
-    accountTypeHelperText = '请选择账户类型';
-  }
-
-  if (passwordNotEqual) {
-    passwordConfirmHelperText = '确认密码不一致';
+  if (accountTypeInvalid) {
+    accountTypeHelperText = '请选择类型';
   }
 
   const handleNextClick = async () => {
@@ -355,15 +358,36 @@ export default function home() {
       console.log(response);
       const message = await response.json();
 
+      let allchecked = true;
       if (response.ok) {
         console.log(`The server says your email is OK:`);
         console.log(message);
-        setInputContent('');
-        setAfterEmailCheck(true);
       } else {
         setEmailInvalid(true);
         console.log(`Your email doesn't exist, check again my boy:`);
         console.log(message);
+        allchecked = false;
+      }
+      if (!firstName) {
+        setFirstNameInvalid(true);
+        allchecked = false;
+      }
+      if (!lastName) {
+        setLastNameInvalid(true);
+        allchecked = false;
+      }
+      if (!(userType in [...options.keys()])) {
+        setAccountTypeInvalid(true);
+        allchecked = false;
+      }
+      if (passwordInput.length < 8) {
+        setPasswordInvalid(true);
+        allchecked = false;
+      }
+      if (allchecked) {
+        console.log('All checked out.');
+      } else {
+        console.log('Something is wrong.');
       }
     };
 
@@ -374,10 +398,6 @@ export default function home() {
     }
   };
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [userType, setUserType] = useState(0);
-
   const open = Boolean(anchorEl);
   const handleAccountTypeClick = event => {
     setAnchorEl(event.currentTarget);
@@ -386,15 +406,18 @@ export default function home() {
   const handleMenuItemClick = idx => event => {
     setAnchorEl(null);
     setUserType(idx);
+    setAccountTypeInvalid(false);
   };
   const handleFirstNameInput = event => {
     const text = event.target.value;
     setFirstName(text);
+    setFirstNameInvalid(false);
   };
 
   const handleLastNameInput = event => {
     const text = event.target.value;
     setLastName(text);
+    setLastNameInvalid(false);
   };
 
   const handleEmailInput = event => {
@@ -408,9 +431,17 @@ export default function home() {
     setEmailFormInvalid(invalid);
     console.log(`Getting new email text: ${text}`);
     console.log(`Setting email form invalid: ${invalid}`);
-    if (!afterEmailCheck) {
-      setValidEmail(text);
-    }
+  };
+
+  const handlePasswordInput = event => {
+    const text = event.target.value;
+    setPasswordInput(text);
+    setPasswordInvalid(false);
+  };
+  const handlePasswordConfirm = event => {
+    const text = event.target.value;
+    setPasswordConfirm(text);
+    setPasswordInvalid(false);
   };
 
   return (
@@ -430,21 +461,23 @@ export default function home() {
           <Container className={classes.accountInfoContainer}>
             <Container className={classes.lastNameInputBox}>
               <TextField
+                error={lastNameInvalid}
                 className={classes.lastNameInput}
                 variant="outlined"
                 size="medium"
                 id="user_second_name"
                 label="姓氏"
-                helperText={secondNameHelperText}
+                helperText={lastNameHelperText}
                 name="user_second_name"
                 autoFocus
-                value={firstName}
-                onChange={handleFirstNameInput}
+                value={lastName}
+                onChange={handleLastNameInput}
               />
             </Container>
 
             <Container className={classes.firstNameInputBox}>
               <TextField
+                error={firstNameInvalid}
                 className={classes.firstNameInput}
                 variant="outlined"
                 size="medium"
@@ -453,13 +486,14 @@ export default function home() {
                 helperText={firstNameHelperText}
                 name="user_first_name"
                 autoFocus
-                value={lastName}
-                onChange={handleLastNameInput}
+                value={firstName}
+                onChange={handleFirstNameInput}
               />
             </Container>
 
             <Container className={classes.accountTypeInputBox}>
               <TextField
+                error={accountTypeInvalid}
                 className={classes.accountTypeInput}
                 variant="outlined"
                 size="medium"
@@ -468,7 +502,7 @@ export default function home() {
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                value={options[userType]}
+                value={options[userType] ?? ''}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (
@@ -515,11 +549,7 @@ export default function home() {
           <Container className={classes.emailInputContainer}>
             <Container className={classes.emailInputBox}>
               <TextField
-                error={
-                  afterEmailCheck
-                    ? passwordInvalid
-                    : emailInvalid || emailFormInvalid
-                }
+                error={emailInvalid || emailFormInvalid}
                 className={classes.emailInput}
                 variant="outlined"
                 size="medium"
@@ -530,6 +560,7 @@ export default function home() {
                 autoFocus
                 fullWidth
                 value={inputContent}
+                onChange={handleEmailInput}
               />
             </Container>
           </Container>
@@ -537,6 +568,7 @@ export default function home() {
           <Container className={classes.passwordContainer}>
             <Container className={classes.passwordInputBox}>
               <TextField
+                error={passwordInvalid}
                 className={classes.passwordInput}
                 variant="outlined"
                 size="medium"
@@ -545,12 +577,14 @@ export default function home() {
                 helperText={passwordHelperText}
                 name="user_password"
                 autoFocus
-                value={inputContent}
+                value={passwordInput}
+                onChange={handlePasswordInput}
               />
             </Container>
 
             <Container className={classes.passwordConfirmInputBox}>
               <TextField
+                error={passwordInput !== passwordConfirm}
                 className={classes.passwordConfirmInput}
                 variant="outlined"
                 size="medium"
@@ -559,7 +593,8 @@ export default function home() {
                 helperText={passwordConfirmHelperText}
                 name="user_password_confirm"
                 autoFocus
-                value={inputContent}
+                value={passwordConfirm}
+                onChange={handlePasswordConfirm}
               />
             </Container>
           </Container>
