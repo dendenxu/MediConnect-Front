@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 // import { Radio } from '@material-ui/core';
 // import { render } from '@testing-library/react';
 // import { red } from '@material-ui/core/colors';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '600px',
   },
   paper: {
-    marginTop: -theme.spacing(8),
+    marginTop: -theme.spacing(12),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -122,6 +123,7 @@ const useStyles = makeStyles(theme => ({
     // fontSize: '0.8rem',
     // padding: theme.spacing(1),
     color: 'rgba(0, 0, 0, 0.35)',
+    // transform: 'translate(0px,1.5px)',
   },
   labelFocused: {
     // fontSize: '1rem',
@@ -131,7 +133,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
   },
   copyrightText: {
-    fontWeight: 300,
+    // fontWeight: 300,
   },
 }));
 
@@ -205,6 +207,7 @@ const AvatarBar = props => {
 };
 export default function Home() {
   const classes = useStyles();
+  const history = useHistory();
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -272,8 +275,7 @@ export default function Home() {
     setInputContent(text);
     setEmailInvalid(false);
 
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const invalid = !re.test(text) && text.length !== 0;
     setEmailFormInvalid(invalid);
@@ -288,6 +290,10 @@ export default function Home() {
     setAvatarClicked(newVal);
     console.log(`clicked: ${newVal}`);
     console.log('Avatar Clicked!');
+  };
+
+  const handleSignup = event => {
+    history.push('/Signup');
   };
 
   return (
@@ -334,8 +340,11 @@ export default function Home() {
                 },
               }}
               label={
+                // <Typography className={classes.centeredText}> // {
                 !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
               }
+              // </Typography>
+              // }
               helperText={inputBoxHelpterText}
               name="username"
               autoFocus
@@ -371,13 +380,13 @@ export default function Home() {
                 />
               </Container>
             ) : (
-              <Container />
+              <div />
             )}
           </Container>
 
           <Container className={classes.submit}>
             <Link
-              href="https://neon-cubes.xyz"
+              onClick={handleSignup}
               variant="caption"
               className={classes.centeredText}
             >

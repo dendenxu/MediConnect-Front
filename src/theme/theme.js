@@ -1,7 +1,9 @@
 import { createMuiTheme } from '@material-ui/core';
 
 const captionStyle = {
-  fontWeight: '300',
+  // fontWeight: '300',
+  // // ! special operation for Josefin Sans
+  // transform: 'translate(0px,3px)',
 };
 
 const theme = createMuiTheme({
