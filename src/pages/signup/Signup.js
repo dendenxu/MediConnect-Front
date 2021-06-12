@@ -3,6 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
@@ -17,186 +18,226 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
-const useStyles = makeStyles(theme => ({
-  layoutContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    maxWidth: '700px',
-  },
-
-  borderedContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    border: 5,
-    borderRadius: 30,
-    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
-    padding: theme.spacing(3),
-    width: '90%',
-    marginTop: theme.spacing(1),
-  },
-
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-
-  logoContainer: {
-    marginTop: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'left',
-  },
-
-  logo: {
-    width: '45%',
-    height: '45%',
-    marginBottom: theme.spacing(2),
-  },
-
-  accountInfoContainer: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(2, 0, 0, 4.5),
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  secondNameInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0, 0),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '25%',
-    height: '100%',
-  },
-
-  // 姓
-  secondNameInput: {
-    '& div': {
-      borderRadius: 16,
+const useStyles = makeStyles(theme => {
+  const gridPadding = theme.spacing(0.5, 2.5);
+  const threeFraction = '30%';
+  const twoFraction = '45%';
+  return {
+    layoutContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      maxWidth: '600px',
     },
-  },
 
-  firstNameInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 5, 0, 5),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '25%',
-    height: '100%',
-  },
-
-  // 名
-  firstNameInput: {
-    '& div': {
-      borderRadius: 16,
+    signUpContainer: {
+      marginTop: -theme.spacing(12),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
-  },
 
-  accountTypeInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0, 0),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '25%',
-    height: '100%',
-  },
-
-  accountTypeInput: {},
-
-  emailInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 4.5, 0, 4.5),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    // height: '100%',
-  },
-
-  emailInput: {
-    '& div': {
-      borderRadius: 16,
+    welcome: {
+      color: theme.palette.secondary.main,
     },
-  },
 
-  passwordContainer: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0, 4.5),
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  passwordInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 9.5, 0, 0),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '40%',
-    height: '100%',
-  },
-
-  passwordInput: {
-    '& div': {
-      borderRadius: 16,
+    borderedContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      border: 5,
+      borderRadius: 30,
+      boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+      padding: theme.spacing(3),
+      width: '90%',
+      marginTop: theme.spacing(1),
     },
-  },
 
-  passwordConfirmInputBox: {
-    padding: theme.spacing(0),
-    margin: theme.spacing(0, 0, 0, 0),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '40%',
-    height: '100%',
-  },
-
-  passwordConfirmInput: {
-    '& div': {
-      borderRadius: 16,
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      marginTop: theme.spacing(1),
     },
-  },
 
-  labelRoot: { color: 'rgba(0, 0, 0, 0.35)' },
-  labelFocused: {},
-  label: {},
+    logoContainer: {
+      marginTop: theme.spacing(1),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'left',
+    },
 
-  jumpContainer: {
-    margin: theme.spacing(2, 0, 10),
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+    logo: {
+      width: '45%',
+      height: '45%',
+      marginBottom: theme.spacing(2),
+    },
 
-  jumpToSignIn: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    transform: 'translate(0px,1.5px)',
-  },
+    accountInfoContainer: {
+      marginTop: theme.spacing(2),
+      padding: gridPadding,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
 
-  nextButton: {
-    borderRadius: '10px',
-    border: 0,
-    color: 'white',
-    padding: '30 30px',
-  },
+    lastNameInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: threeFraction,
+      height: '100%',
+    },
 
-  copyright: {
-    marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(17.5),
-  },
-  copyrightText: {},
-}));
+    // 姓
+    lastNameInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    firstNameInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: threeFraction,
+      height: '100%',
+    },
+
+    // 名
+    firstNameInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    accountTypeInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: threeFraction,
+      height: '100%',
+    },
+
+    accountTypeInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    accountType: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      marginRight: theme.spacing(-1),
+    },
+
+    emailInputContainer: {
+      margin: theme.spacing(0),
+      padding: gridPadding,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+
+    emailInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+
+      // height: '100%',
+    },
+
+    emailInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    passwordContainer: {
+      margin: theme.spacing(0),
+      // marginBottom: theme.spacing(2),
+      padding: gridPadding,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+
+    passwordInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: twoFraction,
+      height: '100%',
+    },
+
+    passwordInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    passwordConfirmInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: twoFraction,
+      height: '100%',
+    },
+
+    passwordConfirmInput: {
+      '& div': {
+        borderRadius: 16,
+      },
+    },
+
+    labelRoot: { color: 'rgba(0, 0, 0, 0.35)' },
+    labelFocused: {},
+    label: {},
+
+    jumpContainer: {
+      margin: theme.spacing(2, 0, 4),
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+
+    jumpToSignIn: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      transform: 'translate(0px,1.5px)',
+    },
+
+    nextButton: {
+      borderRadius: '10px',
+      border: 0,
+      color: 'white',
+      padding: '30 30px',
+    },
+
+    copyright: {
+      marginTop: theme.spacing(3),
+      // marginRight: theme.spacing(3),
+      width: '90%',
+    },
+    copyrightText: {},
+  };
+});
 
 const BottomBar = props => {
   const { name } = props;
@@ -227,7 +268,12 @@ const BottomBar = props => {
 function Copyright() {
   const classes = useStyles();
   return (
-    <Grid container spacing={2} justify="center" className={classes.copyright}>
+    <Grid
+      container
+      spacing={2}
+      justify="flex-end"
+      className={classes.copyright}
+    >
       <Typography
         variant="body2"
         color="textSecondary"
@@ -382,9 +428,9 @@ export default function home() {
           </Container>
 
           <Container className={classes.accountInfoContainer}>
-            <Container className={classes.secondNameInputBox}>
+            <Container className={classes.lastNameInputBox}>
               <TextField
-                className={classes.secondNameInput}
+                className={classes.lastNameInput}
                 variant="outlined"
                 size="medium"
                 id="user_second_name"
@@ -425,60 +471,67 @@ export default function home() {
                 value={options[userType]}
                 InputProps={{
                   readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        className={classes.accountType}
+                        aria-label="more"
+                        aria-controls="menu"
+                        aria-haspopup="true"
+                        onClick={handleAccountTypeClick}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={open}
+                        onClose={handleMenuItemClick(0)}
+                        PaperProps={{
+                          style: {
+                            maxHeight: ITEM_HEIGHT * 2,
+                            width: '20ch',
+                          },
+                        }}
+                      >
+                        {[...options.keys()].map(key => (
+                          <MenuItem
+                            key={key}
+                            selected={key === 0}
+                            onClick={handleMenuItemClick(key)}
+                          >
+                            {options[key]}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </InputAdornment>
+                  ),
                 }}
               />
             </Container>
-            <IconButton
-              aria-label="more"
-              aria-controls="menu"
-              aria-haspopup="true"
-              onClick={handleAccountTypeClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="long-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={open}
-              onClose={handleMenuItemClick(0)}
-              PaperProps={{
-                style: {
-                  maxHeight: ITEM_HEIGHT * 2,
-                  width: '20ch',
-                },
-              }}
-            >
-              {[...options.keys()].map(key => (
-                <MenuItem
-                  key={key}
-                  selected={key === 0}
-                  onClick={handleMenuItemClick(key)}
-                >
-                  {options[key]}
-                </MenuItem>
-              ))}
-            </Menu>
           </Container>
 
-          <Container className={classes.emailInputBox}>
-            <TextField
-              error={
-                afterEmailCheck
-                  ? passwordInvalid
-                  : emailInvalid || emailFormInvalid
-              }
-              className={classes.emailInput}
-              variant="outlined"
-              size="medium"
-              id="username"
-              label="邮箱账号"
-              helperText={emailBoxHelperText}
-              name="username"
-              autoFocus
-              fullWidth
-              value={inputContent}
-            />
+          <Container className={classes.emailInputContainer}>
+            <Container className={classes.emailInputBox}>
+              <TextField
+                error={
+                  afterEmailCheck
+                    ? passwordInvalid
+                    : emailInvalid || emailFormInvalid
+                }
+                className={classes.emailInput}
+                variant="outlined"
+                size="medium"
+                id="username"
+                label="邮箱账号"
+                helperText={emailBoxHelperText}
+                name="username"
+                autoFocus
+                fullWidth
+                value={inputContent}
+              />
+            </Container>
           </Container>
 
           <Container className={classes.passwordContainer}>
