@@ -1,5 +1,9 @@
 import { createMuiTheme } from '@material-ui/core';
 
+const captionStyle = {
+  fontWeight: '300',
+};
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -19,7 +23,14 @@ const theme = createMuiTheme({
     danger: 'orange',
   },
   typography: {
-    fontFamily: ['Josefin Sans', 'PingFang SC', 'sans-serif'].join(', '),
+    fontFamily: [
+      'Josefin Sans',
+      'Josefin Slab',
+      'Noto Sans SC',
+      'PingFang SC',
+      'sans-serif',
+    ].join(', '),
+    caption: captionStyle,
   },
 });
 

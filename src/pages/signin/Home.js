@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from "react-router-dom";
+// import { createBrowserHistory } from "history";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,9 +13,27 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { ReactComponent as Icon } from '../../assets/images/Icon.svg';
+// import { Radio } from '@material-ui/core';
+// import { render } from '@testing-library/react';
+// import { red } from '@material-ui/core/colors';
+import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => ({
+  // TODO: fix these ugly naming...
+  verticalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    maxWidth: '600px',
+  },
+  paper: {
+    marginTop: -theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   borderedContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -26,12 +43,7 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
     width: '90%',
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    marginTop: theme.spacing(1),
   },
   avatar: {
     margin: theme.spacing(1),
@@ -42,7 +54,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(5.5, 0, 5.5),
+    margin: theme.spacing(3.5, 0, 10),
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -58,18 +70,15 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     width: '85%',
+    height: '100%',
   },
 
   input: {
-    // borderRadius: 12,
-    // "& input": {
-    //   borderRadius: 12,
-    // },
     '& div': {
-      borderRadius: 12,
+      borderRadius: 16,
     },
-    // "& fieldset": {
-    //   borderRadius: 12,
+    // '& input': {
+    //   margin: theme.spacing(1),
     // },
   },
   checkboxContainer: {
@@ -90,8 +99,8 @@ const useStyles = makeStyles(theme => ({
   avatarButton: {
     borderRadius: '14px',
     textTransform: 'none',
-    marginBottom: theme.spacing(2),
-    padding: '-0px 5px',
+    marginBottom: theme.spacing(1),
+    padding: '2px 6px',
   },
   smallAvatar: {
     width: theme.spacing(2),
@@ -109,17 +118,40 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     marginBottom: theme.spacing(3),
   },
+  labelRoot: {
+    // fontSize: '0.8rem',
+    // padding: theme.spacing(1),
+    color: 'rgba(0, 0, 0, 0.35)',
+  },
+  labelFocused: {
+    // fontSize: '1rem',
+    // color: "rgba(0, 0, 0, 0.35)",
+  },
+  copyright: {
+    marginTop: theme.spacing(3),
+  },
+  copyrightText: {
+    fontWeight: 300,
+  },
 }));
 
 function Copyright() {
+  const classes = useStyles();
   return (
-    <Typography variant="caption" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://github.com/dendenxu">
-        dendenxu
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
+    <Grid container spacing={2} justify="center" className={classes.copyright}>
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        align="center"
+        className={classes.copyrightText}
+      >
+        {'Copyright © '}
+        <Link color="inherit" href="https://github.com/dendenxu">
+          dendenxu
+        </Link>{' '}
+        {new Date().getFullYear()}.
+      </Typography>
+    </Grid>
   );
 }
 
@@ -129,17 +161,18 @@ const BottomBar = props => {
     <Container>
       <Grid container spacing={2}>
         <Grid item xs>
-          <Link color="textSecondary" href="#" variant="caption">
-            {name === '' ? '帮助' : `Got: ${name}`}
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+            {/* {name === '' ? '帮助' : `Got: ${name}`} */}
+            帮助
           </Link>
         </Grid>
         <Grid item>
-          <Link color="textSecondary" href="#" variant="caption">
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
             使用条款
           </Link>
         </Grid>
         <Grid item>
-          <Link color="textSecondary" href="#" variant="caption">
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
             隐私协议
           </Link>
         </Grid>
@@ -147,7 +180,6 @@ const BottomBar = props => {
     </Container>
   );
 };
-
 const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
@@ -159,7 +191,13 @@ const AvatarBar = props => {
       startIcon={<Avatar src={avatarSrc} className={classes.smallAvatar} />}
       onClick={handleAvatarClick}
     >
-      <Typography className={classes.centeredText} variant="caption">
+      <Typography
+        className={classes.centeredText}
+        variant="caption"
+        style={{
+          fontWeight: 500,
+        }}
+      >
         {email}
       </Typography>
     </Button>
@@ -167,81 +205,105 @@ const AvatarBar = props => {
 };
 export default function Home() {
   const classes = useStyles();
-  const [emailCheck, setEmailCheck] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const [name, setName] = useState('');
+  const [afterEmailCheck, setAfterEmailCheck] = useState(false);
+  const [avatarClicked, setAvatarClicked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [inputContent, setInputContent] = useState('');
+  const [validEmail, setValidEmail] = useState('');
+  const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const [emailInvalid, setEmailInvalid] = useState(false);
+  const [emailFormInvalid, setEmailFormInvalid] = useState(false);
 
-  const history = useHistory();
+  // note that this is a full-width space
+  // material ui seems to ignore the half-width one
+  let inputBoxHelpterText = '　'; // some white spaces to take up the width
 
-  const handleClick = event => {
-    const newVal = !clicked;
-    setClicked(newVal);
-    console.log(`clicked: ${newVal}`);
-    console.log(
-      `Getting new email: ${name}, enter 3180105504@zju.edu.cn to get a preview`,
-    );
-    console.log(event);
-    if (name === '3180105504@zju.edu.cn') {
-      console.log('Setting emailCheck to true');
-      setEmailCheck(true);
+  if (afterEmailCheck) {
+    if (passwordInvalid) {
+      inputBoxHelpterText = '您输入的密码不正确';
     }
-    // const username = document.getElementById("username").value;
-    // console.log({ username: username });
-    // let history = createBrowserHistory();
-    // if (username == 123456) {
-    // history.push("/SignIn");
-    // history.go();
-    // }
-  };
-  const handleChange = event => {
-    const sel = event.target.checked;
-    setSelected(sel);
-    console.log(`selected: ${sel}`);
+  } else if (emailFormInvalid) {
+    inputBoxHelpterText = '您输入的邮箱格式不正确';
+  } else if (emailInvalid) {
+    inputBoxHelpterText = '您输入的邮箱不在数据库中';
+  }
+
+  const handleClick = async () => {
+    const throwableHandle = async () => {
+      const response = await fetch('/email', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: inputContent,
+        }),
+      });
+      console.log(response);
+      const message = await response.json();
+
+      if (response.ok) {
+        console.log(`The server says your email is OK:`);
+        console.log(message);
+        setInputContent('');
+        setAfterEmailCheck(true);
+      } else {
+        setEmailInvalid(true);
+        console.log(`Your email doesn't exist, check again my boy:`);
+        console.log(message);
+      }
+    };
+
+    try {
+      await throwableHandle();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleNameChange = event => {
-    const newName = event.target.value;
-    setName(newName);
-    console.log(`Getting new name: ${newName}`);
+  const handleCheckBoxChange = event => {
+    const selected = event.target.checked;
+    setShowPassword(selected);
+    console.log(`selected show password: ${selected}`);
+  };
+
+  const handleInputChange = event => {
+    const text = event.target.value;
+    setInputContent(text);
+    setEmailInvalid(false);
+
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    const invalid = !re.test(text) && text.length !== 0;
+    setEmailFormInvalid(invalid);
+    console.log(`Getting new email text: ${text}`);
+    console.log(`Setting email form invalid: ${invalid}`);
+    if (!afterEmailCheck) {
+      setValidEmail(text);
+    }
   };
   const handleAvatarClick = () => {
+    const newVal = !avatarClicked;
+    setAvatarClicked(newVal);
+    console.log(`clicked: ${newVal}`);
     console.log('Avatar Clicked!');
-  };
-  const handleSignUpClick = () => {
-    const location = {
-      pathname: '/result',
-      state: {
-        // 页面跳转要传递的数据，如下
-
-        data1: {
-          doc: '子沐',
-          name,
-          dep: '推拿房',
-          year: 1999,
-          mon: 1,
-          day: 1,
-          tim: 0,
-        },
-      },
-    };
-    history.push(location);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
 
         <Box className={classes.borderedContainer}>
           <Typography component="h1" variant="h5" className={classes.welcome}>
-            {emailCheck ? '欢迎' : '登录'}
+            {afterEmailCheck ? '欢迎' : '登录'}
           </Typography>
-          {emailCheck ? (
+          {afterEmailCheck ? (
             <AvatarBar
-              email="3180105504@zju.edu.cn"
-              avatarSrc="https://courses.zju.edu.cn/api/uploads/2232880/modified-image"
+              email={validEmail}
+              avatarSrc="https://avatars.githubusercontent.com/u/43734697?v=4"
               handleAvatarClick={handleAvatarClick}
             />
           ) : (
@@ -256,19 +318,35 @@ export default function Home() {
 
           <Container className={classes.checkboxInput}>
             <TextField
+              error={
+                afterEmailCheck
+                  ? passwordInvalid
+                  : emailInvalid || emailFormInvalid
+              }
               className={classes.input}
               variant="outlined"
-              size="small"
+              size="medium"
               id="username"
-              label="邮箱账号"
+              InputLabelProps={{
+                classes: {
+                  root: classes.labelRoot,
+                  focused: classes.labelFocused,
+                },
+              }}
+              label={
+                !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
+              }
+              helperText={inputBoxHelpterText}
               name="username"
               autoFocus
+              autoComplete={afterEmailCheck ? 'current-password' : 'email'}
               fullWidth
-              value={name}
-              onChange={handleNameChange}
+              value={inputContent}
+              onChange={handleInputChange}
+              type={afterEmailCheck && !showPassword ? 'password' : ''}
             />
 
-            {emailCheck ? (
+            {afterEmailCheck ? (
               <Container className={classes.checkboxContainer}>
                 <FormControlLabel
                   control={
@@ -285,8 +363,8 @@ export default function Home() {
                       显示密码
                     </Typography>
                   }
-                  checked={selected}
-                  onChange={handleChange}
+                  checked={showPassword}
+                  onChange={handleCheckBoxChange}
                   style={{
                     marginRight: 0,
                   }}
@@ -299,9 +377,9 @@ export default function Home() {
 
           <Container className={classes.submit}>
             <Link
+              href="https://neon-cubes.xyz"
               variant="caption"
               className={classes.centeredText}
-              onClick={handleSignUpClick}
             >
               创建新账号
             </Link>
@@ -315,11 +393,10 @@ export default function Home() {
               下一步
             </Button>
           </Container>
-          <BottomBar name={name} />
+          <BottomBar name={inputContent} />
         </Box>
-        <Box mt={2}>
-          <Copyright />
-        </Box>
+
+        <Copyright />
       </Container>
     </Container>
   );
