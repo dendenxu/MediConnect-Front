@@ -16,6 +16,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => {
@@ -292,6 +293,7 @@ function Copyright() {
 
 export default function home() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const ITEM_HEIGHT = 48;
@@ -442,6 +444,10 @@ export default function home() {
     const text = event.target.value;
     setPasswordConfirm(text);
     setPasswordInvalid(false);
+  };
+
+  const handleLogin = event => {
+    history.push('/');
   };
 
   return (
@@ -600,7 +606,11 @@ export default function home() {
           </Container>
 
           <Container className={classes.jumpContainer}>
-            <Link href="/" variant="caption" className={classes.jumpToSignIn}>
+            <Link
+              onClick={handleLogin}
+              variant="caption"
+              className={classes.jumpToSignIn}
+            >
               登录现有账号
             </Link>
             <Button

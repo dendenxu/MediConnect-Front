@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 // import { Radio } from '@material-ui/core';
 // import { render } from '@testing-library/react';
 // import { red } from '@material-ui/core/colors';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => ({
@@ -111,7 +112,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     // ! special operation for Josefin Sans
-    // transform: 'translate(0px,1.5px)',
+    transform: 'translate(0px,1.5px)',
   },
   icon: {
     width: '100%',
@@ -206,6 +207,7 @@ const AvatarBar = props => {
 };
 export default function Home() {
   const classes = useStyles();
+  const history = useHistory();
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -290,6 +292,10 @@ export default function Home() {
     console.log('Avatar Clicked!');
   };
 
+  const handleSignup = event => {
+    history.push('/Signup');
+  };
+
   return (
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
@@ -333,9 +339,10 @@ export default function Home() {
                   focused: classes.labelFocused,
                 },
               }}
-              label=// {
-              // <Typography className={classes.centeredText}>
-              {!afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'}
+              label={
+                // <Typography className={classes.centeredText}> // {
+                !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
+              }
               // </Typography>
               // }
               helperText={inputBoxHelpterText}
@@ -379,8 +386,7 @@ export default function Home() {
 
           <Container className={classes.submit}>
             <Link
-              href="/Signup"
-              // href="https://neon-cubes.xyz"
+              onClick={handleSignup}
               variant="caption"
               className={classes.centeredText}
             >
