@@ -43,11 +43,13 @@
     "classnames": "^2.2.6",
     "eslint-config-prettier": "^8.2.0",
     "history": "^5.0.0",
+    "jquery": "^3.6.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "miragejs": "^0.1.41"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
