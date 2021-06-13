@@ -22,6 +22,7 @@ module.exports = {
       },
     ],
     'react/prop-types': 'warn',
+    'react/jsx-key': 'warn',
     'no-unused-vars': 'warn',
     'no-useless-escape': 'warn',
     'jsx-a11y/anchor-is-valid': 'warn',
