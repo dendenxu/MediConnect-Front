@@ -294,7 +294,7 @@ export default function Home() {
   };
 
   const handleSignup = event => {
-    history.push('/Signup');
+    history.push('/user/signup');
   };
 
   return (

@@ -471,7 +471,7 @@ export default function home() {
   };
 
   const handleLogin = event => {
-    history.push('/');
+    history.push('/user/signin');
   };
 
   const handleCheckBoxChange = event => {
@@ -615,6 +615,7 @@ export default function home() {
                 autoFocus
                 value={passwordInput}
                 onChange={handlePasswordInput}
+                type={!showPassword ? 'password' : ''}
               />
             </Container>
 
@@ -631,6 +632,7 @@ export default function home() {
                 autoFocus
                 value={passwordConfirm}
                 onChange={handlePasswordConfirm}
+                type={!showPassword ? 'password' : ''}
               />
             </Container>
           </Container>
