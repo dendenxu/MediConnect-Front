@@ -4,6 +4,7 @@ import {
   Route,
   Redirect,
   useLocation,
+  Switch,
 } from 'react-router-dom';
 import Home from './pages/signin/Home';
 import Signup from './pages/signup/Signup';
@@ -13,16 +14,18 @@ import Chat from './pages/chat/Chat';
 export default function App() {
   return (
     <Router>
-      <Route exact path="/">
-        <Redirect to="/user/signin" />
-      </Route>
-      <Route exact path="/user/signin" component={Home} />
-      <Route exact path="/user/signup" component={Signup} />
-      <Route exact path="/result" component={Result} />
-      <Route exact path="/chat" component={Chat} />
-      <Route path="*">
-        <NoMatch />
-      </Route>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/user/signin" />
+        </Route>
+        <Route exact path="/user/signin" component={Home} />
+        <Route exact path="/user/signup" component={Signup} />
+        <Route exact path="/result" component={Result} />
+        <Route exact path="/chat" component={Chat} />
+        <Route>
+          <NoMatch />
+        </Route>
+      </Switch>
     </Router>
   );
 }
@@ -39,10 +42,11 @@ function NoMatch() {
       </h1>
       {[
         'Check your url:',
-        'for signin, use /user/signin,',
-        'for signup, use /user/signup,',
-        'for chat, use /chat,',
-        'for result, use /result.',
+        '- for signin, use /user/signin',
+        '- for signup, use /user/signup',
+        '- for chat, use /chat',
+        '- for result, use /result',
+        '- / will be redirected to /user/signin',
       ].map(msg => (
         <h3>
           <code>{msg}</code>

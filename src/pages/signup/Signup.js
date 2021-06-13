@@ -324,16 +324,17 @@ export default function home() {
   // const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
+  const [validFormEmail, setValidFormEmail] = useState('');
   const [validEmail, setValidEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
-  const [emailInvalid, setEmailInvalid] = useState(false);
+  const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
   const [lastNameInvalid, setLastNameInvalid] = useState(false);
   const [firstNameInvalid, setFirstNameInvalid] = useState(false);
   const [accountTypeInvalid, setAccountTypeInvalid] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [userType, setUserType] = useState(-1);
+  const [accountType, setAccountType] = useState(-1);
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -355,9 +356,10 @@ export default function home() {
   if (emailFormInvalid) {
     // check the form first
     emailBoxHelperText = '请输入有效的邮箱地址';
-  } else if (emailInvalid) {
+  } else if (emailAlreadyTaken) {
     emailBoxHelperText = '您输入的邮箱已注册';
   }
+
   if (lastNameInvalid) {
     lastNameHelperText = '请填写姓氏';
   }
@@ -369,30 +371,35 @@ export default function home() {
   }
 
   const handleNextClick = async () => {
-    const throwableHandle = async () => {
-      const response = await fetch('/email', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: inputContent,
-        }),
+    let allchecked = true;
+    const checkEmailWithServer = async () => {
+      const response = await fetch(`/user?email=${validFormEmail}`, {
+        method: 'get',
       });
       console.log(response);
       const message = await response.json();
 
-      let allchecked = true;
       if (response.ok) {
         console.log(`The server says your email is OK:`);
         console.log(message);
         allchecked = false;
+        setEmailAlreadyTaken(true);
       } else {
-        setEmailInvalid(true);
         console.log(`Your email doesn't exist, check again my boy`);
         console.log("But I know you're registering, so that's OK.");
         console.log(message);
       }
+    };
+
+    try {
+      if (!validFormEmail) {
+        console.log('Wrong email format, refusing to login');
+        allchecked = false;
+        setEmailFormInvalid(true);
+      } else {
+        await checkEmailWithServer();
+      }
+
       if (!firstName) {
         setFirstNameInvalid(true);
         allchecked = false;
@@ -401,7 +408,7 @@ export default function home() {
         setLastNameInvalid(true);
         allchecked = false;
       }
-      if (!(userType in [...options.keys()])) {
+      if (!(accountType in [...options.keys()])) {
         setAccountTypeInvalid(true);
         allchecked = false;
       }
@@ -411,13 +418,12 @@ export default function home() {
       }
       if (allchecked) {
         console.log('All checked out.');
+        console.log(
+          `Valid form email: ${validEmail}, input content: ${inputContent}`,
+        );
       } else {
         console.log('Something is wrong.');
       }
-    };
-
-    try {
-      await throwableHandle();
     } catch (err) {
       console.log(err);
     }
@@ -430,7 +436,7 @@ export default function home() {
 
   const handleMenuItemClick = idx => event => {
     setAnchorEl(null);
-    setUserType(idx);
+    setAccountType(idx);
     setAccountTypeInvalid(false);
   };
   const handleFirstNameInput = event => {
@@ -448,7 +454,6 @@ export default function home() {
   const handleEmailInput = event => {
     const text = event.target.value;
     setInputContent(text);
-    setEmailInvalid(false);
 
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -457,6 +462,7 @@ export default function home() {
     setEmailFormInvalid(invalid);
     console.log(`Getting new email text: ${text}`);
     console.log(`Setting email form invalid: ${invalid}`);
+    setValidFormEmail(invalid ? '' : text);
   };
 
   const handlePasswordInput = event => {
@@ -538,7 +544,7 @@ export default function home() {
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                value={options[userType] ?? ''}
+                value={options[accountType] ?? ''}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (
@@ -585,7 +591,7 @@ export default function home() {
           <Container className={classes.emailInputContainer}>
             <Container className={classes.emailInputBox}>
               <TextField
-                error={emailInvalid || emailFormInvalid}
+                error={emailAlreadyTaken || emailFormInvalid}
                 className={classes.emailInput}
                 variant="outlined"
                 size="medium"
