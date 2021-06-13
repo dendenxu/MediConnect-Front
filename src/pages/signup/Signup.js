@@ -321,11 +321,9 @@ export default function home() {
   const ITEM_HEIGHT = 48;
   const options = ['患者', '医生'];
 
-  // const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validFormEmail, setValidFormEmail] = useState('');
-  const [validEmail, setValidEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
@@ -388,6 +386,7 @@ export default function home() {
         console.log(`Your email doesn't exist, check again my boy`);
         console.log("But I know you're registering, so that's OK.");
         console.log(message);
+        setEmailAlreadyTaken(false);
       }
     };
 
@@ -419,7 +418,7 @@ export default function home() {
       if (allchecked) {
         console.log('All checked out.');
         console.log(
-          `Valid form email: ${validEmail}, input content: ${inputContent}`,
+          `Valid form email: ${validFormEmail}, input content: ${inputContent}`,
         );
       } else {
         console.log('Something is wrong.');
@@ -454,6 +453,7 @@ export default function home() {
   const handleEmailInput = event => {
     const text = event.target.value;
     setInputContent(text);
+    setEmailAlreadyTaken(false);
 
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
