@@ -45,13 +45,15 @@
     "classnames": "^2.2.6",
     "eslint-config-prettier": "^8.2.0",
     "history": "^5.0.0",
+    "immutable": "^4.0.0-rc.12",
     "jquery": "^3.6.0",
+    "miragejs": "^0.1.41",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1",
-    "miragejs": "^0.1.41"
+    "react-scroll-to-bottom": "^4.1.2",
+    "web-vitals": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
