@@ -213,6 +213,7 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validEmail, setValidEmail] = useState('');
+  const [validFormEmail, setValidFormEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
@@ -232,15 +233,9 @@ export default function Home() {
   }
 
   const handleClick = async () => {
-    const throwableHandle = async () => {
-      const response = await fetch('/email', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: inputContent,
-        }),
+    const checkEmailWithServer = async () => {
+      const response = await fetch(`/user?email=${validFormEmail}`, {
+        method: 'get',
       });
       console.log(response);
       const message = await response.json();
@@ -248,6 +243,7 @@ export default function Home() {
       if (response.ok) {
         console.log(`The server says your email is OK:`);
         console.log(message);
+        setValidEmail(validFormEmail);
         setInputContent('');
         setAfterEmailCheck(true);
       } else {
@@ -257,8 +253,41 @@ export default function Home() {
       }
     };
 
+    const checkPasswordWithServer = async () => {
+      const response = await fetch('/user/login', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: validEmail,
+          password: inputContent,
+        }),
+      });
+
+      console.log(response);
+      const message = await response.json();
+
+      if (response.ok) {
+        console.log(`The server says your password is OK:`);
+        console.log(message);
+        history.push('/chat');
+      } else {
+        setPasswordInvalid(true);
+        console.log(message);
+      }
+    };
+
     try {
-      await throwableHandle();
+      if (!afterEmailCheck) {
+        if (!validFormEmail) {
+          console.log('Wrong email format, refusing to login');
+        } else {
+          await checkEmailWithServer();
+        }
+      } else {
+        await checkPasswordWithServer();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -282,9 +311,7 @@ export default function Home() {
     setEmailFormInvalid(invalid);
     console.log(`Getting new email text: ${text}`);
     console.log(`Setting email form invalid: ${invalid}`);
-    if (!afterEmailCheck) {
-      setValidEmail(text);
-    }
+    setValidFormEmail(invalid ? '' : text);
   };
   const handleAvatarClick = () => {
     const newVal = !avatarClicked;
