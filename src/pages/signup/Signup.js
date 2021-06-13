@@ -333,7 +333,7 @@ export default function home() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [accountType, setAccountType] = useState(-1);
-  const [passwordInput, setPasswordInput] = useState('');
+  const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
   // note that this is a full-width space
@@ -348,7 +348,7 @@ export default function home() {
   if (passwordInvalid) {
     passwordHelperText = '密码应有至少8个字符';
   }
-  if (passwordInput !== passwordConfirm) {
+  if (password !== passwordConfirm) {
     passwordConfirmHelperText = '两次输入密码不一致';
   }
   if (emailFormInvalid) {
@@ -390,6 +390,25 @@ export default function home() {
       }
     };
 
+    const registerUser = async () => {
+      const response = await fetch('/user/register', {
+        method: 'patch',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: validFormEmail,
+          firstName,
+          lastName,
+          password,
+        }),
+      });
+
+      console.log(response);
+      const message = await response.json();
+      console.log(message);
+    };
+
     try {
       if (!validFormEmail) {
         console.log('Wrong email format, refusing to login');
@@ -411,7 +430,7 @@ export default function home() {
         setAccountTypeInvalid(true);
         allchecked = false;
       }
-      if (passwordInput.length < 8) {
+      if (password.length < 8) {
         setPasswordInvalid(true);
         allchecked = false;
       }
@@ -420,6 +439,8 @@ export default function home() {
         console.log(
           `Valid form email: ${validFormEmail}, input content: ${inputContent}`,
         );
+
+        registerUser();
       } else {
         console.log('Something is wrong.');
       }
@@ -467,7 +488,7 @@ export default function home() {
 
   const handlePasswordInput = event => {
     const text = event.target.value;
-    setPasswordInput(text);
+    setPassword(text);
     setPasswordInvalid(false);
   };
   const handlePasswordConfirm = event => {
@@ -619,7 +640,7 @@ export default function home() {
                 helperText={passwordHelperText}
                 name="user_password"
                 autoFocus
-                value={passwordInput}
+                value={password}
                 onChange={handlePasswordInput}
                 type={!showPassword ? 'password' : ''}
               />
@@ -627,7 +648,7 @@ export default function home() {
 
             <Container className={classes.passwordConfirmInputBox}>
               <TextField
-                error={passwordInput !== passwordConfirm}
+                error={password !== passwordConfirm}
                 className={classes.passwordConfirmInput}
                 variant="outlined"
                 size="medium"

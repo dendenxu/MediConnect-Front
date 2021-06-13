@@ -3,6 +3,16 @@ import { createServer, Response } from 'miragejs';
 export default () => {
   createServer({
     routes() {
+      this.patch('/user/register', (schema, request) => {
+        const body = JSON.parse(request.requestBody);
+        console.log(body);
+        return new Response(
+          200,
+          { some: 'header' },
+          { message: 'Hello, zjuer', exists: true },
+        );
+      });
+
       this.get('/user', (schema, request) => {
         const { email } = request.queryParams;
         if (email.endsWith('zju.edu.cn')) {
