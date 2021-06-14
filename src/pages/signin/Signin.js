@@ -125,10 +125,13 @@ const useStyles = makeStyles(theme => ({
   },
   copyright: {
     marginTop: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'center',
   },
   copyrightText: {
     // fontWeight: 300,
   },
+  buttomBar: {},
 }));
 
 const AvatarBar = props => {
@@ -379,7 +382,9 @@ export default function Home() {
             </Button>
           </Container>
 
-          <BottomBar className={classes.buttomBar} />
+          <Container>
+            <BottomBar className={classes.buttomBar} spaceOut />
+          </Container>
         </Box>
         <Copyright className={classes.copyright} />
       </Container>
