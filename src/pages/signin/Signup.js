@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -18,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import BottomBar from './BottomBar';
+import Copyright from './Copyright';
 
 const useStyles = makeStyles(theme => {
   const gridPadding = theme.spacing(0.5, 2.5);
@@ -235,6 +236,7 @@ const useStyles = makeStyles(theme => {
     copyright: {
       marginTop: theme.spacing(3),
       display: 'flex',
+      flexDirection: 'row',
       justifyContent: 'flex-end',
       width: '90%',
     },
@@ -243,6 +245,7 @@ const useStyles = makeStyles(theme => {
     buttomBar: {
       marginTop: theme.spacing(1),
       display: 'flex',
+      flexDirection: 'row',
       justifyContent: 'flex-end',
       width: '90%',
     },
@@ -266,52 +269,6 @@ const useStyles = makeStyles(theme => {
     },
   };
 });
-
-const BottomBar = props => {
-  const { name } = props;
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} className={classes.buttomBar}>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          帮助
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          使用条款
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          隐私协议
-        </Link>
-      </Grid>
-    </Grid>
-  );
-};
-
-function Copyright() {
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} className={classes.copyright}>
-      <Grid item>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          // align="center"
-          // className={classes.copyrightText}
-        >
-          {'Copyright © '}
-          <Link color="inherit" href="https://github.com/dendenxu">
-            dendenxu
-          </Link>{' '}
-          {new Date().getFullYear()}.
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-}
 
 export default function home() {
   const classes = useStyles();
@@ -708,8 +665,8 @@ export default function home() {
           </Container>
         </Box>
 
-        <BottomBar name={inputContent} />
-        <Copyright />
+        <BottomBar className={classes.buttomBar} />
+        <Copyright className={classes.copyright} />
       </Container>
     </Container>
   );

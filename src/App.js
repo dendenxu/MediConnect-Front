@@ -6,8 +6,8 @@ import {
   useLocation,
   Switch,
 } from 'react-router-dom';
-import Home from './pages/signin/Home';
-import Signup from './pages/signup/Signup';
+import Signin from './pages/signin/Signin';
+import Signup from './pages/signin/Signup';
 import Result from './pages/process/Result';
 import Chat from './pages/chat/Chat';
 
@@ -18,7 +18,7 @@ export default function App() {
         <Route exact path="/">
           <Redirect to="/user/signin" />
         </Route>
-        <Route exact path="/user/signin" component={Home} />
+        <Route exact path="/user/signin" component={Signin} />
         <Route exact path="/user/signup" component={Signup} />
         <Route exact path="/result" component={Result} />
         <Route exact path="/chat" component={Chat} />

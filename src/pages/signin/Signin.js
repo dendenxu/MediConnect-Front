@@ -13,6 +13,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import BottomBar from './BottomBar';
+import Copyright from './Copyright';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
@@ -129,47 +131,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Copyright() {
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} justify="center" className={classes.copyright}>
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        align="center"
-        className={classes.copyrightText}
-      >
-        {'Copyright © '}
-        <Link color="inherit" href="https://github.com/dendenxu">
-          dendenxu
-        </Link>{' '}
-        {new Date().getFullYear()}.
-      </Typography>
-    </Grid>
-  );
-}
-
-const BottomBar = () => (
-  <Container>
-    <Grid container spacing={2}>
-      <Grid item xs>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          帮助
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          使用条款
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          隐私协议
-        </Link>
-      </Grid>
-    </Grid>
-  </Container>
-);
 const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
@@ -417,10 +378,10 @@ export default function Home() {
               下一步
             </Button>
           </Container>
-          <BottomBar name={inputContent} />
-        </Box>
 
-        <Copyright />
+          <BottomBar className={classes.buttomBar} />
+        </Box>
+        <Copyright className={classes.copyright} />
       </Container>
     </Container>
   );
