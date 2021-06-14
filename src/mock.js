@@ -3,6 +3,8 @@ import { createServer, Response } from 'miragejs';
 export default () => {
   createServer({
     routes() {
+      // this.namespace = '/api';
+
       this.patch('/user/register', (schema, request) => {
         const body = JSON.parse(request.requestBody);
         console.log(body);

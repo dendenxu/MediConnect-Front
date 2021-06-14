@@ -211,7 +211,7 @@ function Signin(props) {
     };
 
     const checkPasswordWithServer = async () => {
-      const response = await fetch('/user/login', {
+      const response = await fetch('/user/signin', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

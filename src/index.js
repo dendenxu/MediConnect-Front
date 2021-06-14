@@ -7,7 +7,7 @@ import theme from './theme/theme';
 import App from './App';
 import './index.css';
 
-Server(); // actually instantiating the mock server
+// Server(); // actually instantiating the mock server
 
 ReactDOM.render(
   <React.StrictMode>
