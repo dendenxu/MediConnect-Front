@@ -355,7 +355,7 @@ function Signup(props) {
   const handleNextClick = async () => {
     let allchecked = true;
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/api/user?email=${validFormEmail}`, {
+      const response = await fetch(`/api/user/query?email=${validFormEmail}`, {
         method: 'get',
       });
       console.log(response);
@@ -482,7 +482,7 @@ function Signup(props) {
   };
 
   const handleLogin = event => {
-    history.push('/user/signin');
+    history.push('/signin');
   };
 
   const handleCheckBoxChange = event => {

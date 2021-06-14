@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -18,10 +18,10 @@ export default function App() {
         <Route exact path="/">
           <Redirect to="/signin" />
         </Route>
-        <Route exact path="/signin" component={Signin} />
-        <Route exact path="/signup" component={Signup} />
-        <Route exact path="/result" component={Result} />
-        <Route exact path="/chat" component={Chat} />
+        <Route path="/signin" component={Signin} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/result" component={Result} />
+        <Route path="/chat" component={Chat} />
         <Route>
           <NoMatch />
         </Route>

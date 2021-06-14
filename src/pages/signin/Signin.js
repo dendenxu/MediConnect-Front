@@ -11,7 +11,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from './BottomBar';
@@ -138,11 +138,27 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+async function checkSigninStatus() {
+  // const [signedIn, setSignedIn] = useState(false);
+  const response = await fetch('/check_signed_in');
+  console.log(response);
+  const message = await response.json();
+
+  if (response.ok) {
+    console.log(message);
+    console.log('User is signed in, redirecting');
+    return true;
+  } 
+    return false;
+  
+}
+
 function Signin(props) {
   const { width } = props;
 
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation();
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -179,6 +195,10 @@ function Signin(props) {
   const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
   let inputBoxHelpterText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
 
+  // if (location.error) {
+  //   setPasswordInvalid(true);
+  // }
+
   if (afterEmailCheck) {
     if (passwordInvalid) {
       inputBoxHelpterText = '您输入的密码不正确';
@@ -191,7 +211,7 @@ function Signin(props) {
 
   const handleClick = async () => {
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/api/user?email=${validFormEmail}`, {
+      const response = await fetch(`/api/user/query?email=${validFormEmail}`, {
         method: 'get',
       });
       console.log(response);
@@ -217,7 +237,7 @@ function Signin(props) {
       };
       const formData = new URLSearchParams(payload).toString();
 
-      const response = await fetch('/api/signin', {
+      const response = await fetch('/api/user/signin', {
         method: 'post',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -226,15 +246,25 @@ function Signin(props) {
       });
 
       console.log(response);
-      const message = await response.json();
+      // const message = await response.json();
+      // console.log(message);
 
-      if (response.ok) {
-        console.log(`The server says your password is OK:`);
-        console.log(message);
-        history.push('/chat');
-      } else {
-        setPasswordInvalid(true);
-        console.log(message);
+      if (response.redirected) {
+        const url = new URL(response.url);
+        const { pathname } = url;
+        const error = url.searchParams.get('error');
+
+        console.log(`Getting redirected to ${pathname} with ${error}`);
+
+        if (pathname === '/signin' && error != null) {
+          console.log('Signin Error');
+          setPasswordInvalid(true);
+        } else {
+          setPasswordInvalid(false);
+          history.push(pathname);
+        }
+      } else if (response.ok) {
+        setPasswordInvalid(false);
       }
     };
 
@@ -280,7 +310,7 @@ function Signin(props) {
   };
 
   const handleSignup = event => {
-    history.push('/user/signup');
+    history.push('/signup');
   };
 
   return (
