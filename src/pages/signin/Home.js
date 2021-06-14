@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import { useHistory } from "react-router-dom";
-// import { createBrowserHistory } from "history";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,9 +11,6 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-// import { Radio } from '@material-ui/core';
-// import { render } from '@testing-library/react';
-// import { red } from '@material-ui/core/colors';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
@@ -78,9 +73,6 @@ const useStyles = makeStyles(theme => ({
     '& div': {
       borderRadius: 16,
     },
-    // '& input': {
-    //   margin: theme.spacing(1),
-    // },
   },
   checkboxContainer: {
     display: 'flex',
@@ -157,31 +149,27 @@ function Copyright() {
   );
 }
 
-const BottomBar = props => {
-  const { name } = props;
-  return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            {/* {name === '' ? '帮助' : `Got: ${name}`} */}
-            帮助
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            使用条款
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            隐私协议
-          </Link>
-        </Grid>
+const BottomBar = () => (
+  <Container>
+    <Grid container spacing={2}>
+      <Grid item xs>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          帮助
+        </Link>
       </Grid>
-    </Container>
-  );
-};
+      <Grid item>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          使用条款
+        </Link>
+      </Grid>
+      <Grid item>
+        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+          隐私协议
+        </Link>
+      </Grid>
+    </Grid>
+  </Container>
+);
 const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
