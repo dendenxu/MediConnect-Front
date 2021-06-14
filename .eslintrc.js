@@ -28,5 +28,6 @@ module.exports = {
     'jsx-a11y/anchor-is-valid': 'warn',
     'no-lonely-if': 'warn',
     'no-else-return': 'warn',
+    'react/jsx-props-no-spreading': 'warn',
   },
 };

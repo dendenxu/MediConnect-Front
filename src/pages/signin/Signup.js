@@ -16,14 +16,27 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from './BottomBar';
 import Copyright from './Copyright';
 
 const useStyles = makeStyles(theme => {
   const gridPadding = theme.spacing(0.5, 2.5);
+  const smallGridPadding = theme.spacing(0.5, 1.5);
   const threeFraction = '30%';
   const twoFraction = '45%';
+  const containerStyle = {
+    margin: theme.spacing(0),
+    padding: gridPadding,
+    [theme.breakpoints.down('xs')]: {
+      padding: smallGridPadding,
+    },
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
   return {
     layoutContainer: {
       display: 'flex',
@@ -75,14 +88,7 @@ const useStyles = makeStyles(theme => {
       marginBottom: theme.spacing(2),
     },
 
-    accountInfoContainer: {
-      marginTop: theme.spacing(2),
-      padding: gridPadding,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    accountInfoContainer: { marginTop: theme.spacing(2), ...containerStyle },
 
     lastNameInputBox: {
       padding: theme.spacing(0),
@@ -140,14 +146,7 @@ const useStyles = makeStyles(theme => {
       marginRight: theme.spacing(-1),
     },
 
-    emailInputContainer: {
-      margin: theme.spacing(0),
-      padding: gridPadding,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    emailInputContainer: containerStyle,
 
     emailInputBox: {
       padding: theme.spacing(0),
@@ -165,15 +164,7 @@ const useStyles = makeStyles(theme => {
       },
     },
 
-    passwordContainer: {
-      margin: theme.spacing(0),
-      padding: gridPadding,
-      marginBottom: theme.spacing(0),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    passwordContainer: containerStyle,
 
     passwordInputBox: {
       padding: theme.spacing(0),
@@ -255,6 +246,7 @@ const useStyles = makeStyles(theme => {
       justifyContent: 'flex-start',
       margin: theme.spacing(0),
       marginTop: theme.spacing(-1),
+      marginBottom: theme.spacing(2),
       padding: gridPadding,
       paddingTop: theme.spacing(0),
       paddingBottom: theme.spacing(0),
@@ -267,10 +259,23 @@ const useStyles = makeStyles(theme => {
       // ! special operation for Josefin Sans
       transform: 'translate(0px,1.5px)',
     },
+    textFieldInput: {
+      fontSize: '1rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.8rem',
+      },
+    },
+    helperText: {
+      fontSize: '0.75rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.6rem',
+      },
+    },
   };
 });
 
-export default function home() {
+function Signup(props) {
+  const { width } = props;
   const classes = useStyles();
   const history = useHistory();
 
@@ -293,14 +298,36 @@ export default function home() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
+  const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+  const textFieldClassProps = {
+    InputProps: {
+      classes: {
+        root: classes.textFieldInput,
+      },
+    },
+    InputLabelProps: {
+      classes: {
+        root: classes.textFieldInput,
+        focused: {},
+      },
+    },
+    FormHelperTextProps: {
+      classes: {
+        root: classes.helperText,
+      },
+    },
+  };
+
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  let lastNameHelperText = '　';
-  let firstNameHelperText = '　';
-  let accountTypeHelperText = '　';
-  let emailBoxHelperText = '　'; // some white spaces to take up the width
-  let passwordHelperText = '　';
-  let passwordConfirmHelperText = '　';
+  const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+
+  let lastNameHelperText = defaultHelperTextPlaceHolder;
+  let firstNameHelperText = defaultHelperTextPlaceHolder;
+  let accountTypeHelperText = defaultHelperTextPlaceHolder;
+  let emailBoxHelperText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
+  let passwordHelperText = defaultHelperTextPlaceHolder;
+  let passwordConfirmHelperText = defaultHelperTextPlaceHolder;
 
   if (passwordInvalid) {
     passwordHelperText = '密码应有至少8个字符';
@@ -484,7 +511,7 @@ export default function home() {
                 error={lastNameInvalid}
                 className={classes.lastNameInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_second_name"
                 label="姓氏"
                 helperText={lastNameHelperText}
@@ -492,6 +519,7 @@ export default function home() {
                 autoFocus
                 value={lastName}
                 onChange={handleLastNameInput}
+                {...textFieldClassProps}
               />
             </Container>
 
@@ -500,7 +528,7 @@ export default function home() {
                 error={firstNameInvalid}
                 className={classes.firstNameInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_first_name"
                 label="名字"
                 helperText={firstNameHelperText}
@@ -508,6 +536,7 @@ export default function home() {
                 autoFocus
                 value={firstName}
                 onChange={handleFirstNameInput}
+                {...textFieldClassProps}
               />
             </Container>
 
@@ -516,14 +545,16 @@ export default function home() {
                 error={accountTypeInvalid}
                 className={classes.accountTypeInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_account_type"
-                label="账户类型"
+                label={isWidthDown('xs', width) ? '类型' : '账户类型'}
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
                 value={options[accountType] ?? ''}
+                InputLabelProps={textFieldClassProps.InputLabelProps}
                 InputProps={{
+                  ...textFieldClassProps.InputProps,
                   readOnly: true,
                   endAdornment: (
                     <InputAdornment position="end">
@@ -572,7 +603,7 @@ export default function home() {
                 error={emailAlreadyTaken || emailFormInvalid}
                 className={classes.emailInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="username"
                 label="邮箱账号"
                 helperText={emailBoxHelperText}
@@ -581,6 +612,7 @@ export default function home() {
                 fullWidth
                 value={inputContent}
                 onChange={handleEmailInput}
+                {...textFieldClassProps}
               />
             </Container>
           </Container>
@@ -591,7 +623,7 @@ export default function home() {
                 error={passwordInvalid}
                 className={classes.passwordInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_password"
                 label="密码"
                 helperText={passwordHelperText}
@@ -599,6 +631,7 @@ export default function home() {
                 autoFocus
                 value={password}
                 onChange={handlePasswordInput}
+                {...textFieldClassProps}
                 type={!showPassword ? 'password' : ''}
               />
             </Container>
@@ -608,7 +641,7 @@ export default function home() {
                 error={password !== passwordConfirm}
                 className={classes.passwordConfirmInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_password_confirm"
                 label="确认密码"
                 helperText={passwordConfirmHelperText}
@@ -616,6 +649,7 @@ export default function home() {
                 autoFocus
                 value={passwordConfirm}
                 onChange={handlePasswordConfirm}
+                {...textFieldClassProps}
                 type={!showPassword ? 'password' : ''}
               />
             </Container>
@@ -671,3 +705,5 @@ export default function home() {
     </Container>
   );
 }
+
+export default withWidth()(Signup);

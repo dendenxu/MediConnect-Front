@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from './BottomBar';
 import Copyright from './Copyright';
@@ -114,16 +115,6 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     marginBottom: theme.spacing(3),
   },
-  labelRoot: {
-    // fontSize: '0.8rem',
-    // padding: theme.spacing(1),
-    color: 'rgba(0, 0, 0, 0.35)',
-    // transform: 'translate(0px,1.5px)',
-  },
-  labelFocused: {
-    // fontSize: '1rem',
-    // color: "rgba(0, 0, 0, 0.35)",
-  },
   copyright: {
     marginTop: theme.spacing(3),
     display: 'flex',
@@ -133,9 +124,23 @@ const useStyles = makeStyles(theme => ({
     // fontWeight: 300,
   },
   buttomBar: {},
+  textFieldInput: {
+    fontSize: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8rem',
+    },
+  },
+  helperText: {
+    fontSize: '0.75rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.6rem',
+    },
+  },
 }));
 
-export default function Home() {
+function Signin(props) {
+  const { width } = props;
+
   const classes = useStyles();
   const history = useHistory();
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
@@ -148,9 +153,31 @@ export default function Home() {
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
 
+  const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+
+  const textFieldClassProps = {
+    InputProps: {
+      classes: {
+        root: classes.textFieldInput,
+      },
+    },
+    InputLabelProps: {
+      classes: {
+        root: classes.textFieldInput,
+        focused: {},
+      },
+    },
+    FormHelperTextProps: {
+      classes: {
+        root: classes.helperText,
+      },
+    },
+  };
+
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  let inputBoxHelpterText = '　'; // some white spaces to take up the width
+  const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+  let inputBoxHelpterText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
 
   if (afterEmailCheck) {
     if (passwordInvalid) {
@@ -291,20 +318,12 @@ export default function Home() {
               }
               className={classes.input}
               variant="outlined"
-              size="medium"
-              id="username"
-              InputLabelProps={{
-                classes: {
-                  root: classes.labelRoot,
-                  focused: classes.labelFocused,
-                },
-              }}
+              size={textFieldSize}
+              id="username_input_field"
+              {...textFieldClassProps}
               label={
-                // <Typography className={classes.centeredText}> // {
                 !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
               }
-              // </Typography>
-              // }
               helperText={inputBoxHelpterText}
               name="username"
               autoFocus
@@ -372,3 +391,5 @@ export default function Home() {
     </Container>
   );
 }
+
+export default withWidth()(Signin);
