@@ -191,7 +191,7 @@ function Signin(props) {
 
   const handleClick = async () => {
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/user?email=${validFormEmail}`, {
+      const response = await fetch(`/api/user?email=${validFormEmail}`, {
         method: 'get',
       });
       console.log(response);
@@ -211,15 +211,18 @@ function Signin(props) {
     };
 
     const checkPasswordWithServer = async () => {
-      const response = await fetch('/user/signin', {
+      const payload = {
+        username: validEmail,
+        password: inputContent,
+      };
+      const formData = new URLSearchParams(payload).toString();
+
+      const response = await fetch('/api/signin', {
         method: 'post',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-          email: validEmail,
-          password: inputContent,
-        }),
+        body: formData,
       });
 
       console.log(response);

@@ -355,7 +355,7 @@ function Signup(props) {
   const handleNextClick = async () => {
     let allchecked = true;
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/user?email=${validFormEmail}`, {
+      const response = await fetch(`/api/user?email=${validFormEmail}`, {
         method: 'get',
       });
       console.log(response);
@@ -375,7 +375,7 @@ function Signup(props) {
     };
 
     const registerUser = async () => {
-      const response = await fetch('/user/register', {
+      const response = await fetch('/api/user/register', {
         method: 'patch',
         headers: {
           'Content-Type': 'application/json',

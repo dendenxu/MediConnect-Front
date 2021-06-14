@@ -2,7 +2,6 @@
   "name": "mediconnect",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -42,6 +41,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "classnames": "^2.2.6",
+    "clean-stack": "^4.1.0",
     "eslint-config-prettier": "^8.2.0",
     "history": "^5.0.0",
     "immutable": "^4.0.0-rc.12",

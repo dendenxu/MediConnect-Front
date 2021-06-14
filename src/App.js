@@ -16,10 +16,10 @@ export default function App() {
     <Router>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/user/signin" />
+          <Redirect to="/signin" />
         </Route>
-        <Route exact path="/user/signin" component={Signin} />
-        <Route exact path="/user/signup" component={Signup} />
+        <Route exact path="/signin" component={Signin} />
+        <Route exact path="/signup" component={Signup} />
         <Route exact path="/result" component={Result} />
         <Route exact path="/chat" component={Chat} />
         <Route>
@@ -42,11 +42,11 @@ function NoMatch() {
       </h1>
       {[
         'Check your url:',
-        '- for signin, use /user/signin',
-        '- for signup, use /user/signup',
+        '- for signin, use /signin',
+        '- for signup, use /signup',
         '- for chat, use /chat',
         '- for result, use /result',
-        '- / will be redirected to /user/signin',
+        '- / will be redirected to /signin',
       ].map(msg => (
         <h3>
           <code>{msg}</code>
