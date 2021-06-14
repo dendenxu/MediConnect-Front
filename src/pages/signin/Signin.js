@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from './BottomBar';
 import Copyright from './Copyright';
+import AvatarBar from './AvatarBar';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
@@ -134,29 +135,6 @@ const useStyles = makeStyles(theme => ({
   buttomBar: {},
 }));
 
-const AvatarBar = props => {
-  const { email, avatarSrc, handleAvatarClick } = props;
-  const classes = useStyles();
-  return (
-    <Button
-      variant="outlined"
-      size="small"
-      className={classes.avatarButton}
-      startIcon={<Avatar src={avatarSrc} className={classes.smallAvatar} />}
-      onClick={handleAvatarClick}
-    >
-      <Typography
-        className={classes.centeredText}
-        variant="caption"
-        style={{
-          fontWeight: 500,
-        }}
-      >
-        {email}
-      </Typography>
-    </Button>
-  );
-};
 export default function Home() {
   const classes = useStyles();
   const history = useHistory();
@@ -290,6 +268,9 @@ export default function Home() {
               email={validEmail}
               avatarSrc="https://avatars.githubusercontent.com/u/43734697?v=4"
               handleAvatarClick={handleAvatarClick}
+              avatarButtonClass={classes.avatarButton}
+              avatarIconClass={classes.smallAvatar}
+              avatarSourceClass={classes.centeredText}
             />
           ) : (
             <Typography
