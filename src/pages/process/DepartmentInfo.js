@@ -3,60 +3,66 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import DateFnsUtils from '@date-io/date-fns';
 import {
+  List,
+  ThemeProvider,
+} from '@material-ui/core';
+
+import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import Header from './components/Header'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100vw',
-  },
-  header: {
-    margin: 0,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: '90px',
-    width: '100%',
-    color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.main,
-  },
-  title: {
-    marginLeft: '28px',
-    fontSize: '28px',
-    fontWeight: 'bold',
-  },
-  body: {
-    padding: '10px 25px auto 25px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  content: {},
-}));
+import Header from './components/Header'
+import theme from '../../theme/theme'
+
+
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     width: '100vw',
+//   },
+//   header: {
+//     margin: 0,
+//     display: 'flex',
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     height: '90px',
+//     width: '100%',
+//     color: theme.palette.primary.contrastText,
+//     backgroundColor: theme.palette.primary.main,
+//   },
+//   title: {
+//     marginLeft: '28px',
+//     fontSize: '28px',
+//     fontWeight: 'bold',
+//   },
+//   body: {
+//     padding: '10px 25px auto 25px',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     width: '100%',
+//   },
+//   content: {},
+// }));
 
 export default function DepartmentInfo() {
-  const classes = useStyles();
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date('2014-08-18T21:11:54'),
-  );
+  // const classes = useStyles();
+  // const [selectedDate, setSelectedDate] = React.useState(
+  //   new Date('2014-08-18T21:11:54'),
+  // );
 
-  const handleDateChange = date => {
-    setSelectedDate(date);
-  };
+  // const handleDateChange = date => {
+  //   setSelectedDate(date);
+  // };
 
   return (
-    <div>
-      <Header text="TODO"/>
-      
-    </div>
-
+    <ThemeProvider theme={theme}>
+      <Header text="科室介绍" />
+    </ThemeProvider>
 
 
     // <Box className={classes.root}>

@@ -5,157 +5,70 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import {
-  createMuiTheme,
-  Divider,
   List,
-  ListItem,
-  ListItemText,
   ThemeProvider,
-  Typography,
 } from '@material-ui/core';
-import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Header from './components/Header'
+import Header from './components/Header';
+import theme from '../../theme/theme'
+import DepartmentItem from './components/DepartmentItem';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: '#469CDF',
-      main: '#469CDF',
-      dark: '#469CDF',
-      contrastText: '#469CDF',
-    },
-    secondary: {
-      main: '#0f1c49',
-    },
-    info: {
-      main: '#878DA4',
-    },
-    success: {
-      main: '#ffffff',
-    },
-    error: {
-      main: '#C0C0C0',
-    },
-    contrastThreshold: 3,
-    tonalOffset: 0.2,
-  },
-  bar: {
-    width: window.innerWidth,
-    height: window.innerHeight / 8,
-  },
-  typography: {
-    h1: {
-      fontSize: 18,
-    },
-    h2: {
-      fontSize: 14,
-      textOverflow: 'ellipsis',
-    },
-  },
-});
 
 const deps = [
   {
     id: 1,
     dep: '感染内科',
     intro: '感染内科主治各种由于病毒引起的疾病',
-    path: '/Result',
+    path: '/',
   },
   {
     id: 2,
     dep: '呼吸科',
     intro: '科室共有13位专家医师，为您提供专业的诊疗',
-    path: '/Result',
+    path: '/',
   },
   {
     id: 3,
     dep: '太平间',
     intro:
       '共有4位专业抬棺黑人，遗体整容、异域风情葬礼、高科技火化一条龙服务。',
-    path: '/Result',
+    path: '/',
   },
   {
     id: 4,
     dep: '太平间',
     intro:
       '共有4位专业抬棺黑人，遗体整容、异域风情葬礼、高科技火化一条龙服务。',
-    path: '/Result',
+    path: '/',
   },
   {
     id: 5,
     dep: '太平间',
     intro:
       '共有4位专业抬棺黑人，遗体整容、异域风情葬礼、高科技火化一条龙服务。',
-    path: '/Result',
+    path: '/',
   },
   {
     id: 6,
     dep: '太平间',
     intro:
       '共有4位专业抬棺黑人，遗体整容、异域风情葬礼、高科技火化一条龙服务。',
-    path: '/Result',
+    path: '/',
   },
 ];
 
 
-class DepItem extends React.Component {
-  render() {
-    const { data } = this.props;
-    return (
-      <ThemeProvider theme={theme}>
-        <ListItem button component={Link} to={data.path} flexDirection="row">
-          <ListItemText
-            primary={
-              <Typography
-                variant="h1"
-                style={{
-                  color: '#0f1c49',
-                  fontWeight: 'bold',
-                  marginBottom: '2vh',
-                }}
-              >
-                {data.dep}
-              </Typography>
-            }
-            secondary={
-              <Typography
-                variant="h2"
-                style={{
-                  color: '#878DA4',
-                  fontWeight: 'bold',
-                  maxWidth: '70vw',
-                  marginBottom: '1vh',
-                  whiteSpace: 'nowrap',
-                  overflowX: 'hidden',
-                }}
-              >
-                {data.intro}
-              </Typography>
-            }
-          />
-          <ArrowForwardIosSharpIcon fontSize="small" color="error">
-            intro
-          </ArrowForwardIosSharpIcon>
-        </ListItem>
-        <Divider variant="middle" />
-      </ThemeProvider>
-    );
-  }
-}
-
 class DepartmentList extends React.Component {
   render() {
     return (
-      <div>
+      <ThemeProvider theme={theme}>
         <Header text="TODO" />
         <List>
           {deps.map(data => (
-            <DepItem key={data.id} data={data} />
+            <DepartmentItem key={data.id} data={data} />
           ))}
         </List>
-      </div>
+      </ThemeProvider>
     );
   }
 }
