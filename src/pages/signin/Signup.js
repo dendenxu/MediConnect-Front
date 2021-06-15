@@ -359,24 +359,21 @@ function Signup(props) {
         method: 'get',
       });
       console.log(response);
-      const message = await response.json();
 
       if (response.ok) {
         console.log(`The server says your email is OK:`);
-        console.log(message);
         allchecked = false;
         setEmailAlreadyTaken(true);
       } else {
         console.log(`Your email doesn't exist, check again my boy`);
         console.log("But I know you're registering, so that's OK.");
-        console.log(message);
         setEmailAlreadyTaken(false);
       }
     };
 
     const registerUser = async () => {
       const response = await fetch('/api/user/register', {
-        method: 'patch',
+        method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -385,12 +382,11 @@ function Signup(props) {
           firstName,
           lastName,
           password,
+          role: ['ADMIN'], //! dangerous now
         }),
       });
 
       console.log(response);
-      const message = await response.json();
-      console.log(message);
     };
 
     try {

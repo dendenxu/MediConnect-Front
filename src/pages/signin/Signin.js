@@ -148,9 +148,8 @@ async function checkSigninStatus() {
     console.log(message);
     console.log('User is signed in, redirecting');
     return true;
-  } 
-    return false;
-  
+  }
+  return false;
 }
 
 function Signin(props) {
@@ -215,18 +214,15 @@ function Signin(props) {
         method: 'get',
       });
       console.log(response);
-      const message = await response.json();
 
       if (response.ok) {
         console.log(`The server says your email is OK:`);
-        console.log(message);
         setValidEmail(validFormEmail);
         setInputContent('');
         setAfterEmailCheck(true);
       } else {
         setEmailInvalid(true);
         console.log(`Your email doesn't exist, check again my boy:`);
-        console.log(message);
       }
     };
 
@@ -246,8 +242,6 @@ function Signin(props) {
       });
 
       console.log(response);
-      // const message = await response.json();
-      // console.log(message);
 
       if (response.redirected) {
         const url = new URL(response.url);
