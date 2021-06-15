@@ -8,7 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { DataGrid } from '@material-ui/data-grid';
-import { Divider } from '@material-ui/core';
+import { Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -72,63 +73,281 @@ const useStyles = makeStyles(theme => ({
   expandButton: {
     margin: theme.spacing(0, 1, 1),
   },
+  addIcon: {
+    margin: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
 }));
-
-export default function Record() {
+let linecount = 1;
+export default function Home() {
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
   const department = '骨科';
   const columns = [
-    { field: 'name', headerName: '药品名', width: 180, editable: true },
-    { field: 'size', headerName: '规格', width: 130, editable: true },
+    { field: 'name', headerName: '药品名', width: 320, editable: true },
+    {
+      field: 'size',
+      headerName: '数量',
+      width: 220,
+      editable: true,
+    },
     {
       field: 'qt',
-      headerName: '剂量',
-      width: 130,
-      editable: true,
-    },
-    {
-      field: 'course',
-      headerName: '疗程',
-      width: 130,
-      editable: true,
-    },
-    {
-      field: 'type',
-      headerName: '类别',
-      width: 130,
-      editable: true,
-    },
-    {
-      field: 'price',
-      headerName: '价格',
-      width: 130,
+      headerName: '用法',
+      width: 220,
       editable: true,
     },
   ];
-  // todo
-  const rows = [
-    {
-      id: 1,
-      name: '硫酸软骨素',
-      size: '2ml:40g',
-      qt: 'bid',
-      course: '14d',
-      type: '三类',
-      price: '12',
+
+  const defaultRows = [];
+
+  let defaultPrescription = [];
+
+  // function createData(id,name,size,qt,course,type,price) {
+  //   return { id,name,size,qt,course,type,price };
+  // }
+  // // todo
+
+  function CreatePrescriptionData(id, name, size, qt) {
+    return { id, name, size, qt };
+  }
+
+  const [chiefComplaint, setChiefComplaint] = useState('');
+  const [medicalHistory, setMedicalHistory] = useState('');
+  const [diagnosis, setDiagnosis] = useState('');
+  const [opinions, setOpinions] = useState('');
+  const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
+  const CaseID = '';
+  const PatientID = '';
+  const DoctorID = '';
+  const Department = '';
+  const [editRowsModel, setEditRowsModel] = React.useState({});
+  const [rows, setRows] = React.useState(defaultRows);
+
+  const handleEditCellChangeCommitted = React.useCallback(
+    ({ id, field, props }) => {
+      if (field === 'name') {
+        const data = props; // Fix eslint value is missing in prop-types for JS files
+        const newname = data.value.toString();
+        const response = fetch(`api/medicine?q=${newname}`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log(response);
+        const message = response.json();
+        const mediId = message.data[0].ID;
+        if (response.ok) {
+          console.log(`succeed in finding the medicine`);
+          console.log(message);
+        } else {
+          console.log(`fail to find the medicine`);
+          console.log(message);
+        }
+
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return { ...row, name: newname };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.linecount === id) {
+            return { ...allprescription, medicine_id: mediId };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
+      if (field === 'size') {
+        const data = props; // Fix eslint value is missing in prop-types for JS files
+        const newsize = data.value.toString();
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return { ...row, size: newsize };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.linecount === id) {
+            return { ...allprescription, quantity: newsize };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
+      if (field === 'qt') {
+        const data = props; // Fix eslint value is missing in prop-types for JS files
+        const newqt = data.value.toString();
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return { ...row, qt: newqt };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.linecount === id) {
+            return { ...allprescription, qt: newqt };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
     },
-    {
-      id: 2,
-      name: '硫酸软骨素2',
-      size: '2ml:40g',
-      qt: 'bid',
-      course: '14d',
-      type: '三类',
-      price: '12',
-    },
-  ];
-  // todo
-  function HandleOnSave() {}
+    [rows],
+  );
+  const handleComplaintInput = event => {
+    const text = event.target.value;
+    setChiefComplaint(text);
+  };
+
+  const handleMedicalHistoryInput = event => {
+    const text = event.target.value;
+    setMedicalHistory(text);
+  };
+  const handleDiagnosisInput = event => {
+    const text = event.target.value;
+    setDiagnosis(text);
+  };
+  const handleOpinionsInput = event => {
+    const text = event.target.value;
+    setOpinions(text);
+  };
+
+  // const handlePrescriptionssInput = event => {
+  //     const text = event.target.value;
+  //     setOpinions(text);
+  //     };
+
+  const HandleOnAddLine = async () => {
+    const response = await fetch(
+      `api/patient/${PatientID}/case/${CaseID}/prescription`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          case_id: CaseID,
+          advice: ' ',
+          guidelines: [],
+        }),
+      },
+    );
+    console.log(response);
+    const message = await response.json();
+    const desID = message.data;
+    if (response.ok) {
+      console.log(`The server says creating new prescription is succcessful`);
+      console.log(message);
+    } else {
+      console.log(`Fail to create new prescription`);
+      console.log(message);
+    }
+    const newrow = rows.concat([
+      CreatePrescriptionData(
+        linecount,
+        '请输入药品名',
+        '请输入数量',
+        '请输入用法',
+      ),
+    ]);
+    const tempdes = [
+      {
+        lineno: linecount,
+        id: desID,
+        case_id: CaseID,
+        Advice: '1',
+        medicine_id: -1,
+        dosage: ' ',
+        quantity: ' ',
+      },
+    ];
+    const newdefaultdescription = defaultPrescription.concat(tempdes);
+    defaultPrescription = newdefaultdescription;
+    linecount += 1;
+    setRows(newrow);
+    console.log(rows);
+    console.log(defaultPrescription);
+  };
+
+  const HandleSaveClick = async () => {
+    const throwableHandle = async () => {
+      const jobList = [];
+      for (let i = 0; i < linecount; i += 1) {
+        const PresID = allprescriptions[i].medicine_id;
+        jobList.push(
+          `fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {
+                  method: 'put',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      ID: PresID,
+                      CaseID,
+                      Advice: "1",
+                      Guidelines: [
+                          {
+                              ID: 2,
+                              MedicineID: allprescriptions[i].medicine_id,
+                              PrescriptionID: allprescriptions[i].ID,
+                              Dosage: allprescriptions[i].qt,
+                              Quantity: allprescriptions[i].size
+                          }
+                      ]
+                  }),
+                })`,
+        );
+      }
+      const response = await Promise.all(jobList);
+      console.log(response);
+    };
+
+    const response = await fetch(`api/patient/${PatientID}/case/${CaseID}`, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ID: CaseID,
+        PatientID,
+        DoctorID,
+        Department,
+        Complaint: chiefComplaint,
+        Diagnosis: diagnosis,
+        Treatment: opinions,
+        History: medicalHistory,
+        Prescriptions: allprescriptions,
+      }),
+    });
+
+    console.log(response);
+    const message = await response.json();
+    if (response.ok) {
+      console.log(`The server says saving is succcessful`);
+      console.log(message);
+    } else {
+      console.log(`Fail to save the case`);
+      console.log(message);
+    }
+
+    try {
+      await throwableHandle();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
@@ -138,7 +357,7 @@ export default function Record() {
             日间门诊
           </Typography>
           <Typography component="h5" alignCenter className={classes.headertext}>
-            {new Date().getFullYear()}/{new Date().getMonth()}/
+            {new Date().getFullYear}/{new Date().getMonth()}/
             {new Date().getDate()}
           </Typography>
           <Typography component="h5" className={classes.headertext}>
@@ -157,7 +376,7 @@ export default function Record() {
                 <TextField
                   id="standard-read-only-input"
                   label="患者姓名"
-                  defaultValue="翠花"
+                  defaultValue="Hello World"
                   InputProps={{
                     readOnly: true,
                   }}
@@ -167,7 +386,7 @@ export default function Record() {
                 <TextField
                   id="standard-read-only-input"
                   label="患者性别"
-                  defaultValue="女"
+                  defaultValue="Hello World"
                   InputProps={{
                     readOnly: true,
                   }}
@@ -177,7 +396,7 @@ export default function Record() {
                 <TextField
                   id="standard-read-only-input"
                   label="患者年龄"
-                  defaultValue="19"
+                  defaultValue="Hello World"
                   InputProps={{
                     readOnly: true,
                   }}
@@ -201,7 +420,8 @@ export default function Record() {
                   multiline
                   fullWidth
                   rows={5}
-                  defaultValue=""
+                  value={chiefComplaint}
+                  onChange={handleComplaintInput}
                 />
               </Grid>
               <Grid item xs>
@@ -212,7 +432,8 @@ export default function Record() {
                   multiline
                   fullWidth
                   rows={5}
-                  defaultValue=""
+                  value={medicalHistory}
+                  onChange={handleMedicalHistoryInput}
                 />
               </Grid>
             </Grid>
@@ -225,7 +446,8 @@ export default function Record() {
                   multiline
                   fullWidth
                   rows={5}
-                  defaultValue=""
+                  value={diagnosis}
+                  onChange={handleDiagnosisInput}
                 />
               </Grid>
               <Grid item xs>
@@ -236,7 +458,8 @@ export default function Record() {
                   multiline
                   fullWidth
                   rows={5}
-                  defaultValue=""
+                  value={opinions}
+                  onChange={handleOpinionsInput}
                 />
               </Grid>
             </Grid>
@@ -269,15 +492,52 @@ export default function Record() {
           <Container className={classes.pageContainer}>
             <Box className={classes.borderedContainer}>
               <div style={{ height: 300, width: '100%' }}>
-                <DataGrid rows={rows} columns={columns} />
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  editRowsModel={editRowsModel}
+                  onEditCellChange={handleEditCellChangeCommitted}
+                />
+                <Container className={classes.addIcon}>
+                  <Fab size="small" color="primary" aria-label="add">
+                    <AddIcon onClick={HandleOnAddLine} />
+                  </Fab>
+                </Container>
+
+                {/*
+                <Table size="small">
+                    <TableHead>
+                    <TableRow>
+                        <TableCell>药品名</TableCell>
+                        <TableCell>规格</TableCell>
+                        <TableCell>剂量</TableCell>
+                        <TableCell>疗程</TableCell>
+                        <TableCell>类别</TableCell>
+                        <TableCell align="right">价格</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {rows.map((row) => (
+                        <TableRow key={row.id}>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.size}</TableCell>
+                        <TableCell>{row.qt}</TableCell>
+                        <TableCell>{row.course}</TableCell>
+                        <TableCell>{row.type}</TableCell>
+                        <TableCell align="right">{row.price}</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+            </Table>
+*/}
               </div>
             </Box>
           </Container>
         ) : (
-          <Divider />
+          <div />
         )}
         <Container className={classes.save}>
-          <Button color="primary" size="large" onClick={HandleOnSave()}>
+          <Button color="primary" size="large" onClick={HandleSaveClick}>
             {' '}
             SAVE{' '}
           </Button>
