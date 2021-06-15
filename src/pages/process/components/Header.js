@@ -30,7 +30,7 @@ export default function Header(props) {
   
   return (
     <header>
-      <AppBar className={header}>
+      <AppBar position="sticky" className={header}>
         <Toolbar>{HeaderText}</Toolbar>
       </AppBar>
     </header>

@@ -5,7 +5,7 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import {
-  Box,
+  Box, Container,
   createMuiTheme,
   Divider,
   List,
@@ -15,6 +15,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
+import { withStyles } from '@material-ui/styles';
+import classNames from 'classnames';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from './components/Header'
@@ -100,12 +102,13 @@ const deps = [
   },
 ];
 
+
 class DepItem extends React.Component {
   render() {
     const { data } = this.props;
     return (
       <ThemeProvider theme={theme}>
-        <ListItem flexDirection="row">
+        <ListItem button component={Link} to={data.path} flexDirection="row">
           <ListItemText
             primary={
               <Typography
@@ -135,11 +138,9 @@ class DepItem extends React.Component {
               </Typography>
             }
           />
-          <Link to={data.path}>
-            <ArrowForwardIosSharpIcon fontSize="small" color="error">
-              intro
-            </ArrowForwardIosSharpIcon>
-          </Link>
+          <ArrowForwardIosSharpIcon fontSize="small" color="error">
+            intro
+          </ArrowForwardIosSharpIcon>
         </ListItem>
         <Divider variant="middle" />
       </ThemeProvider>
@@ -150,16 +151,14 @@ class DepItem extends React.Component {
 class DepartmentList extends React.Component {
   render() {
     return (
-      <ThemeProvider theme={theme}>
-        <Box display="flex" flexDirection="column">
-          <Header text="FUCK"/>
-          <List>
-            {deps.map(data => (
-              <DepItem key={data.id} data={data} />
-            ))}
-          </List>
-        </Box>
-      </ThemeProvider>
+      <div>
+        <Header text="FUCK" />
+        <List>
+          {deps.map(data => (
+            <DepItem key={data.id} data={data} />
+          ))}
+        </List>
+      </div>
     );
   }
 }
