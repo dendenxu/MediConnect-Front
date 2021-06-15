@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   content: {},
 }));
 
-export default function DeptInfo() {
+export default function DepartmentInfo() {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = React.useState(
     new Date('2014-08-18T21:11:54'),

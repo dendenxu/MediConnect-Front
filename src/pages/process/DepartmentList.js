@@ -17,6 +17,7 @@ import {
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Header from './components/Header'
 
 const theme = createMuiTheme({
   palette: {
@@ -146,28 +147,12 @@ class DepItem extends React.Component {
   }
 }
 
-class depList extends React.Component {
+class DepartmentList extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
         <Box display="flex" flexDirection="column">
-          <Box
-            display="flex"
-            height={window.innerHeight / 10}
-            width={window.innerWidth}
-            bgcolor="primary.main"
-          >
-            <Box
-              display="flex"
-              fontSize={window.innerHeight / 30}
-              fontWeight="bold"
-              color="success.main"
-              marginY="auto"
-              marginX="3vh"
-            >
-              科室一览
-            </Box>
-          </Box>
+          <Header text="FUCK"/>
           <List>
             {deps.map(data => (
               <DepItem key={data.id} data={data} />
@@ -179,4 +164,4 @@ class depList extends React.Component {
   }
 }
 
-export default depList;
+export default DepartmentList;
