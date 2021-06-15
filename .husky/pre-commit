@@ -1,11 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-
-if ! command -v npx &> /dev/null
-then
-    yarn lint-staged
-    exit
-fi
-
 npx lint-staged

@@ -9,16 +9,10 @@ const captionStyle = {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#1976d2',
-      light: 'rgb(71, 145, 219)',
-      dark: 'rgb(17, 82, 147)',
-      contrastText: '#fff',
+      main: '#4e89ae',
     },
     secondary: {
-      main: 'rgb(220, 0, 78)',
-      light: 'rgb(227, 51, 113)',
-      dark: 'rgb(154, 0, 54)',
-      contrastText: '#fff',
+      main: '#43658b',
     },
     error: {
       main: '#ed6663',

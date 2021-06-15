@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 // import { useHistory } from "react-router-dom";
 // import { createBrowserHistory } from "history";
@@ -158,30 +157,31 @@ function Copyright() {
   );
 }
 
-const BottomBar = () => (
-  // eslint-disable-next-line react/prop-types
-  // const {} = props;
-  <Container>
-    <Grid container spacing={2}>
-      <Grid item xs>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          {/* {name === '' ? '帮助' : `Got: ${name}`} */}
-          帮助
-        </Link>
+const BottomBar = props => {
+  const { name } = props;
+  return (
+    <Container>
+      <Grid container spacing={2}>
+        <Grid item xs>
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+            {/* {name === '' ? '帮助' : `Got: ${name}`} */}
+            帮助
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+            使用条款
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
+            隐私协议
+          </Link>
+        </Grid>
       </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          使用条款
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          隐私协议
-        </Link>
-      </Grid>
-    </Grid>
-  </Container>
-);
+    </Container>
+  );
+};
 const AvatarBar = props => {
   const { email, avatarSrc, handleAvatarClick } = props;
   const classes = useStyles();
@@ -213,7 +213,6 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validEmail, setValidEmail] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
