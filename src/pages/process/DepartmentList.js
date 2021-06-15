@@ -5,7 +5,6 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import {
-  Box, Container,
   createMuiTheme,
   Divider,
   List,
@@ -15,8 +14,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
-import { withStyles } from '@material-ui/styles';
-import classNames from 'classnames';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from './components/Header'
@@ -152,7 +149,7 @@ class DepartmentList extends React.Component {
   render() {
     return (
       <div>
-        <Header text="FUCK" />
+        <Header text="TODO" />
         <List>
           {deps.map(data => (
             <DepItem key={data.id} data={data} />

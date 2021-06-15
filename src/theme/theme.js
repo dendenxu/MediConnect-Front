@@ -20,6 +20,9 @@ const theme = createMuiTheme({
     warning: {
       main: '#ffa372',
     },
+    info: {
+      main: '#878DA4'
+    }
   },
   status: {
     danger: 'orange',
