@@ -11,7 +11,7 @@ This is the front-end repository for our 2021 Software Engineering course projec
 3. `npm install` to install added dependencies
 4. `npm run build` to make a production ready build
 5. Optionally, `npm install -g serve` to use the `serve` package for serving the frontend
-    - Some permission issues might occur since you're installing globally, use `sudo npm install -g serve` if you see `npm ERR!`
+   - Some permission issues might occur since you're installing globally, use `sudo npm install -g serve` if you see `npm ERR!`
 6. `serve -s build` to serve the build folder, or your other favorite server
 
 ### Backend Setup
