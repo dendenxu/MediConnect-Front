@@ -8,8 +8,14 @@ import {
 } from 'react-router-dom';
 import Signin from './pages/signin/Signin';
 import Signup from './pages/signin/Signup';
-import Result from './pages/process/Result';
 import Chat from './pages/chat/Chat';
+
+// process-G4
+import Success from './pages/process/Success';
+import Fail from './pages/process/Fail';
+import GuideResult from './pages/process/GuideResult';
+import DepartmentList from './pages/process/DepartmentList';
+import DepartmentInfo from './pages/process/DepartmentInfo';
 
 export default function App() {
   return (
@@ -20,8 +26,12 @@ export default function App() {
         </Route>
         <Route path="/signin" component={Signin} />
         <Route path="/signup" component={Signup} />
-        <Route path="/result" component={Result} />
         <Route path="/chat" component={Chat} />
+        {/* process G4 */}
+        <Route path="/departments" component={DepartmentList} />
+        <Route path="/guide-result" component={GuideResult} />
+        <Route path="/success" component={Success} />
+        <Route path="/fail" component={Fail} />
         <Route>
           <NoMatch />
         </Route>
