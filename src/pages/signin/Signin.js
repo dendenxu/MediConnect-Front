@@ -168,7 +168,8 @@ function Signin(props) {
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
 
-  const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+  // const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+  const textFieldSize = 'medium';
 
   const textFieldClassProps = {
     InputProps: {
@@ -191,7 +192,8 @@ function Signin(props) {
 
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+  // const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+  const defaultHelperTextPlaceHolder = '　';
   let inputBoxHelpterText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
 
   // if (location.error) {

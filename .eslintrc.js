@@ -29,5 +29,6 @@ module.exports = {
     'no-lonely-if': 'warn',
     'no-else-return': 'warn',
     'react/jsx-props-no-spreading': 'warn',
+    'no-irregular-whitespace': 'warn',
   },
 };
