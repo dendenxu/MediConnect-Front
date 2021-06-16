@@ -281,7 +281,8 @@ function Signup(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const ITEM_HEIGHT = 48;
-  const options = ['患者', '医生'];
+  const accountTypeDisplay = ['患者', '医生'];
+  const accountTypeStorage = ['patient', 'doctor'];
 
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
@@ -308,7 +309,7 @@ function Signup(props) {
     InputLabelProps: {
       classes: {
         root: classes.textFieldInput,
-        focused: {},
+        // focused: {},
       },
     },
     FormHelperTextProps: {
@@ -355,8 +356,15 @@ function Signup(props) {
   const handleNextClick = async () => {
     let allchecked = true;
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/api/user/query?email=${validFormEmail}`, {
-        method: 'get',
+      const response = await fetch(`/api/account/checkemail`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: validFormEmail,
+          passwd: 'default password',
+        }),
       });
       console.log(response);
 
@@ -372,17 +380,19 @@ function Signup(props) {
     };
 
     const registerUser = async () => {
-      const response = await fetch('/api/user/register', {
+      const response = await fetch('/api/account/create', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // id: validFormEmail,
           email: validFormEmail,
-          firstName,
-          lastName,
-          password,
-          role: ['ADMIN'], //! dangerous now
+          firstname: firstName,
+          lastname: lastName,
+          passwd: password,
+          type: accountTypeStorage[accountType],
+          // role: ['ADMIN'], //! dangerous now
         }),
       });
 
@@ -406,7 +416,7 @@ function Signup(props) {
         setLastNameInvalid(true);
         allchecked = false;
       }
-      if (!(accountType in [...options.keys()])) {
+      if (!(accountType in [...accountTypeDisplay.keys()])) {
         setAccountTypeInvalid(true);
         allchecked = false;
       }
@@ -547,7 +557,7 @@ function Signup(props) {
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                value={options[accountType] ?? ''}
+                value={accountTypeDisplay[accountType] ?? ''}
                 InputLabelProps={textFieldClassProps.InputLabelProps}
                 InputProps={{
                   ...textFieldClassProps.InputProps,
@@ -576,13 +586,13 @@ function Signup(props) {
                           },
                         }}
                       >
-                        {[...options.keys()].map(key => (
+                        {[...accountTypeDisplay.keys()].map(key => (
                           <MenuItem
                             key={key}
                             selected={key === 0}
                             onClick={handleMenuItemClick(key)}
                           >
-                            {options[key]}
+                            {accountTypeDisplay[key]}
                           </MenuItem>
                         ))}
                       </Menu>

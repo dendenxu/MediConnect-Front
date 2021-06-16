@@ -180,7 +180,7 @@ function Signin(props) {
     InputLabelProps: {
       classes: {
         root: classes.textFieldInput,
-        focused: {},
+        // focused: {},
       },
     },
     FormHelperTextProps: {
@@ -212,11 +212,22 @@ function Signin(props) {
 
   const handleClick = async () => {
     const checkEmailWithServer = async () => {
-      const response = await fetch(`/api/user/query?email=${validFormEmail}`, {
-        method: 'get',
+      const response = await fetch(`/api/account/checkemail`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: validFormEmail,
+          passwd: 'default password',
+        }),
       });
       console.log(response);
 
+      // const body = await response.json();
+      // console.log(body);
+
+      // if (body.data && body.data.emailok) {
       if (response.ok) {
         console.log(`The server says your email is OK:`);
         setValidEmail(validFormEmail);
@@ -230,37 +241,40 @@ function Signin(props) {
 
     const checkPasswordWithServer = async () => {
       const payload = {
-        username: validEmail,
-        password: inputContent,
+        email: validEmail,
+        passwd: inputContent,
       };
-      const formData = new URLSearchParams(payload).toString();
+      // const formData = new URLSearchParams(payload).toString();
 
-      const response = await fetch('/api/user/signin', {
+      const response = await fetch('/api/account/login', {
         method: 'post',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify(payload),
       });
 
       console.log(response);
 
-      if (response.redirected) {
-        const url = new URL(response.url);
-        const { pathname } = url;
-        const error = url.searchParams.get('error');
+      // if (response.redirected) {
+      //   const url = new URL(response.url);
+      //   const { pathname } = url;
+      //   const error = url.searchParams.get('error');
 
-        console.log(`Getting redirected to ${pathname} with ${error}`);
+      //   console.log(`Getting redirected to ${pathname} with ${error}`);
 
-        if (pathname === '/signin' && error != null) {
-          console.log('Signin Error');
-          setPasswordInvalid(true);
-        } else {
-          setPasswordInvalid(false);
-          history.push(pathname);
-        }
-      } else if (response.ok) {
+      //   if (pathname === '/signin' && error != null) {
+      //     console.log('Signin Error');
+      //     setPasswordInvalid(true);
+      //   } else {
+      //     setPasswordInvalid(false);
+      //     history.push(pathname);
+      //   }
+      // } else
+      if (response.ok) {
         setPasswordInvalid(false);
+      } else {
+        setPasswordInvalid(true);
       }
     };
 

@@ -6,8 +6,17 @@ import Server from './mock';
 import theme from './theme/theme';
 import App from './App';
 import './index.css';
+import applyBaseUrlToFetch from './baseUrl';
 
 // Server(); // actually instantiating the mock server
+
+// If we have a differing backend configured, replace the global fetch()
+if (
+  process.env.REACT_APP_BACKEND_API_BASE_URL !== undefined &&
+  process.env.REACT_APP_BACKEND_API_BASE_URL !== ''
+) {
+  applyBaseUrlToFetch(process.env.REACT_APP_BACKEND_API_BASE_URL);
+}
 
 ReactDOM.render(
   <React.StrictMode>
