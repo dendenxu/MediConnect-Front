@@ -248,7 +248,6 @@ function Signin(props) {
 
       const response = await fetch('/api/account/login', {
         method: 'post',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
