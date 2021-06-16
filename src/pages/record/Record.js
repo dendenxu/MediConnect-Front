@@ -120,6 +120,7 @@ export default function Home() {
   const [diagnosis, setDiagnosis] = useState('');
   const [opinions, setOpinions] = useState('');
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
+  //to do initialize these 4 IDs(maybe using get method),
   const CaseID = '';
   const PatientID = '';
   const DoctorID = '';
@@ -283,18 +284,18 @@ export default function Home() {
 
   const HandleSaveClick = async () => {
     const throwableHandle = async () => {
-      const jobList = [];
-      for (let i = 0; i < linecount; i += 1) {
-        const PresID = allprescriptions[i].medicine_id;
-        jobList.push(
-          `fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {
+      {
+
+          for (let i=0;i<linecount;i++){
+              const PresID=allprescriptions[i].id;
+              const response = await fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {//to do 
                   method: 'put',
                   headers: {
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
                       ID: PresID,
-                      CaseID,
+                      CaseID: CaseID,
                       Advice: "1",
                       Guidelines: [
                           {
@@ -306,40 +307,67 @@ export default function Home() {
                           }
                       ]
                   }),
-                })`,
-        );
+                });
+              if (response.ok) {
+                  console.log(`The server says creating new prescription is succcessful`);
+                  console.log(message);
+                  } else {
+                  console.log(`Fail to create new prescription`);
+                  console.log(message);
+                  }  
+          }
+          
+          
+
       }
-      const response = await Promise.all(jobList);
+
+      const response = await fetch('api/patient/${PatientID}/case', {//to do 
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      const beforecase=await response.json().data;
+      if (response.ok) {
+          console.log(`The server says creating new prescription is succcessful`);
+          console.log(message);
+          } else {
+          console.log(`Fail to create new prescription`);
+          console.log(message);
+          } 
+      beforecase.Complaint=chief_complaint;
+      beforecase.Diagnosis=diagnosis;
+      beforecase.Treatment=opinions;
+      beforecase.History=medical_history;
+      
+      const response = await fetch('api/patient/${PatientID}/case/${CaseID}', {//to do 
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            ID: CaseID,
+            PatientID:PatientID,
+            DoctorID:DoctorID,
+            Department:Department,
+            Complaint:chief_complaint,
+            Diagnosis:diagnosis,
+            Treatment:opinions,
+            History:medical_history,
+            Prescriptions:allprescriptions
+        }),
+      });
+
       console.log(response);
+      const message = await response.json();
+      if (response.ok) {
+        console.log(`The server says saving is succcessful`);
+        console.log(message);
+      } else {
+        console.log(`Fail to save the case`);
+        console.log(message);
+      }  
     };
-
-    const response = await fetch(`api/patient/${PatientID}/case/${CaseID}`, {
-      method: 'put',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ID: CaseID,
-        PatientID,
-        DoctorID,
-        Department,
-        Complaint: chiefComplaint,
-        Diagnosis: diagnosis,
-        Treatment: opinions,
-        History: medicalHistory,
-        Prescriptions: allprescriptions,
-      }),
-    });
-
-    console.log(response);
-    const message = await response.json();
-    if (response.ok) {
-      console.log(`The server says saving is succcessful`);
-      console.log(message);
-    } else {
-      console.log(`Fail to save the case`);
-      console.log(message);
-    }
 
     try {
       await throwableHandle();
