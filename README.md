@@ -2,7 +2,32 @@
 
 This is the front-end repository for our 2021 Software Engineering course project.
 
-## Quick Start
+## Production Build Quick Start
+
+### Frontend Setup
+
+1. `git checkout master` to make a production build on this branch
+2. `git pull` to fetch changes from this repository
+3. `npm install` to install added dependencies
+4. `npm run build` to make a production ready build
+5. Optionally, `npm install -g serve` to use the `serve` package for serving the frontend
+    - Some permission issues might occur since you're installing globally, use `sudo npm install -g serve` if you see `npm ERR!`
+6. `serve -s build` to serve the build folder, or your other favorite server
+
+### Backend Setup
+
+Assuming you've already got the [backend repository](https://github.com/AsterNighT/software-engineering-backend)
+
+If not, run `git clone https://github.com/AsterNighT/software-engineering-backend` to get it and `cd software-engineering-backend`
+
+1. Optionally, install `go` following the [official installation guide](https://golang.org/doc/install)
+2. `git pull` to get the newest backend
+3. `make build` to build the backend
+4. `make run` to run the backend, default port `12448`
+
+Now you should at least be able to login (or be able not to login with bad credentials or wrong emails)
+
+## Development Build Quick Start
 
 1. `git pull` to make sure you're up to date
 2. Optionally, `git checkout <your-branch-name>` (the **master** branch should always be working fine)
@@ -44,6 +69,8 @@ There're a few guidelines you should follow when creating a new branch:
 3. Once you're done with your work from your own branch, that is, you've tested it on your own machine that the functionality and ui layout/coloring corresponds to the specification provided to you, you can create a **Pull Request** at [GitHub](https://github.com/dendenxu/MediConnect-Front/pulls) from your branch to `master`, we'll deal with it by merging it or telling your to merge `master` into your branch first.
 
 ## Creating Commits
+
+**These are assumed to be applied AUTOMATICALLY by commitlint. You won't be able to commit if anything is wrong.**
 
 You should divide your work into specific, recognizable blocks of coding to make your commit clean and organized.
 
