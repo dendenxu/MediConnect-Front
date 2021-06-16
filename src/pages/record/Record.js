@@ -120,7 +120,7 @@ export default function Home() {
   const [diagnosis, setDiagnosis] = useState('');
   const [opinions, setOpinions] = useState('');
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
-  //to do initialize these 4 IDs(maybe using get method),
+  // todo initialize these 4 IDs(maybe using get method),
   const CaseID = '';
   const PatientID = '';
   const DoctorID = '';
@@ -283,91 +283,90 @@ export default function Home() {
   };
 
   const HandleSaveClick = async () => {
-      {
-
-          for (let i=0;i<linecount;i=i+1){
-              const PresID=allprescriptions[i].id;
-              const response = fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {//to do 
-                  method: 'put',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      ID: PresID,
-                      CaseID: CaseID,
-                      Advice: "1",
-                      Guidelines: [
-                          {
-                              ID: 2,
-                              MedicineID: allprescriptions[i].medicine_id,
-                              PrescriptionID: allprescriptions[i].ID,
-                              Dosage: allprescriptions[i].qt,
-                              Quantity: allprescriptions[i].size
-                          }
-                      ]
-                  }),
-                });
-            const message = await response.json();
-              if (response.ok) {
-                  console.log(`The server says creating new prescription is succcessful`);
-                  console.log(message);
-                  } else {
-                  console.log(`Fail to create new prescription`);
-                  console.log(message);
-                  }  
-          }
-          
-          
-
-      }
-
-      const response = await fetch('api/patient/${PatientID}/case', {//to do 
-          method: 'get',
+    for (let i = 0; i < linecount; i += 1) {
+      const PresID = allprescriptions[i].id;
+      const response = fetch(
+        `api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}`,
+        {
+          // todo
+          method: 'put',
           headers: {
             'Content-Type': 'application/json',
           },
-        });
-      const beforecase=await response.json().data;
-      const message = await response.json();
-      if (response.ok) {
-          console.log(`The server says creating new prescription is succcessful`);
-          console.log(message);
-          } else {
-          console.log(`Fail to create new prescription`);
-          console.log(message);
-          } 
-      beforecase.Complaint=chiefComplaint;
-      beforecase.Diagnosis=diagnosis;
-      beforecase.Treatment=opinions;
-      beforecase.History=medicalHistory;
-      
-      response = await fetch('api/patient/${PatientID}/case/${CaseID}', {//to do 
-        method: 'put',
-        headers: {
-          'Content-Type': 'application/json',
+          body: JSON.stringify({
+            ID: PresID,
+            CaseID,
+            Advice: '1',
+            Guidelines: [
+              {
+                ID: 2,
+                MedicineID: allprescriptions[i].medicine_id,
+                PrescriptionID: allprescriptions[i].ID,
+                Dosage: allprescriptions[i].qt,
+                Quantity: allprescriptions[i].size,
+              },
+            ],
+          }),
         },
-        body: JSON.stringify({
-            ID: CaseID,
-            PatientID:PatientID,
-            DoctorID:DoctorID,
-            Department:Department,
-            Complaint:chiefComplaint,
-            Diagnosis:diagnosis,
-            Treatment:opinions,
-            History:medicalHistory,
-            Prescriptions:allprescriptions
-        }),
-      });
-
-      console.log(response);
-      message = await response.json();
+      );
+      const message = response.json();
       if (response.ok) {
-        console.log(`The server says saving is succcessful`);
+        console.log(`The server says creating new prescription is succcessful`);
         console.log(message);
       } else {
-        console.log(`Fail to save the case`);
+        console.log(`Fail to create new prescription`);
         console.log(message);
-      }  
+      }
+    }
+
+    let response = await fetch(`api/patient/${PatientID}/case`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const beforecase = await response.json().data;
+    let message = await response.json();
+    if (response.ok) {
+      console.log(`The server says creating new prescription is succcessful`);
+      console.log(message);
+    } else {
+      console.log(`Fail to create new prescription`);
+      console.log(message);
+    }
+    beforecase.Complaint = chiefComplaint;
+    beforecase.Diagnosis = diagnosis;
+    beforecase.Treatment = opinions;
+    beforecase.History = medicalHistory;
+
+    response = await fetch(`api/patient/${PatientID}/case/${CaseID}`, {
+      // todo
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ID: CaseID,
+        PatientID,
+        DoctorID,
+        Department,
+        Complaint: chiefComplaint,
+        Diagnosis: diagnosis,
+        Treatment: opinions,
+        History: medicalHistory,
+        Prescriptions: allprescriptions,
+      }),
+    });
+
+    console.log(response);
+    message = response.json();
+    if (response.ok) {
+      console.log(`The server says saving is succcessful`);
+      console.log(message);
+    } else {
+      console.log(`Fail to save the case`);
+      console.log(message);
+    }
   };
 
   return (
