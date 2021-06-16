@@ -283,12 +283,11 @@ export default function Home() {
   };
 
   const HandleSaveClick = async () => {
-    const throwableHandle = async () => {
       {
 
-          for (let i=0;i<linecount;i++){
+          for (let i=0;i<linecount;i=i+1){
               const PresID=allprescriptions[i].id;
-              const response = await fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {//to do 
+              const response = fetch('api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}', {//to do 
                   method: 'put',
                   headers: {
                     'Content-Type': 'application/json',
@@ -308,6 +307,7 @@ export default function Home() {
                       ]
                   }),
                 });
+            const message = await response.json();
               if (response.ok) {
                   console.log(`The server says creating new prescription is succcessful`);
                   console.log(message);
@@ -328,6 +328,7 @@ export default function Home() {
           },
         });
       const beforecase=await response.json().data;
+      const message = await response.json();
       if (response.ok) {
           console.log(`The server says creating new prescription is succcessful`);
           console.log(message);
@@ -359,7 +360,7 @@ export default function Home() {
       });
 
       console.log(response);
-      const message = await response.json();
+      message = await response.json();
       if (response.ok) {
         console.log(`The server says saving is succcessful`);
         console.log(message);
@@ -367,13 +368,6 @@ export default function Home() {
         console.log(`Fail to save the case`);
         console.log(message);
       }  
-    };
-
-    try {
-      await throwableHandle();
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
