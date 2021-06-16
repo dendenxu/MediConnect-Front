@@ -2,17 +2,11 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable import/no-unresolved */
 
-import {
-  Box,
-  Button, Grid,
-  Typography,
-  Divider,
-} from '@material-ui/core';
+import { Box, Button, Grid, Typography, Divider } from '@material-ui/core';
 import React from 'react';
 
 import { ReactComponent as FailIcon } from '../../assets/images/fail.svg';
-import Header from './components/Header'
-
+import Header from './components/Header';
 
 // const theme = createMuiTheme({
 //   palette: {
@@ -36,10 +30,6 @@ import Header from './components/Header'
 //   },
 // });
 
-
-
-
-
 class Fail extends React.Component {
   componentDidMount() {
     console.log(this.props.location);
@@ -58,7 +48,9 @@ class Fail extends React.Component {
           justfy="center"
         >
           <Box marginTop="2vh" marginBottom="2vh" />
-          <FailIcon width={Math.max(window.innerWidth, window.innerHeight) / 8} />
+          <FailIcon
+            width={Math.max(window.innerWidth, window.innerHeight) / 8}
+          />
           <Box
             fontWeight="bold"
             padding="3%"
@@ -77,7 +69,7 @@ class Fail extends React.Component {
               </Typography>
             </Box>
             <Box color="info.main" marginX="auto" marginTop="1vh">
-            鍒板簳浠?拷涔堟椂鍊椤紑　锟斤拷锟斤拷锟斤拷锟剿达拷锟斤拷锟
+              鍒板簳浠?拷涔堟椂鍊椤紑 锟斤拷锟斤拷锟斤拷锟剿达拷锟斤拷锟
             </Box>
           </Box>
 
@@ -92,8 +84,6 @@ class Fail extends React.Component {
         </Grid>
       </div>
     );
-
-
 
     // if (this.props.location.state !== undefined) {
     //   if (this.props.location.state.data1.dep !== undefined) {

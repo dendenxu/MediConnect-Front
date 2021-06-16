@@ -2,12 +2,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable import/no-unresolved */
 
-import {
-  Box,
-  Button, Grid,
-  createMuiTheme,
-  Divider,
-} from '@material-ui/core';
+import { Box, Button, Grid, createMuiTheme, Divider } from '@material-ui/core';
 import React from 'react';
 
 import Table from '@material-ui/core/Table';
@@ -18,8 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { ReactComponent as SuccessIcon } from '../../assets/images/success.svg';
 
 import { ReactComponent as FailIcon } from '../../assets/images/fail.svg';
-import Header from './components/Header'
-
+import Header from './components/Header';
 
 // const theme = createMuiTheme({
 //   palette: {
@@ -43,13 +37,9 @@ import Header from './components/Header'
 //   },
 // });
 
-
-
-
 function createData(name, calories) {
   return { name, calories };
 }
-
 
 const rows = [
   createData('科室', 'Deep Dark Fantasy'),
@@ -77,7 +67,9 @@ class Success extends React.Component {
           justfy="center"
         >
           <Box marginTop="2vh" marginBottom="2vh" />
-          <SuccessIcon width={Math.max(window.innerWidth, window.innerHeight) / 8} />
+          <SuccessIcon
+            width={Math.max(window.innerWidth, window.innerHeight) / 8}
+          />
           <Box
             fontWeight="bold"
             padding="3%"
@@ -90,15 +82,21 @@ class Success extends React.Component {
           <Box>
             <Table aria-label="simple table">
               <TableBody>
-                {rows.map((row) => (
+                {rows.map(row => (
                   <TableRow key={row.name}>
                     <TableCell
-                      style={{ borderBottom: "none", fontSize: '18px', fontWeight: "bold" }}
-                      component="th" scope="row"
+                      style={{
+                        borderBottom: 'none',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                      }}
+                      component="th"
+                      scope="row"
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell style={{ borderBottom: "none", fontSize: '18px' }}
+                    <TableCell
+                      style={{ borderBottom: 'none', fontSize: '18px' }}
                       align="right"
                     >
                       {row.calories}
@@ -108,7 +106,6 @@ class Success extends React.Component {
               </TableBody>
             </Table>
           </Box>
-
 
           <Box marginTop="3vh" marginBottom="3vh" marginX="3vh">
             <Divider style={{ width: '100%' }} variant="fullWidth" />
@@ -127,8 +124,6 @@ class Success extends React.Component {
         </Grid>
       </div>
     );
-
-
 
     // if (this.props.location.state !== undefined) {
     //   if (this.props.location.state.data1.dep !== undefined) {

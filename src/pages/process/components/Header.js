@@ -1,7 +1,6 @@
-import { AppBar, Toolbar, makeStyles, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import React from "react";
-
+import { AppBar, Toolbar, makeStyles, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -11,23 +10,21 @@ const useStyles = makeStyles(theme => ({
 
 const WhiteTextTypography = withStyles({
   root: {
-    color: "#FFFFFF"
-  }
+    color: '#FFFFFF',
+  },
 })(Typography);
 
-
 export default function Header(props) {
-
   const { header } = useStyles();
 
-  const { text } = props
+  const { text } = props;
 
   const HeaderText = (
     <WhiteTextTypography variant="h4" component="h1">
       {text}
     </WhiteTextTypography>
   );
-  
+
   return (
     <header>
       <AppBar position="sticky" className={header}>

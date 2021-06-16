@@ -6,8 +6,6 @@ const captionStyle = {
   // transform: 'translate(0px,3px)',
 };
 
-
-
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -23,7 +21,7 @@ const theme = createMuiTheme({
       main: '#ffa372',
     },
     info: {
-      main: '#878DA4'
+      main: '#878DA4',
     },
     // for text
     text_primary: {
@@ -31,7 +29,7 @@ const theme = createMuiTheme({
     },
     text_plain: {
       main: '#878DA4',
-    }
+    },
   },
   status: {
     danger: 'orange',

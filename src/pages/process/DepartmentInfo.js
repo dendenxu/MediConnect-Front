@@ -2,10 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-  List,
-  ThemeProvider,
-} from '@material-ui/core';
+import { List, ThemeProvider } from '@material-ui/core';
 
 import {
   MuiPickersUtilsProvider,
@@ -13,9 +10,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import Header from './components/Header'
-import theme from '../../theme/theme'
-
+import Header from './components/Header';
+import theme from '../../theme/theme';
 
 // const useStyles = makeStyles(theme => ({
 //   root: {
@@ -63,7 +59,6 @@ export default function DepartmentInfo() {
     <ThemeProvider theme={theme}>
       <Header text="科室介绍" />
     </ThemeProvider>
-
 
     // <Box className={classes.root}>
     //   <Box className={classes.header}>

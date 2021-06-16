@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 export default function DepartmentItem(props) {
   const { primaryText, secondaryText } = useStyles();
 
@@ -40,15 +39,9 @@ export default function DepartmentItem(props) {
     <div>
       <ListItem button component={Link} to={data.path} flexDirection="row">
         <ListItemText
-          primary={
-            <Typography className={primaryText}>
-              {data.dep}
-            </Typography>
-          }
+          primary={<Typography className={primaryText}>{data.dep}</Typography>}
           secondary={
-            <Typography className={secondaryText}>
-              {data.intro}
-            </Typography>
+            <Typography className={secondaryText}>{data.intro}</Typography>
           }
         />
         <ArrowForwardIosSharpIcon fontSize="small" color="secondary">

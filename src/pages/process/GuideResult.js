@@ -16,21 +16,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/styles';
 
-
-import theme from '../../theme/theme'
+import theme from '../../theme/theme';
 import Header from './components/Header';
 import DepartmentItem from './components/DepartmentItem';
 
-
 const HyperTypography = withStyles({
-  root:{
+  root: {
     color: 'primary',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: '1.5vh',
-  }
-})(Typography)
-
+  },
+})(Typography);
 
 const deps = [
   {
@@ -75,10 +72,8 @@ const deps = [
   },
 ];
 
-
 class GuideResult extends React.Component {
   render() {
-
     return (
       <ThemeProvider theme={theme}>
         <Header text="推荐您就诊于" />
@@ -95,14 +90,10 @@ class GuideResult extends React.Component {
           justfy="center"
         >
           <HyperTypography>
-            <Link>
-              查看所有科室
-            </Link>
+            <Link>查看所有科室</Link>
           </HyperTypography>
         </Grid>
       </ThemeProvider>
-
-
 
       // <ThemeProvider theme={theme}>
       //   <Box display="flex" flexDirection="column">

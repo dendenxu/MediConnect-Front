@@ -4,15 +4,11 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable react/prefer-stateless-function */
 
-import {
-  List,
-  ThemeProvider,
-} from '@material-ui/core';
+import { List, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import Header from './components/Header';
-import theme from '../../theme/theme'
+import theme from '../../theme/theme';
 import DepartmentItem from './components/DepartmentItem';
-
 
 const deps = [
   {
@@ -56,7 +52,6 @@ const deps = [
     path: '/',
   },
 ];
-
 
 class DepartmentList extends React.Component {
   render() {
