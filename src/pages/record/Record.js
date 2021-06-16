@@ -335,12 +335,12 @@ export default function Home() {
           console.log(`Fail to create new prescription`);
           console.log(message);
           } 
-      beforecase.Complaint=chief_complaint;
+      beforecase.Complaint=chiefComplaint;
       beforecase.Diagnosis=diagnosis;
       beforecase.Treatment=opinions;
-      beforecase.History=medical_history;
+      beforecase.History=medicalHistory;
       
-      const response = await fetch('api/patient/${PatientID}/case/${CaseID}', {//to do 
+      response = await fetch('api/patient/${PatientID}/case/${CaseID}', {//to do 
         method: 'put',
         headers: {
           'Content-Type': 'application/json',
@@ -350,10 +350,10 @@ export default function Home() {
             PatientID:PatientID,
             DoctorID:DoctorID,
             Department:Department,
-            Complaint:chief_complaint,
+            Complaint:chiefComplaint,
             Diagnosis:diagnosis,
             Treatment:opinions,
-            History:medical_history,
+            History:medicalHistory,
             Prescriptions:allprescriptions
         }),
       });
