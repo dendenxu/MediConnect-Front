@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 30,
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
-    height: '100vh',
+    height: '100%',
     maxWidth: '600px',
 
     // display: 'flex',
@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
     padding: theme.spacing(0),
     width: '100%',
-    height: '80vh',
+    height: '78vh',
     // backgroundColor:theme.palette.text.secondary,
   },
   HisMessageBox: {
@@ -219,7 +219,7 @@ function TopBar({ DoctorName }) {
 
   return (
     <Container className={classes.topbar}>
-      <Grid container spacing={1}>
+      <Grid container spacing={10}>
         <Grid item>
           <Button
           //  onClick={}
@@ -227,7 +227,7 @@ function TopBar({ DoctorName }) {
             <ArrowBackIosIcon />
           </Button>
         </Grid>
-        <Grid item xs={9} spacing={8}>
+        <Grid item xs={3} spacing={0}>
           <Paper className={classes.namepaper} variant="outlined" square>
             {DoctorName}
           </Paper>
@@ -376,7 +376,7 @@ function Messages({ messages, CurrentUserID }) {
 function ChatPatient() {
   const classes = useStyles();
   const [CurrentUserID, setCurrentUserID] = useState(1983);
-  const [DoctorName, setDoctorName] = useState('flora');
+  const [DoctorName, setDoctorName] = useState('Flaze');
   // const [Patients, setPatients] = useState([
   //   { PatientID: 1983, DoctorName: 'Alice' },
   //   { PatientID: 1985, DoctorName: 'Judy' },
