@@ -87,6 +87,7 @@ const useStyles = makeStyles(theme => ({
   MessageContainer: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     padding: theme.spacing(1),
     width: '100%',
     height: '200px',
@@ -235,7 +236,7 @@ function TopBar({
     setIsEmpty(true);
     setSelectedIndex();
     setPatients(Pts =>
-      Pts.filter(Patient => Patient.PatientName !== PatientName),
+      Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
     );
 
     setPatientName('');
@@ -285,10 +286,10 @@ function ToolBar({ CurrentPatientID, CurrentUserID }) {
     requireQuestions(CurrentUserID);
   };
   const handleMedClick = event => {
-    requirePrescription(CurrentPatientID);
+    requirePrescription(CurrentPatientID, CurrentUserID);
   };
   const handleRecClick = event => {
-    requireMedicalRecord(CurrentPatientID);
+    requireMedicalRecord(CurrentPatientID, CurrentUserID);
   };
   const fileInputEl = useRef(null);
 
@@ -359,7 +360,13 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   }
 
   return (
-    <Container>
+    <Container
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+      }}
+    >
       <Typography
         variant="caption"
         className={classes.timetext}
@@ -382,8 +389,9 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
+  console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
-    ? messages.get(CurrentPatientID).map(message => (
+    ? messages.get(CurrentPatientID.toString()).map(message => (
         <container key={message.time}>
           <Message message={message} CurrentUserID={CurrentUserID} />
         </container>
@@ -407,33 +415,34 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
 
 function Chat() {
   const classes = useStyles();
-  const [CurrentUserID, setCurrentUserID] = useState('flora');
+  // const [CurrentUserID, setCurrentUserID] = useState('flora');
+  const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: '3180101983', PatientName: 'Alice' },
-    { PatientID: '3180101985', PatientName: 'Judy' },
+    { PatientID: 1983, PatientName: 'Alice' },
+    { PatientID: 1985, PatientName: 'Judy' },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(
     Map({
-      3180101983: [
-        { sender: 'flora', content: 'hhhh', time: '23:33' },
-        { sender: 'Alice', content: 'oooooo', time: '12:33' },
+      1983: [
+        { sender: 111, content: 'hhhh', time: '23:33' },
+        { sender: 1983, content: 'oooooo', time: '12:33' },
         {
-          sender: 'Alice',
+          sender: 1983,
           content: 'Hi! I have some trouble with my head. It aches a lot.',
           time: '12:33',
         },
         {
-          sender: 'flora',
+          sender: 111,
           content: 'Then, Where exactly the aching is?',
           time: '23:33',
         },
       ],
-      3180101985: [
-        { sender: 'flora', content: 'react is cool', time: '23:33' },
-        { sender: 'Judy', content: 'so is Redux', time: '12:33' },
+      1985: [
+        { sender: 111, content: 'react is cool', time: '23:33' },
+        { sender: 1985, content: 'so is Redux', time: '12:33' },
       ],
     }),
   );
@@ -459,7 +468,7 @@ function Chat() {
       setMessage('');
 
       setMessages(msgs =>
-        msgs.update(CurrentPatientID, msg => [
+        msgs.update(CurrentPatientID.toString(), msg => [
           ...msg,
           { sender: CurrentUserID, content: message, time: '12:12' },
         ]),
@@ -475,18 +484,18 @@ function Chat() {
       const localPatients = JSON.parse(localStorage.getItem('Patients'));
       console.log('localMessages:', localMessages);
       console.log('localPatients:', localPatients);
-      setMessages(msgs => Map(localMessages));
-      setPatients(pas => localPatients);
+      // setMessages(msgs => Map(localMessages));
+      // setPatients(pas => localPatients);
       console.log('Patiens after local:', Patients);
     };
 
     socket.onmessage = msg => {
-      console.log(msg);
+      console.log('Backend testing: ', msg);
       const dataFromServer = JSON.parse(msg.data);
       const patientID = JSON.stringify(dataFromServer.PatientID);
       console.log('patientID:', patientID);
       console.log(dataFromServer);
-      console.log(dataFromServer.PatientID.toString());
+      // console.log(dataFromServer.PatientID.toString());
       switch (dataFromServer.Type) {
         case 6:
           // const pID = dataFromServer.PatientID.toString()
@@ -496,15 +505,17 @@ function Chat() {
             ...pats,
             {
               PatientID: dataFromServer.PatientID,
-              PatientName: dataFromServer.Name,
+              PatientName: dataFromServer.PatientName,
             },
           ]);
-          setMessages(msgs => msgs.set(dataFromServer.PatientID, []));
+          setMessages(msgs =>
+            msgs.set(dataFromServer.PatientID.toString(), []),
+          );
           break;
 
         case 7:
           setMessages(msgs =>
-            msgs.update(dataFromServer.SenderID, msg1 => [
+            msgs.update(dataFromServer.SenderID.toString(), msg1 => [
               ...msg1,
               {
                 sender: dataFromServer.SenderID,
@@ -516,11 +527,11 @@ function Chat() {
           break;
         case 8:
           setMessages(msgs =>
-            msgs.update(dataFromServer.PatientID, msg2 => [
+            msgs.update(dataFromServer.PatientID.toString(), msg2 => [
               ...msg2,
               {
-                sender: dataFromServer.SenderID,
-                content: dataFromServer.URL,
+                sender: dataFromServer.PatientID,
+                content: dataFromServer.Url,
                 time: dataFromServer.Time,
               },
             ]),
@@ -528,11 +539,11 @@ function Chat() {
           break;
         case 9:
           setMessages(msgs =>
-            msgs.update(dataFromServer.PatientID, msg3 => [
+            msgs.update(dataFromServer.PatientID.toString(), msg3 => [
               ...msg3,
               {
-                sender: dataFromServer.SenderID,
-                content: dataFromServer.URL,
+                sender: dataFromServer.PatientID,
+                content: dataFromServer.Url,
                 time: dataFromServer.Time,
               },
             ]),

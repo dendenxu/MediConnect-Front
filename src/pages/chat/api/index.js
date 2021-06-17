@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8080/ws');
+const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
 
 const connect = cb => {
   console.log('Connecting');
@@ -64,25 +64,27 @@ const msgFromClient = (senderID, receiverID, content, time) => {
 const closeChat = (patientID, doctorID) => {
   const json = {
     Type: 2,
-    PatientID: patientID,
-    DoctorID: doctorID,
+    ReceiverID: patientID,
+    // DoctorID: doctorID,
   };
   console.log('json from closeChat:', json);
   socket.send(JSON.stringify(json));
 };
 
-const requireMedicalRecord = patientID => {
+const requireMedicalRecord = (patientID, doctorID) => {
   const json = {
     Type: 3,
+    DoctorID: doctorID,
     PatientID: patientID,
   };
   console.log('json from requireMedicalRecord:', json);
   socket.send(JSON.stringify(json));
 };
 
-const requirePrescription = patientID => {
+const requirePrescription = (patientID, doctorID) => {
   const json = {
     Type: 4,
+    DoctorID: doctorID,
     PatientID: patientID,
   };
   console.log('json from requirePrescription:', json);
