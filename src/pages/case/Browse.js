@@ -8,6 +8,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Search from '@material-ui/icons/Search';
 import { Link, useHistory } from 'react-router-dom';
+import SearchBar from '../components/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -130,19 +131,7 @@ export default function Browse() {
       >
         <Grid item>
           <div className={classes.input}>
-            <TextField
-              variant="outlined"
-              onChange={searchChange}
-              fullWidth
-              placeholder="搜索内容"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Search />
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <SearchBar placeholder="搜索内容" onChange={searchChange} />
           </div>
         </Grid>
         <Grid item>

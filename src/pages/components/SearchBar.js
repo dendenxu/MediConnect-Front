@@ -8,17 +8,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   header: {
     marginTop: '16px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '95%',
+    width: '100%',
   },
   input: {
     flex: 1,
@@ -33,9 +28,12 @@ const useStyles = makeStyles({
 });
 
 export default function MediSearch(props) {
-  const { onSubmit, onChange, label, placeholder } = props;
+  const { onSubmit, onChange } = props;
 
+  let { label, placeholder } = props;
   let { inputContent, setInputContent } = props;
+
+  const { style } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -43,6 +41,12 @@ export default function MediSearch(props) {
   console.log(
     `inputContent: ${inputContent}, setInputContent: ${setInputContent}`,
   );
+
+  if (label === undefined) {
+    label = placeholder;
+  } else if (placeholder === undefined) {
+    placeholder = label;
+  }
 
   if (inputContent === undefined) {
     console.log('No input content specified, using new ones');
@@ -54,62 +58,60 @@ export default function MediSearch(props) {
   console.log(iconColor);
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.header}>
-        <TextField
-          id="search-box"
-          className={classes.input}
-          label={label}
-          placeholder={placeholder}
-          variant="outlined"
-          autoFocus
-          value={inputContent}
-          onChange={e => {
-            setInputContent(e.target.value);
-            onChange(e);
-          }}
-          onFocus={() => {
-            setFocused(true);
-            console.log('Setting to focused');
-          }}
-          onBlur={() => {
-            setFocused(false);
-            console.log('Setting to blurred');
-          }}
-          InputProps={{
-            ariaLabel: 'search mediconnect',
-            endAdornment: (
-              <InputAdornment position="end">
-                {inputContent === '' || (
-                  <IconButton
-                    className={classes.cancelButton}
-                    size="medium"
-                    onClick={() => {
-                      setInputContent('');
-                      document.getElementById('search-box').focus();
-                    }}
-                  >
-                    <CancelIcon fontSize="small" />
-                  </IconButton>
-                )}
-
+    <Box className={classes.header} style={style}>
+      <TextField
+        id="search-box"
+        className={classes.input}
+        label={label}
+        placeholder={placeholder}
+        variant="outlined"
+        autoFocus
+        value={inputContent}
+        onChange={e => {
+          setInputContent(e.target.value);
+          onChange(e);
+        }}
+        onFocus={() => {
+          setFocused(true);
+          console.log('Setting to focused');
+        }}
+        onBlur={() => {
+          setFocused(false);
+          console.log('Setting to blurred');
+        }}
+        InputProps={{
+          ariaLabel: 'search mediconnect',
+          endAdornment: (
+            <InputAdornment position="end">
+              {inputContent === '' || (
                 <IconButton
-                  color="primary"
-                  // type="submit"
-                  onClick={onSubmit}
-                  className={classes.iconButton}
-                  aria-label="search"
-                  style={{
-                    color: iconColor,
+                  className={classes.cancelButton}
+                  size="medium"
+                  onClick={() => {
+                    setInputContent('');
+                    document.getElementById('search-box').focus();
                   }}
                 >
-                  <SearchIcon />
+                  <CancelIcon fontSize="small" />
                 </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
+              )}
+
+              <IconButton
+                color="primary"
+                // type="submit"
+                onClick={onSubmit}
+                className={classes.iconButton}
+                aria-label="search"
+                style={{
+                  color: iconColor,
+                }}
+              >
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
     </Box>
   );
 }
