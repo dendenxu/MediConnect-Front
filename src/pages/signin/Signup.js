@@ -363,7 +363,6 @@ function Signup(props) {
         },
         body: JSON.stringify({
           email: validFormEmail,
-          passwd: 'default password',
         }),
       });
       console.log(response);

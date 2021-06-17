@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from './BottomBar';
 import Copyright from './Copyright';
@@ -44,6 +45,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     width: '90%',
     marginTop: theme.spacing(1),
+    position: 'relative',
   },
   avatar: {
     margin: theme.spacing(1),
@@ -136,6 +138,13 @@ const useStyles = makeStyles(theme => ({
       fontSize: '0.6rem',
     },
   },
+  loadingProgress: {
+    // color: '#27CD86',
+    position: 'relative',
+    // top: "50%",
+    // left: "50%",
+    zIndex: 1,
+  },
 }));
 
 async function checkSigninStatus() {
@@ -170,6 +179,7 @@ function Signin(props) {
 
   // const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
   const textFieldSize = 'medium';
+  const [loadingData, setLoadingData] = useState(false);
 
   const textFieldClassProps = {
     InputProps: {
@@ -219,7 +229,6 @@ function Signin(props) {
         },
         body: JSON.stringify({
           email: validFormEmail,
-          passwd: 'default password',
         }),
       });
       console.log(response);
@@ -256,21 +265,6 @@ function Signin(props) {
 
       console.log(response);
 
-      // if (response.redirected) {
-      //   const url = new URL(response.url);
-      //   const { pathname } = url;
-      //   const error = url.searchParams.get('error');
-
-      //   console.log(`Getting redirected to ${pathname} with ${error}`);
-
-      //   if (pathname === '/signin' && error != null) {
-      //     console.log('Signin Error');
-      //     setPasswordInvalid(true);
-      //   } else {
-      //     setPasswordInvalid(false);
-      //     history.push(pathname);
-      //   }
-      // } else
       if (response.ok) {
         setPasswordInvalid(false);
       } else {
@@ -278,6 +272,7 @@ function Signin(props) {
       }
     };
 
+    setLoadingData(true);
     try {
       if (!afterEmailCheck) {
         if (!validFormEmail) {
@@ -290,6 +285,8 @@ function Signin(props) {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      // setLoadingData(false);
     }
   };
 
@@ -329,7 +326,14 @@ function Signin(props) {
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
 
-        <Box className={classes.borderedContainer}>
+        {loadingData && (
+          <CircularProgress size={68} className={classes.loadingProgress} />
+        )}
+
+        <Box
+          className={classes.borderedContainer}
+          style={{ filter: loadingData ? 'blur(5px)' : 'blur(0)' }}
+        >
           <Typography component="h1" variant="h5" className={classes.welcome}>
             {afterEmailCheck ? '欢迎' : '登录'}
           </Typography>
