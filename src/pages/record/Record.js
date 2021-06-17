@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 import { DataGrid } from '@material-ui/data-grid';
 import { Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -83,9 +84,10 @@ const useStyles = makeStyles(theme => ({
 }));
 let linecount = 1;
 export default function Home() {
+  const location = useLocation();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
-  const department = '骨科';
+  const department = location.state.Department;
   const columns = [
     { field: 'name', headerName: '药品名', width: 320, editable: true },
     {
@@ -121,8 +123,10 @@ export default function Home() {
   const [opinions, setOpinions] = useState('');
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
   // todo initialize these 4 IDs(maybe using get method),
-  const CaseID = '';
-  const PatientID = '';
+  const CaseID = location.state.Case_id;
+  const PatientID = location.state.Patient_id;
+  console.log(CaseID);
+  console.log(PatientID);
   const DoctorID = '';
   const Department = '';
   const [editRowsModel, setEditRowsModel] = React.useState({});
@@ -232,7 +236,7 @@ export default function Home() {
 
   const HandleOnAddLine = async () => {
     const response = await fetch(
-      `api/patient/${PatientID}/case/${CaseID}/prescription`,
+      `/api/patient/${PatientID}/case/${CaseID}/prescription`,
       {
         method: 'post',
         headers: {

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import { useHistory } from "react-router-dom";
-// import { createBrowserHistory } from "history";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,11 +11,12 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-// import { Radio } from '@material-ui/core';
-// import { render } from '@testing-library/react';
-// import { red } from '@material-ui/core/colors';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import BottomBar from './BottomBar';
+import Copyright from './Copyright';
+import AvatarBar from './AvatarBar';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
@@ -78,9 +77,6 @@ const useStyles = makeStyles(theme => ({
     '& div': {
       borderRadius: 16,
     },
-    // '& input': {
-    //   margin: theme.spacing(1),
-    // },
   },
   checkboxContainer: {
     display: 'flex',
@@ -119,107 +115,90 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     marginBottom: theme.spacing(3),
   },
-  labelRoot: {
-    // fontSize: '0.8rem',
-    // padding: theme.spacing(1),
-    color: 'rgba(0, 0, 0, 0.35)',
-    // transform: 'translate(0px,1.5px)',
-  },
-  labelFocused: {
-    // fontSize: '1rem',
-    // color: "rgba(0, 0, 0, 0.35)",
-  },
   copyright: {
     marginTop: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'center',
   },
   copyrightText: {
     // fontWeight: 300,
   },
+  buttomBar: {},
+  textFieldInput: {
+    fontSize: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8rem',
+    },
+  },
+  helperText: {
+    fontSize: '0.75rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.6rem',
+    },
+  },
 }));
 
-function Copyright() {
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} justify="center" className={classes.copyright}>
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        align="center"
-        className={classes.copyrightText}
-      >
-        {'Copyright © '}
-        <Link color="inherit" href="https://github.com/dendenxu">
-          dendenxu
-        </Link>{' '}
-        {new Date().getFullYear()}.
-      </Typography>
-    </Grid>
-  );
+async function checkSigninStatus() {
+  // const [signedIn, setSignedIn] = useState(false);
+  const response = await fetch('/check_signed_in');
+  console.log(response);
+  const message = await response.json();
+
+  if (response.ok) {
+    console.log(message);
+    console.log('User is signed in, redirecting');
+    return true;
+  }
+  return false;
 }
 
-const BottomBar = props => {
-  const { name } = props;
-  return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            {/* {name === '' ? '帮助' : `Got: ${name}`} */}
-            帮助
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            使用条款
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-            隐私协议
-          </Link>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-};
-const AvatarBar = props => {
-  const { email, avatarSrc, handleAvatarClick } = props;
-  const classes = useStyles();
-  return (
-    <Button
-      variant="outlined"
-      size="small"
-      className={classes.avatarButton}
-      startIcon={<Avatar src={avatarSrc} className={classes.smallAvatar} />}
-      onClick={handleAvatarClick}
-    >
-      <Typography
-        className={classes.centeredText}
-        variant="caption"
-        style={{
-          fontWeight: 500,
-        }}
-      >
-        {email}
-      </Typography>
-    </Button>
-  );
-};
-export default function Home() {
+function Signin(props) {
+  const { width } = props;
+
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation();
   const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validEmail, setValidEmail] = useState('');
+  const [validFormEmail, setValidFormEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
 
+  // const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+  const textFieldSize = 'medium';
+
+  const textFieldClassProps = {
+    InputProps: {
+      classes: {
+        root: classes.textFieldInput,
+      },
+    },
+    InputLabelProps: {
+      classes: {
+        root: classes.textFieldInput,
+        // focused: {},
+      },
+    },
+    FormHelperTextProps: {
+      classes: {
+        root: classes.helperText,
+      },
+    },
+  };
+
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  let inputBoxHelpterText = '　'; // some white spaces to take up the width
+  // const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+  const defaultHelperTextPlaceHolder = '　';
+  let inputBoxHelpterText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
+
+  // if (location.error) {
+  //   setPasswordInvalid(true);
+  // }
 
   if (afterEmailCheck) {
     if (passwordInvalid) {
@@ -232,33 +211,83 @@ export default function Home() {
   }
 
   const handleClick = async () => {
-    const throwableHandle = async () => {
-      const response = await fetch('/email', {
+    const checkEmailWithServer = async () => {
+      const response = await fetch(`/api/account/checkemail`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: inputContent,
+          email: validFormEmail,
+          passwd: 'default password',
         }),
       });
       console.log(response);
-      const message = await response.json();
 
+      // const body = await response.json();
+      // console.log(body);
+
+      // if (body.data && body.data.emailok) {
       if (response.ok) {
         console.log(`The server says your email is OK:`);
-        console.log(message);
+        setValidEmail(validFormEmail);
         setInputContent('');
         setAfterEmailCheck(true);
       } else {
         setEmailInvalid(true);
         console.log(`Your email doesn't exist, check again my boy:`);
-        console.log(message);
+      }
+    };
+
+    const checkPasswordWithServer = async () => {
+      const payload = {
+        email: validEmail,
+        passwd: inputContent,
+      };
+      // const formData = new URLSearchParams(payload).toString();
+
+      const response = await fetch('/api/account/login', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log(response);
+
+      // if (response.redirected) {
+      //   const url = new URL(response.url);
+      //   const { pathname } = url;
+      //   const error = url.searchParams.get('error');
+
+      //   console.log(`Getting redirected to ${pathname} with ${error}`);
+
+      //   if (pathname === '/signin' && error != null) {
+      //     console.log('Signin Error');
+      //     setPasswordInvalid(true);
+      //   } else {
+      //     setPasswordInvalid(false);
+      //     history.push(pathname);
+      //   }
+      // } else
+      if (response.ok) {
+        setPasswordInvalid(false);
+      } else {
+        setPasswordInvalid(true);
       }
     };
 
     try {
-      await throwableHandle();
+      if (!afterEmailCheck) {
+        if (!validFormEmail) {
+          console.log('Wrong email format, refusing to login');
+        } else {
+          await checkEmailWithServer();
+        }
+      } else {
+        await checkPasswordWithServer();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -273,7 +302,6 @@ export default function Home() {
   const handleInputChange = event => {
     const text = event.target.value;
     setInputContent(text);
-    setEmailInvalid(false);
 
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -282,9 +310,7 @@ export default function Home() {
     setEmailFormInvalid(invalid);
     console.log(`Getting new email text: ${text}`);
     console.log(`Setting email form invalid: ${invalid}`);
-    if (!afterEmailCheck) {
-      setValidEmail(text);
-    }
+    setValidFormEmail(invalid ? '' : text);
   };
   const handleAvatarClick = () => {
     const newVal = !avatarClicked;
@@ -294,7 +320,7 @@ export default function Home() {
   };
 
   const handleSignup = event => {
-    history.push('/Signup');
+    history.push('/signup');
   };
 
   return (
@@ -312,6 +338,9 @@ export default function Home() {
               email={validEmail}
               avatarSrc="https://avatars.githubusercontent.com/u/43734697?v=4"
               handleAvatarClick={handleAvatarClick}
+              avatarButtonClass={classes.avatarButton}
+              avatarIconClass={classes.smallAvatar}
+              avatarSourceClass={classes.centeredText}
             />
           ) : (
             <Typography
@@ -332,20 +361,12 @@ export default function Home() {
               }
               className={classes.input}
               variant="outlined"
-              size="medium"
-              id="username"
-              InputLabelProps={{
-                classes: {
-                  root: classes.labelRoot,
-                  focused: classes.labelFocused,
-                },
-              }}
+              size={textFieldSize}
+              id="username_input_field"
+              {...textFieldClassProps}
               label={
-                // <Typography className={classes.centeredText}> // {
                 !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
               }
-              // </Typography>
-              // }
               helperText={inputBoxHelpterText}
               name="username"
               autoFocus
@@ -403,11 +424,15 @@ export default function Home() {
               下一步
             </Button>
           </Container>
-          <BottomBar name={inputContent} />
-        </Box>
 
-        <Copyright />
+          <Container>
+            <BottomBar className={classes.buttomBar} spaceOut />
+          </Container>
+        </Box>
+        <Copyright className={classes.copyright} />
       </Container>
     </Container>
   );
 }
+
+export default withWidth()(Signin);
