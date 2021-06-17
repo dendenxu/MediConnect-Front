@@ -1,37 +1,40 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
     alignItems: 'center',
-    width: '100vw',
   },
   header: {
-    padding: '8px',
+    margin: '12px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
+    width: '95%',
   },
   input: {
-    marginLeft: '8px',
     flex: 1,
+    width: '100%',
   },
   iconButton: {
-    marginRight: '10px',
-    padding: 10,
+    marginRight: '-10px',
   },
 });
 
 export default function MediSearch() {
   const classes = useStyles();
+  const theme = useTheme();
+
+  const [focused, setFocused] = useState(false);
+  const iconColor = focused ? theme.palette.primary.main : 'rgba(0,0,0,0.54)';
+  console.log(iconColor);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -47,16 +50,34 @@ export default function MediSearch() {
           placeholder="请输入您的症状"
           variant="outlined"
           type="search"
-          inputProps={{ 'aria-label': 'search mediconnect' }}
+          autoFocus
+          onFocus={() => {
+            setFocused(true);
+            console.log('Setting to focused');
+          }}
+          onBlur={() => {
+            setFocused(false);
+            console.log('Setting to blurred');
+          }}
+          InputProps={{
+            ariaLabel: 'search mediconnect',
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  color="primary"
+                  type="submit"
+                  className={classes.iconButton}
+                  aria-label="search"
+                  style={{
+                    color: iconColor,
+                  }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <IconButton
-          color="primary"
-          type="submit"
-          className={classes.iconButton}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
       </Box>
     </Box>
   );

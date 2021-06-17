@@ -16,6 +16,7 @@ import Fail from './pages/process/Fail';
 import GuideResult from './pages/process/GuideResult';
 import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
+import MediSearch from './pages/process/MediSearch';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/signup" component={Signup} />
         <Route path="/chat" component={Chat} />
         {/* process G4 */}
+        <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
