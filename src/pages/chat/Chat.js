@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
+import moment from 'moment';
 import {
   socket,
   hello,
@@ -310,7 +311,11 @@ function ToolBar({ CurrentPatientID, CurrentUserID, Questions, setMessages }) {
         setMessages(msgs =>
           msgs.update(CurrentPatientID.toString(), msg => [
             ...msg,
-            { sender: CurrentUserID, content: Question, time: '12:12' },
+            {
+              sender: CurrentUserID,
+              content: Question,
+              time: moment().format('HH:mm'),
+            },
           ]),
         );
       }}
@@ -443,7 +448,7 @@ function Chat() {
   const [messages, setMessages] = useState(
     Map({
       1983: [
-        { sender: 111, content: 'hhhh', time: '23:33' },
+        { sender: 111, content: 'hhhh', time: '12:20' },
         { sender: 1983, content: 'oooooo', time: '12:33' },
         {
           sender: 1983,
@@ -493,7 +498,7 @@ function Chat() {
         SenderID: CurrentUserID,
         ReceiverID: CurrentPatientID,
         Content: message,
-        Time: '12:20',
+        Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
       socket.send(JSON.stringify(json));
@@ -503,7 +508,11 @@ function Chat() {
       setMessages(msgs =>
         msgs.update(CurrentPatientID.toString(), msg => [
           ...msg,
-          { sender: CurrentUserID, content: message, time: '12:12' },
+          {
+            sender: CurrentUserID,
+            content: message,
+            time: moment().format('HH:mm'),
+          },
         ]),
       );
     }
