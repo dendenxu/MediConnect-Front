@@ -21,9 +21,7 @@ import {
   requirePrescription,
   requireQuestions,
 } from './api';
-import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
-import { ReactComponent as PictureIcon } from '../../assets/images/picture.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 
@@ -403,7 +401,6 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
-  // let messagesA = Array.from(messages);
   console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
