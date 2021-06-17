@@ -7,19 +7,14 @@ import { fromJS, Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import Badge from '@material-ui/core/Badge';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
-import EmojiEmotionsOutlinedIcon from '@material-ui/icons/EmojiEmotionsOutlined';
-import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import {
   socket,
-  connect,
   hello,
-  msgFromClient,
   closeChat,
   requireMedicalRecord,
   requirePrescription,
@@ -58,8 +53,12 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '100%',
     padding: theme.spacing(1),
-    // selected: theme.palette.primary.main
+    selected: '#F1F0F3',
   },
+  // listItem: {
+  //   // borderStyle: 'solid',
+  //   borderWidth: '0.5px'
+  // },
   endButton: {
     border: 1,
     color: 'white',
@@ -184,6 +183,7 @@ function PatientList({
 
   const patientsA = Patients.map(Patient => (
     <ListItem
+      className={classes.listItem}
       key={Patients.findIndex(obj => obj.PatientID === Patient.PatientID)}
       button
       selected={
@@ -360,28 +360,32 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   }
 
   return (
-    <Container
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-      }}
-    >
-      <Typography
-        variant="caption"
-        className={classes.timetext}
-        color="textSecondary"
+    <Container>
+      <Container>
+        <Typography
+          variant="caption"
+          className={classes.timetext}
+          color="textSecondary"
+        >
+          {time}
+        </Typography>
+      </Container>
+      <Container
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+        }}
       >
-        {time}
-      </Typography>
-      <Paper
-        className={
-          isSentByCurrentUser ? classes.MyMessageBox : classes.HisMessageBox
-        }
-        elevation={2}
-      >
-        {content}
-      </Paper>
+        <Paper
+          className={
+            isSentByCurrentUser ? classes.MyMessageBox : classes.HisMessageBox
+          }
+          elevation={2}
+        >
+          {content}
+        </Paper>
+      </Container>
     </Container>
   );
 }
@@ -421,6 +425,7 @@ function Chat() {
   const [Patients, setPatients] = useState([
     { PatientID: 1983, PatientName: 'Alice' },
     { PatientID: 1985, PatientName: 'Judy' },
+    { PatientID: 1987, PatientName: 'Max' },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -443,6 +448,20 @@ function Chat() {
       1985: [
         { sender: 111, content: 'react is cool', time: '23:33' },
         { sender: 1985, content: 'so is Redux', time: '12:33' },
+      ],
+      1987: [
+        { sender: 111, content: 'hhhh', time: '23:33' },
+        { sender: 1987, content: 'oooooo', time: '12:33' },
+        {
+          sender: 1987,
+          content: 'Hi! I have some trouble with my head. It aches a lot.',
+          time: '12:33',
+        },
+        {
+          sender: 111,
+          content: 'Then, Where exactly the aching is?',
+          time: '23:33',
+        },
       ],
     }),
   );
