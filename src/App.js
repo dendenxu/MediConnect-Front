@@ -1,8 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import Home from './pages/signin/Home';
-import Signup from './pages/signup/Signup';
+import React, { useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  useLocation,
+  Switch,
+} from 'react-router-dom';
+import Signin from './pages/signin/Signin';
+import Signup from './pages/signin/Signup';
 import Chat from './pages/chat/Chat';
 
 // process-G4
@@ -14,16 +19,49 @@ import DepartmentInfo from './pages/process/DepartmentInfo';
 
 export default function App() {
   return (
-    <Router history={createBrowserHistory()}>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/Signup" component={Signup} />
-      <Route exact path="/Chat" component={Chat} />
-
-      {/* process G4 */}
-      <Route exact path="/departments" component={DepartmentList} />
-      <Route exact path="/guide-result" component={GuideResult} />
-      <Route exact path="/success" component={Success} />
-      <Route exact path="/fail" component={Fail} />
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/signin" />
+        </Route>
+        <Route path="/signin" component={Signin} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/chat" component={Chat} />
+        {/* process G4 */}
+        <Route path="/departments" component={DepartmentList} />
+        <Route path="/guide-result" component={GuideResult} />
+        <Route path="/success" component={Success} />
+        <Route path="/fail" component={Fail} />
+        <Route>
+          <NoMatch />
+        </Route>
+      </Switch>
     </Router>
+  );
+}
+
+function NoMatch() {
+  const location = useLocation();
+  return (
+    <div>
+      <h2>
+        <code>No match for path:</code>
+      </h2>
+      <h1>
+        <code>{location.pathname}</code>
+      </h1>
+      {[
+        'Check your url:',
+        '- for signin, use /signin',
+        '- for signup, use /signup',
+        '- for chat, use /chat',
+        '- for result, use /result',
+        '- / will be redirected to /signin',
+      ].map(msg => (
+        <h3>
+          <code>{msg}</code>
+        </h3>
+      ))}
+    </div>
   );
 }
