@@ -20,6 +20,16 @@ const theme = createMuiTheme({
     warning: {
       main: '#ffa372',
     },
+    info: {
+      main: '#878DA4',
+    },
+    // for text
+    text_primary: {
+      main: '#0f1c49',
+    },
+    text_plain: {
+      main: '#878DA4',
+    },
   },
   status: {
     danger: 'orange',

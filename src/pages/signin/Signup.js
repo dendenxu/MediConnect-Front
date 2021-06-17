@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -17,12 +16,27 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import BottomBar from '../components/BottomBar';
+import Copyright from '../components/Copyright';
 
 const useStyles = makeStyles(theme => {
   const gridPadding = theme.spacing(0.5, 2.5);
+  const smallGridPadding = theme.spacing(0.5, 1.5);
   const threeFraction = '30%';
   const twoFraction = '45%';
+  const containerStyle = {
+    margin: theme.spacing(0),
+    padding: gridPadding,
+    [theme.breakpoints.down('xs')]: {
+      padding: smallGridPadding,
+    },
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
   return {
     layoutContainer: {
       display: 'flex',
@@ -74,14 +88,7 @@ const useStyles = makeStyles(theme => {
       marginBottom: theme.spacing(2),
     },
 
-    accountInfoContainer: {
-      marginTop: theme.spacing(2),
-      padding: gridPadding,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    accountInfoContainer: { marginTop: theme.spacing(2), ...containerStyle },
 
     lastNameInputBox: {
       padding: theme.spacing(0),
@@ -139,14 +146,7 @@ const useStyles = makeStyles(theme => {
       marginRight: theme.spacing(-1),
     },
 
-    emailInputContainer: {
-      margin: theme.spacing(0),
-      padding: gridPadding,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    emailInputContainer: containerStyle,
 
     emailInputBox: {
       padding: theme.spacing(0),
@@ -164,15 +164,7 @@ const useStyles = makeStyles(theme => {
       },
     },
 
-    passwordContainer: {
-      margin: theme.spacing(0),
-      padding: gridPadding,
-      marginBottom: theme.spacing(0),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
+    passwordContainer: containerStyle,
 
     passwordInputBox: {
       padding: theme.spacing(0),
@@ -235,6 +227,7 @@ const useStyles = makeStyles(theme => {
     copyright: {
       marginTop: theme.spacing(3),
       display: 'flex',
+      flexDirection: 'row',
       justifyContent: 'flex-end',
       width: '90%',
     },
@@ -243,6 +236,7 @@ const useStyles = makeStyles(theme => {
     buttomBar: {
       marginTop: theme.spacing(1),
       display: 'flex',
+      flexDirection: 'row',
       justifyContent: 'flex-end',
       width: '90%',
     },
@@ -252,6 +246,7 @@ const useStyles = makeStyles(theme => {
       justifyContent: 'flex-start',
       margin: theme.spacing(0),
       marginTop: theme.spacing(-1),
+      marginBottom: theme.spacing(2),
       padding: gridPadding,
       paddingTop: theme.spacing(0),
       paddingBottom: theme.spacing(0),
@@ -264,100 +259,90 @@ const useStyles = makeStyles(theme => {
       // ! special operation for Josefin Sans
       transform: 'translate(0px,1.5px)',
     },
+    textFieldInput: {
+      fontSize: '1rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.8rem',
+      },
+    },
+    helperText: {
+      fontSize: '0.75rem',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '0.6rem',
+      },
+    },
   };
 });
 
-const BottomBar = props => {
-  const { name } = props;
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} className={classes.buttomBar}>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          帮助
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          使用条款
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link color="textSecondary" href="neon-cubes.xyz" variant="caption">
-          隐私协议
-        </Link>
-      </Grid>
-    </Grid>
-  );
-};
-
-function Copyright() {
-  const classes = useStyles();
-  return (
-    <Grid container spacing={2} className={classes.copyright}>
-      <Grid item>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          // align="center"
-          // className={classes.copyrightText}
-        >
-          {'Copyright © '}
-          <Link color="inherit" href="https://github.com/dendenxu">
-            dendenxu
-          </Link>{' '}
-          {new Date().getFullYear()}.
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-}
-
-export default function home() {
+function Signup(props) {
+  const { width } = props;
   const classes = useStyles();
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const ITEM_HEIGHT = 48;
-  const options = ['患者', '医生'];
+  const accountTypeDisplay = ['患者', '医生'];
+  const accountTypeStorage = ['patient', 'doctor'];
 
-  // const [afterEmailCheck, setAfterEmailCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
-  const [validEmail, setValidEmail] = useState('');
+  const [validFormEmail, setValidFormEmail] = useState('');
   const [passwordInvalid, setPasswordInvalid] = useState(false);
-  const [emailInvalid, setEmailInvalid] = useState(false);
+  const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [emailFormInvalid, setEmailFormInvalid] = useState(false);
   const [lastNameInvalid, setLastNameInvalid] = useState(false);
   const [firstNameInvalid, setFirstNameInvalid] = useState(false);
   const [accountTypeInvalid, setAccountTypeInvalid] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [userType, setUserType] = useState(-1);
-  const [passwordInput, setPasswordInput] = useState('');
+  const [accountType, setAccountType] = useState(-1);
+  const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
+  const textFieldClassProps = {
+    InputProps: {
+      classes: {
+        root: classes.textFieldInput,
+      },
+    },
+    InputLabelProps: {
+      classes: {
+        root: classes.textFieldInput,
+        // focused: {},
+      },
+    },
+    FormHelperTextProps: {
+      classes: {
+        root: classes.helperText,
+      },
+    },
+  };
 
   // note that this is a full-width space
   // material ui seems to ignore the half-width one
-  let lastNameHelperText = '　';
-  let firstNameHelperText = '　';
-  let accountTypeHelperText = '　';
-  let emailBoxHelperText = '　'; // some white spaces to take up the width
-  let passwordHelperText = '　';
-  let passwordConfirmHelperText = '　';
+  const defaultHelperTextPlaceHolder = isWidthDown('xs', width) ? '' : '　';
+
+  let lastNameHelperText = defaultHelperTextPlaceHolder;
+  let firstNameHelperText = defaultHelperTextPlaceHolder;
+  let accountTypeHelperText = defaultHelperTextPlaceHolder;
+  let emailBoxHelperText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
+  let passwordHelperText = defaultHelperTextPlaceHolder;
+  let passwordConfirmHelperText = defaultHelperTextPlaceHolder;
 
   if (passwordInvalid) {
     passwordHelperText = '密码应有至少8个字符';
   }
-  if (passwordInput !== passwordConfirm) {
+  if (password !== passwordConfirm) {
     passwordConfirmHelperText = '两次输入密码不一致';
   }
   if (emailFormInvalid) {
     // check the form first
     emailBoxHelperText = '请输入有效的邮箱地址';
-  } else if (emailInvalid) {
+  } else if (emailAlreadyTaken) {
     emailBoxHelperText = '您输入的邮箱已注册';
   }
+
   if (lastNameInvalid) {
     lastNameHelperText = '请填写姓氏';
   }
@@ -369,30 +354,60 @@ export default function home() {
   }
 
   const handleNextClick = async () => {
-    const throwableHandle = async () => {
-      const response = await fetch('/email', {
+    let allchecked = true;
+    const checkEmailWithServer = async () => {
+      const response = await fetch(`/api/account/checkemail`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: inputContent,
+          email: validFormEmail,
+          passwd: 'default password',
         }),
       });
       console.log(response);
-      const message = await response.json();
 
-      let allchecked = true;
       if (response.ok) {
         console.log(`The server says your email is OK:`);
-        console.log(message);
         allchecked = false;
+        setEmailAlreadyTaken(true);
       } else {
-        setEmailInvalid(true);
         console.log(`Your email doesn't exist, check again my boy`);
         console.log("But I know you're registering, so that's OK.");
-        console.log(message);
+        setEmailAlreadyTaken(false);
       }
+    };
+
+    const registerUser = async () => {
+      const response = await fetch('/api/account/create', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // id: validFormEmail,
+          email: validFormEmail,
+          firstname: firstName,
+          lastname: lastName,
+          passwd: password,
+          type: accountTypeStorage[accountType],
+          // role: ['ADMIN'], //! dangerous now
+        }),
+      });
+
+      console.log(response);
+    };
+
+    try {
+      if (!validFormEmail) {
+        console.log('Wrong email format, refusing to login');
+        allchecked = false;
+        setEmailFormInvalid(true);
+      } else {
+        await checkEmailWithServer();
+      }
+
       if (!firstName) {
         setFirstNameInvalid(true);
         allchecked = false;
@@ -401,23 +416,24 @@ export default function home() {
         setLastNameInvalid(true);
         allchecked = false;
       }
-      if (!(userType in [...options.keys()])) {
+      if (!(accountType in [...accountTypeDisplay.keys()])) {
         setAccountTypeInvalid(true);
         allchecked = false;
       }
-      if (passwordInput.length < 8) {
+      if (password.length < 8) {
         setPasswordInvalid(true);
         allchecked = false;
       }
       if (allchecked) {
         console.log('All checked out.');
+        console.log(
+          `Valid form email: ${validFormEmail}, input content: ${inputContent}`,
+        );
+
+        registerUser();
       } else {
         console.log('Something is wrong.');
       }
-    };
-
-    try {
-      await throwableHandle();
     } catch (err) {
       console.log(err);
     }
@@ -430,7 +446,7 @@ export default function home() {
 
   const handleMenuItemClick = idx => event => {
     setAnchorEl(null);
-    setUserType(idx);
+    setAccountType(idx);
     setAccountTypeInvalid(false);
   };
   const handleFirstNameInput = event => {
@@ -448,7 +464,7 @@ export default function home() {
   const handleEmailInput = event => {
     const text = event.target.value;
     setInputContent(text);
-    setEmailInvalid(false);
+    setEmailAlreadyTaken(false);
 
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -457,11 +473,12 @@ export default function home() {
     setEmailFormInvalid(invalid);
     console.log(`Getting new email text: ${text}`);
     console.log(`Setting email form invalid: ${invalid}`);
+    setValidFormEmail(invalid ? '' : text);
   };
 
   const handlePasswordInput = event => {
     const text = event.target.value;
-    setPasswordInput(text);
+    setPassword(text);
     setPasswordInvalid(false);
   };
   const handlePasswordConfirm = event => {
@@ -471,7 +488,7 @@ export default function home() {
   };
 
   const handleLogin = event => {
-    history.push('/');
+    history.push('/signin');
   };
 
   const handleCheckBoxChange = event => {
@@ -500,7 +517,7 @@ export default function home() {
                 error={lastNameInvalid}
                 className={classes.lastNameInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_second_name"
                 label="姓氏"
                 helperText={lastNameHelperText}
@@ -508,6 +525,7 @@ export default function home() {
                 autoFocus
                 value={lastName}
                 onChange={handleLastNameInput}
+                {...textFieldClassProps}
               />
             </Container>
 
@@ -516,7 +534,7 @@ export default function home() {
                 error={firstNameInvalid}
                 className={classes.firstNameInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_first_name"
                 label="名字"
                 helperText={firstNameHelperText}
@@ -524,6 +542,7 @@ export default function home() {
                 autoFocus
                 value={firstName}
                 onChange={handleFirstNameInput}
+                {...textFieldClassProps}
               />
             </Container>
 
@@ -532,14 +551,16 @@ export default function home() {
                 error={accountTypeInvalid}
                 className={classes.accountTypeInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_account_type"
-                label="账户类型"
+                label={isWidthDown('xs', width) ? '类型' : '账户类型'}
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                value={options[userType] ?? ''}
+                value={accountTypeDisplay[accountType] ?? ''}
+                InputLabelProps={textFieldClassProps.InputLabelProps}
                 InputProps={{
+                  ...textFieldClassProps.InputProps,
                   readOnly: true,
                   endAdornment: (
                     <InputAdornment position="end">
@@ -565,13 +586,13 @@ export default function home() {
                           },
                         }}
                       >
-                        {[...options.keys()].map(key => (
+                        {[...accountTypeDisplay.keys()].map(key => (
                           <MenuItem
                             key={key}
                             selected={key === 0}
                             onClick={handleMenuItemClick(key)}
                           >
-                            {options[key]}
+                            {accountTypeDisplay[key]}
                           </MenuItem>
                         ))}
                       </Menu>
@@ -585,10 +606,10 @@ export default function home() {
           <Container className={classes.emailInputContainer}>
             <Container className={classes.emailInputBox}>
               <TextField
-                error={emailInvalid || emailFormInvalid}
+                error={emailAlreadyTaken || emailFormInvalid}
                 className={classes.emailInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="username"
                 label="邮箱账号"
                 helperText={emailBoxHelperText}
@@ -597,6 +618,7 @@ export default function home() {
                 fullWidth
                 value={inputContent}
                 onChange={handleEmailInput}
+                {...textFieldClassProps}
               />
             </Container>
           </Container>
@@ -607,23 +629,25 @@ export default function home() {
                 error={passwordInvalid}
                 className={classes.passwordInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_password"
                 label="密码"
                 helperText={passwordHelperText}
                 name="user_password"
                 autoFocus
-                value={passwordInput}
+                value={password}
                 onChange={handlePasswordInput}
+                {...textFieldClassProps}
+                type={!showPassword ? 'password' : ''}
               />
             </Container>
 
             <Container className={classes.passwordConfirmInputBox}>
               <TextField
-                error={passwordInput !== passwordConfirm}
+                error={password !== passwordConfirm}
                 className={classes.passwordConfirmInput}
                 variant="outlined"
-                size="medium"
+                size={textFieldSize}
                 id="user_password_confirm"
                 label="确认密码"
                 helperText={passwordConfirmHelperText}
@@ -631,6 +655,8 @@ export default function home() {
                 autoFocus
                 value={passwordConfirm}
                 onChange={handlePasswordConfirm}
+                {...textFieldClassProps}
+                type={!showPassword ? 'password' : ''}
               />
             </Container>
           </Container>
@@ -679,9 +705,11 @@ export default function home() {
           </Container>
         </Box>
 
-        <BottomBar name={inputContent} />
-        <Copyright />
+        <BottomBar className={classes.buttomBar} />
+        <Copyright className={classes.copyright} />
       </Container>
     </Container>
   );
 }
+
+export default withWidth()(Signup);
