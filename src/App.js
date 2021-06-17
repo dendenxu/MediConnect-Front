@@ -9,7 +9,8 @@ import {
 import Signin from './pages/signin/Signin';
 import Signup from './pages/signin/Signup';
 import Chat from './pages/chat/Chat';
-
+import Record from './pages/record/Record';
+import Browse from './pages/case/Browse';
 // process-G4
 import Success from './pages/process/Success';
 import Fail from './pages/process/Fail';
@@ -34,6 +35,8 @@ export default function App() {
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
         <Route path="/fail" component={Fail} />
+        <Route path="/browse" component={Browse} />
+        <Route path="/record" component={Record} />
         <Route>
           <NoMatch />
         </Route>
@@ -60,6 +63,7 @@ function NoMatch() {
         '- for result, use /result',
         '- / will be redirected to /signin',
       ].map(msg => (
+        // eslint-disable-next-line react/jsx-key
         <h3>
           <code>{msg}</code>
         </h3>
