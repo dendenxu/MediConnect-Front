@@ -256,23 +256,12 @@ function Signin(props) {
 
       console.log(response);
 
-      // if (response.redirected) {
-      //   const url = new URL(response.url);
-      //   const { pathname } = url;
-      //   const error = url.searchParams.get('error');
-
-      //   console.log(`Getting redirected to ${pathname} with ${error}`);
-
-      //   if (pathname === '/signin' && error != null) {
-      //     console.log('Signin Error');
-      //     setPasswordInvalid(true);
-      //   } else {
-      //     setPasswordInvalid(false);
-      //     history.push(pathname);
-      //   }
-      // } else
       if (response.ok) {
         setPasswordInvalid(false);
+        history.push({
+          pathname: '/search',
+          state: { email: validEmail },
+        });
       } else {
         setPasswordInvalid(true);
       }

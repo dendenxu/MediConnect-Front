@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles({
   root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   header: {
-    margin: '12px',
+    marginTop: '16px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,12 +27,16 @@ const useStyles = makeStyles({
   iconButton: {
     marginRight: '-10px',
   },
+  cancelButton: {
+    color: 'rgba(0,0,0,0.54)',
+  },
 });
 
 export default function MediSearch() {
   const classes = useStyles();
   const theme = useTheme();
 
+  const [inputContent, setInputContent] = useState('');
   const [focused, setFocused] = useState(false);
   const iconColor = focused ? theme.palette.primary.main : 'rgba(0,0,0,0.54)';
   console.log(iconColor);
@@ -45,12 +50,18 @@ export default function MediSearch() {
     <Box className={classes.root}>
       <Box component="form" onSubmit={handleSubmit} className={classes.header}>
         <TextField
+          id="search-box"
           className={classes.input}
           label="智能导诊"
           placeholder="请输入您的症状"
           variant="outlined"
-          type="search"
+          // type="search"
+
           autoFocus
+          value={inputContent}
+          onChange={e => {
+            setInputContent(e.target.value);
+          }}
           onFocus={() => {
             setFocused(true);
             console.log('Setting to focused');
@@ -63,6 +74,19 @@ export default function MediSearch() {
             ariaLabel: 'search mediconnect',
             endAdornment: (
               <InputAdornment position="end">
+                {inputContent === '' || (
+                  <IconButton
+                    className={classes.cancelButton}
+                    size="medium"
+                    onClick={() => {
+                      setInputContent('');
+                      document.getElementById('search-box').focus();
+                    }}
+                  >
+                    <CancelIcon fontSize="small" />
+                  </IconButton>
+                )}
+
                 <IconButton
                   color="primary"
                   type="submit"
