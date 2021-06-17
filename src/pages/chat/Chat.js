@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import Popover from '@material-ui/core/Popover';
 import {
   socket,
   hello,
@@ -277,65 +278,75 @@ function TopBar({
   );
 }
 
-function ToolBar({ CurrentPatientID, CurrentUserID }) {
+function ToolBar({ CurrentPatientID, CurrentUserID, Questions, setMessages }) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedIndex, setSelectedIndex] = useState();
 
-  const handleIconClick = event => {};
-  const handlePicClick = event => {};
-  const handleQuesClick = event => {
-    requireQuestions(CurrentUserID);
+  const handlePopoverOpen = event => {
+    setAnchorEl(event.currentTarget);
   };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
   const handleMedClick = event => {
     requirePrescription(CurrentPatientID, CurrentUserID);
   };
   const handleRecClick = event => {
     requireMedicalRecord(CurrentPatientID, CurrentUserID);
   };
-  const fileInputEl = useRef(null);
 
-  const handlePhoto = async event => {
-    const files = [...event.target.files];
-    if (files.length === 0) return;
-    const result = await Promise.all(
-      files.map(file => {
-        let url = null;
-        if (window.createObjectURL !== undefined) {
-          url = window.createObjectURL(file);
-        } else if (window.URL !== undefined) {
-          url = window.URL.createObjectURL(file);
-        } else if (window.webkitURL !== undefined) {
-          url = window.webkitURL.createObjectURL(file);
-        }
-        return url;
-      }),
-    );
-    console.log(result);
-  };
+  const QuestionsA = Questions.map(Question => (
+    <ListItem
+      className={classes.listItem}
+      key={Questions.findIndex(obj => obj === Question)}
+      button
+      onClick={event => {
+        setAnchorEl(null);
+        setMessages(msgs =>
+          msgs.update(CurrentPatientID.toString(), msg => [
+            ...msg,
+            { sender: CurrentUserID, content: Question, time: '12:12' },
+          ]),
+        );
+      }}
+    >
+      <ListItemText primary={Question} />
+    </ListItem>
+  ));
 
   return (
     <Container className={classes.toolbar}>
       <Grid container spacing={1}>
         <Grid item xs={1}>
-          <Button onClick={handleIconClick}>
-            <EmojiIcon className={classes.icon} />
+          <Button onClick={handlePopoverOpen}>
+            <QuestionsIcon />
           </Button>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={() => fileInputEl.current.click()}>
-            <input
-              ref={fileInputEl}
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={event => handlePhoto(event)}
-            />
-            <PictureIcon className={classes.icon} />
-          </Button>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={handleQuesClick}>
-            <QuestionsIcon className={classes.icon} />
-          </Button>
+          <Popover
+            id="mouse-over-popover"
+            className={classes.popover}
+            classes={{
+              paper: classes.paper,
+            }}
+            open={open}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            onClose={handlePopoverClose}
+            disableRestoreFocus
+          >
+            <List>{QuestionsA}</List>
+          </Popover>
         </Grid>
         <Grid item xs={1}>
           <Button onClick={handleMedClick}>
@@ -465,7 +476,10 @@ function Chat() {
       ],
     }),
   );
-  const [Questions, setQuestions] = useState(['Q1', 'Q2']);
+  const [Questions, setQuestions] = useState([
+    'Please describe some details of your aching position.',
+    'Do you have any medication allergies?',
+  ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
 
@@ -503,8 +517,6 @@ function Chat() {
       const localPatients = JSON.parse(localStorage.getItem('Patients'));
       console.log('localMessages:', localMessages);
       console.log('localPatients:', localPatients);
-      // setMessages(msgs => Map(localMessages));
-      // setPatients(pas => localPatients);
       console.log('Patiens after local:', Patients);
     };
 
@@ -514,7 +526,6 @@ function Chat() {
       const patientID = JSON.stringify(dataFromServer.PatientID);
       console.log('patientID:', patientID);
       console.log(dataFromServer);
-      // console.log(dataFromServer.PatientID.toString());
       switch (dataFromServer.Type) {
         case 6:
           // const pID = dataFromServer.PatientID.toString()
@@ -624,6 +635,8 @@ function Chat() {
           <ToolBar
             CurrentPatientID={CurrentPatientID}
             CurrentUserID={CurrentUserID}
+            Questions={Questions}
+            setMessages={setMessages}
           />
           <InputBox
             message={message}
