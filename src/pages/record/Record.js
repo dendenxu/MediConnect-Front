@@ -127,7 +127,7 @@ export default function Home() {
   const PatientID = location.state.Patient_id;
   console.log(CaseID);
   console.log(PatientID);
-  const DoctorID = '';
+  const DoctorID = location.state.Doctor_id;
   const Department = '';
   const [editRowsModel, setEditRowsModel] = React.useState({});
   const [rows, setRows] = React.useState(defaultRows);

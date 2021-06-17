@@ -8,18 +8,19 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Search from '@material-ui/icons/Search';
 import { Link, useHistory } from 'react-router-dom';
+import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import SearchBar from '../components/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
     padding: theme.spacing(0),
     margin: 'auto',
-    width: '40%',
+    width: '100%',
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     marginTop: '20px',
-    width: '93%',
+    width: '100%',
   },
 
   input: {
@@ -39,6 +40,7 @@ function toDisplayItem(info, index) {
       state: {
         Case_id: info.case_id,
         Patient_id: info.patient_id,
+        Doctor_id: info.doctor_id,
         Department: info.department,
       },
     });
@@ -80,6 +82,7 @@ const data = [
   {
     case_id: '1',
     patient_id: 8,
+    doctor_id: 99,
     doctor: 'foo1',
     patient: 'bar1',
     department: '太平间',
@@ -90,6 +93,7 @@ const data = [
   {
     case_id: '2',
     patient_id: 8,
+    doctor_id: 99,
     doctor: 'foo2',
     patient: 'bar1',
     department: '太平间',
@@ -99,11 +103,27 @@ const data = [
   },
 ];
 
+const doctorId = 99;
+const patientId = 10;
+const department = '太平间';
+
 export default function Browse() {
   classes = useStyles();
   const [display, setDisplay] = useState(data);
-
   const displayItems = display.map(toDisplayItem);
+  const history = useHistory();
+
+  const handlerecord = event => {
+    history.push({
+      pathname: '/Record',
+      state: {
+        Case_id: 0,
+        Patient_id: patientId,
+        Department: department,
+        Doctor_id: doctorId,
+      },
+    });
+  };
 
   const searchChange = event => {
     const str = event.target.value;
@@ -151,6 +171,24 @@ export default function Browse() {
             alignItems="center"
           >
             {displayItems}
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Paper className={classes.paper} onClick={handlerecord}>
+              <Grid container spacing={2} display="flex">
+                <Grid item xs={12} sm container>
+                  <AddCircleOutlinedIcon
+                    style={{ color: '#4e89ae', margin: 'auto', fontSize: 50 }}
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
       </Grid>
