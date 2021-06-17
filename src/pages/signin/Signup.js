@@ -18,8 +18,8 @@ import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
-import BottomBar from './BottomBar';
-import Copyright from './Copyright';
+import BottomBar from '../components/BottomBar';
+import Copyright from '../components/Copyright';
 
 const useStyles = makeStyles(theme => {
   const gridPadding = theme.spacing(0.5, 2.5);

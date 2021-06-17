@@ -6,7 +6,7 @@ import { Box, Button, Grid, Typography, Divider } from '@material-ui/core';
 import React from 'react';
 
 import { ReactComponent as FailIcon } from '../../assets/images/fail.svg';
-import Header from './components/Header';
+import Header from '../components/Header';
 
 // const theme = createMuiTheme({
 //   palette: {

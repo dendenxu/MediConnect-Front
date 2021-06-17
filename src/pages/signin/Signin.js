@@ -14,9 +14,9 @@ import Container from '@material-ui/core/Container';
 import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
-import BottomBar from './BottomBar';
-import Copyright from './Copyright';
-import AvatarBar from './AvatarBar';
+import BottomBar from '../components/BottomBar';
+import Copyright from '../components/Copyright';
+import AvatarBar from '../components/AvatarBar';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...

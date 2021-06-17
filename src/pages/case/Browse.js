@@ -130,7 +130,6 @@ export default function Browse() {
       >
         <Grid item>
           <div className={classes.input}>
-            {' '}
             <TextField
               variant="outlined"
               onChange={searchChange}
@@ -143,7 +142,7 @@ export default function Browse() {
                   </InputAdornment>
                 ),
               }}
-            />{' '}
+            />
           </div>
         </Grid>
         <Grid item>

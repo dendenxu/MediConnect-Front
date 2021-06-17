@@ -17,8 +17,8 @@ import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/styles';
 
 import theme from '../../theme/theme';
-import Header from './components/Header';
-import DepartmentItem from './components/DepartmentItem';
+import Header from '../components/Header';
+import DepartmentItem from '../components/DepartmentItem';
 
 const HyperTypography = withStyles({
   root: {

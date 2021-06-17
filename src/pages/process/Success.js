@@ -13,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { ReactComponent as SuccessIcon } from '../../assets/images/success.svg';
 
 import { ReactComponent as FailIcon } from '../../assets/images/fail.svg';
-import Header from './components/Header';
+import Header from '../components/Header';
 
 // const theme = createMuiTheme({
 //   palette: {
