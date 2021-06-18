@@ -10,7 +10,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import Header from './components/Header';
+import Header from '../components/Header';
 import theme from '../../theme/theme';
 
 // const useStyles = makeStyles(theme => ({

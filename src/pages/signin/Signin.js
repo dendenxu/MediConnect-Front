@@ -15,9 +15,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
-import BottomBar from './BottomBar';
-import Copyright from './Copyright';
-import AvatarBar from './AvatarBar';
+import BottomBar from '../components/BottomBar';
+import Copyright from '../components/Copyright';
+import AvatarBar from '../components/AvatarBar';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
@@ -267,6 +267,10 @@ function Signin(props) {
 
       if (response.ok) {
         setPasswordInvalid(false);
+        history.push({
+          pathname: '/search',
+          state: { email: validEmail },
+        });
       } else {
         setPasswordInvalid(true);
       }
