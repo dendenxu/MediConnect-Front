@@ -20,7 +20,7 @@ import {
   closeChat,
   requireMedicalRecord,
   requirePrescription,
-  requireQuestions,
+  // requireQuestions,
 } from './api';
 import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
@@ -425,7 +425,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
     );
   return (
     <ScrollToBottom className={classes.MessageContainer}>
-      Please select a Patient.
+      请选择一个病人进行会话
     </ScrollToBottom>
   );
 }
@@ -436,51 +436,69 @@ function Chat() {
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: 'Alice' },
-    { PatientID: 1985, PatientName: 'Judy' },
-    { PatientID: 1987, PatientName: 'Max' },
+    { PatientID: 1983, PatientName: '张三' },
+    { PatientID: 1985, PatientName: '李四' },
+    { PatientID: 1987, PatientName: '王五' },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(
     Map({
       1983: [
-        { sender: 111, content: 'hhhh', time: '12:20' },
-        { sender: 1983, content: 'oooooo', time: '12:33' },
-        {
-          sender: 1983,
-          content: 'Hi! I have some trouble with my head. It aches a lot.',
-          time: '12:33',
-        },
-        {
-          sender: 111,
-          content: 'Then, Where exactly the aching is?',
-          time: '23:33',
-        },
+        { sender: 111, content: '医生发的第一条消息', time: '12:20' },
+        { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
+        { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+        { sender: 111, content: '医生发的第二条消息', time: '12:34' },
+        { sender: 111, content: '医生发的第三条消息', time: '12:35' },
+        { sender: 111, content: '医生发的第四条消息', time: '12:36' },
+        { sender: 111, content: '医生发的第五条消息', time: '12：37' },
+        { sender: 111, content: '医生发的第六条消息', time: '12：38' },
+        { sender: 111, content: '医生发的第七条消息', time: '12：39' },
+        { sender: 111, content: '医生发的第八条消息', time: '12：40' },
+        { sender: 111, content: '医生发的第九条消息', time: '12：41' },
+        { sender: 111, content: '医生发的第十条消息', time: '12：42' },
+        { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
+        { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
+        { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
+        { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
+        { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
+        { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
+        { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
+        { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
       ],
       1985: [
-        { sender: 111, content: 'react is cool', time: '23:33' },
-        { sender: 1985, content: 'so is Redux', time: '12:33' },
-      ],
-      1987: [
-        { sender: 111, content: 'hhhh', time: '23:33' },
-        { sender: 1987, content: 'oooooo', time: '12:33' },
+        { sender: 111, content: '医生发的第一条消息', time: '14:30' },
+        { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
         {
-          sender: 1987,
-          content: 'Hi! I have some trouble with my head. It aches a lot.',
-          time: '12:33',
+          sender: 111,
+          content: '点击链接查看你的病历：https://www.baidu.com/',
+          time: '14:33',
         },
         {
           sender: 111,
-          content: 'Then, Where exactly the aching is?',
-          time: '23:33',
+          content: '点击链接查看你的处方：https://www.baidu.com/',
+          time: '14:33',
         },
       ],
+      1987: [],
     }),
   );
   const [Questions, setQuestions] = useState([
-    'Please describe some details of your aching position.',
-    'Do you have any medication allergies?',
+    '能详细描述一下你的病症吗？',
+    '请问您有任何药物或食物过敏吗',
+    '请问您有测过体温吗？体温是多少呢？',
+    '能具体说说你昨天吃了什么东西吗？',
+    '这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题',
+    '检测多条问题的问题一',
+    '检测多条问题的问题二',
+    '检测多条问题的问题三',
+    '检测多条问题的问题四',
+    '检测多条问题的问题五',
+    '检测多条问题的问题六',
+    '检测多条问题的问题七',
+    '检测多条问题的问题八',
+    '检测多条问题的问题九',
+    '检测多条问题的问题十',
   ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -567,7 +585,7 @@ function Chat() {
               ...msg2,
               {
                 sender: dataFromServer.PatientID,
-                content: dataFromServer.Url,
+                content: `通过链接打开你的病历：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
             ]),
@@ -579,7 +597,7 @@ function Chat() {
               ...msg3,
               {
                 sender: dataFromServer.PatientID,
-                content: dataFromServer.Url,
+                content: `通过链接打开你的处方：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
             ]),

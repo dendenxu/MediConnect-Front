@@ -1,4 +1,7 @@
 const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
+const socketPatient = new WebSocket(
+  'ws://172.27.197.171:12448/api/patient/222/chat',
+);
 
 const connect = cb => {
   console.log('Connecting');
@@ -138,6 +141,7 @@ const requireQuestions = doctorID => {
 
 export {
   socket,
+  socketPatient,
   connect,
   hello,
   msgFromClient,
