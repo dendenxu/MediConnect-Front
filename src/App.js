@@ -19,6 +19,7 @@ import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
 import MediSearch from './pages/process/MediSearch';
 import ChatPatient from './pages/chat/ChatPatient';
+import RegList from './pages/process/RegList';
 
 export default function App() {
   return (
@@ -39,6 +40,8 @@ export default function App() {
         <Route path="/fail" component={Fail} />
         <Route path="/browse" component={Browse} />
         <Route path="/record" component={Record} />
+        <Route path="/reglist" component={RegList} />
+
         <Route>
           <NoMatch />
         </Route>

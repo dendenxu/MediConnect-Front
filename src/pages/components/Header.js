@@ -20,7 +20,7 @@ export default function Header(props) {
   const { text } = props;
 
   const HeaderText = (
-    <WhiteTextTypography variant="h4" component="h1">
+    <WhiteTextTypography variant="h5" component="h1">
       {text}
     </WhiteTextTypography>
   );

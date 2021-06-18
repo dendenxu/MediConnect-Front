@@ -57,7 +57,7 @@ class DepartmentList extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
-        <Header text="TODO" />
+        <Header text="科室一览" />
         <List>
           {deps.map(data => (
             <DepartmentItem key={data.id} data={data} />
