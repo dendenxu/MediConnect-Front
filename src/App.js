@@ -11,6 +11,7 @@ import Fail from './pages/process/Fail';
 import GuideResult from './pages/process/GuideResult';
 import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
+import RegList from './pages/process/RegList';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
       <Route exact path="/guide-result" component={GuideResult} />
       <Route exact path="/success" component={Success} />
       <Route exact path="/fail" component={Fail} />
+      <Route exact path="/reglist" component={RegList} />
     </Router>
   );
 }
