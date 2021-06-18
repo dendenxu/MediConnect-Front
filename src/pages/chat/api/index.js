@@ -1,5 +1,9 @@
 const socket = new WebSocket(
-  `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/111/chat`,
+  `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/111/chat`,
+);
+
+const socketPatient = new WebSocket(
+  `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/111/chat`,
 );
 
 const connect = cb => {
@@ -140,6 +144,7 @@ const requireQuestions = doctorID => {
 
 export {
   socket,
+  socketPatient,
   connect,
   hello,
   msgFromClient,

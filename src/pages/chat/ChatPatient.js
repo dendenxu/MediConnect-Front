@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
@@ -10,12 +11,13 @@ import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import {
-  socket,
-  hello,
-  closeChat,
-  requireMedicalRecord,
-  requirePrescription,
-  requireQuestions,
+  // socket,
+  socketPatient,
+  // hello,
+  // closeChat,
+  // requireMedicalRecord,
+  // requirePrescription,
+  // requireQuestions,
 } from './api';
 
 const useStyles = makeStyles(theme => ({
@@ -227,7 +229,7 @@ function TopBar({ DoctorName }) {
             <ArrowBackIosIcon />
           </Button>
         </Grid>
-        <Grid item xs={3} spacing={0}>
+        <Grid item xs={0} spacing={0}>
           <Paper className={classes.namepaper} variant="outlined" square>
             {DoctorName}
           </Paper>
@@ -376,7 +378,7 @@ function Messages({ messages, CurrentUserID }) {
 function ChatPatient() {
   const classes = useStyles();
   const [CurrentUserID, setCurrentUserID] = useState(1983);
-  const [DoctorName, setDoctorName] = useState('Flaze');
+  const [DoctorName, setDoctorName] = useState('内科王医生');
   // const [Patients, setPatients] = useState([
   //   { PatientID: 1983, DoctorName: 'Alice' },
   //   { PatientID: 1985, DoctorName: 'Judy' },
@@ -384,18 +386,11 @@ function ChatPatient() {
   const [CurrentDoctorID, setCurrentDoctorID] = useState(111);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
-    { sender: 111, content: 'hhhh', time: '23:33' },
-    { sender: 1983, content: 'oooooo', time: '12:33' },
-    {
-      sender: 1983,
-      content: 'Hi! I have some trouble with my head. It aches a lot.',
-      time: '12:33',
-    },
-    {
-      sender: 111,
-      content: 'Then, Where exactly the aching is?',
-      time: '23:33',
-    },
+    { sender: 111, content: '医生发的第一条消息', time: '12:20' },
+    { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
+    { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+    { sender: 111, content: '医生发的第二条消息', time: '12:34' },
+    { sender: 111, content: '医生发的第三条消息', time: '12:35' },
   ]);
   // const [messages, setMessages] = useState(
   //   Map({
@@ -433,10 +428,10 @@ function ChatPatient() {
         SenderID: CurrentUserID,
         ReceiverID: CurrentDoctorID,
         Content: message,
-        Time: '12:20',
+        Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
-      socket.send(JSON.stringify(json));
+      socketPatient.send(JSON.stringify(json));
 
       setMessage('');
 
@@ -448,13 +443,17 @@ function ChatPatient() {
       // );
       setMessages(msgs => [
         ...msgs,
-        { sender: CurrentUserID, content: message, time: '12:12' },
+        {
+          sender: CurrentUserID,
+          content: message,
+          time: moment().format('HH:mm'),
+        },
       ]);
     }
   };
 
   useEffect(() => {
-    socket.onopen = () => {
+    socketPatient.onopen = () => {
       console.log('Successfully Connected');
       // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
@@ -466,7 +465,7 @@ function ChatPatient() {
       // console.log('Patiens after local:', Patients);
     };
 
-    socket.onmessage = msg => {
+    socketPatient.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
       const dataFromServer = JSON.parse(msg.data);
       // const patientID = JSON.stringify(dataFromServer.PatientID);
@@ -503,7 +502,7 @@ function ChatPatient() {
             ...msg2,
             {
               sender: dataFromServer.DoctorID,
-              content: dataFromServer.Url,
+              content: `通过链接打开你的病历：${dataFromServer.Url}`,
               time: dataFromServer.Time,
             },
           ]);
@@ -513,7 +512,7 @@ function ChatPatient() {
             ...msg3,
             {
               sender: dataFromServer.DoctorID,
-              content: dataFromServer.Url,
+              content: `通过链接打开你的病历：${dataFromServer.Url}`,
               time: dataFromServer.Time,
             },
           ]);
@@ -531,11 +530,11 @@ function ChatPatient() {
       // localStorage.setItem('Patients', JSON.stringify(Patients));
     };
 
-    socket.onclose = event => {
+    socketPatient.onclose = event => {
       console.log('Socket Closed Connection: ', event);
     };
 
-    socket.onerror = error => {
+    socketPatient.onerror = error => {
       console.log('Socket Error: ', error);
     };
   });
