@@ -330,111 +330,130 @@ function Signin(props) {
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
 
-        {loadingData && (
-          <CircularProgress size={68} className={classes.loadingProgress} />
-        )}
-
-        <Box
-          className={classes.borderedContainer}
-          style={{ filter: loadingData ? 'blur(5px)' : 'blur(0)' }}
-        >
-          <Typography component="h1" variant="h5" className={classes.welcome}>
-            {afterEmailCheck ? '欢迎' : '登录'}
-          </Typography>
-          {afterEmailCheck ? (
-            <AvatarBar
-              email={validEmail}
-              avatarSrc="https://avatars.githubusercontent.com/u/43734697?v=4"
-              handleAvatarClick={handleAvatarClick}
-              avatarButtonClass={classes.avatarButton}
-              avatarIconClass={classes.smallAvatar}
-              avatarSourceClass={classes.centeredText}
+        <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
+          {loadingData && (
+            <Box position="absolute" top="5%" left="44%">
+              <CircularProgress size={68} className={classes.loadingProgress} />
+            </Box>
+          )}
+          {loadingData && (
+            <Box
+              style={{ height: '100%', width: '100%', position: 'absolute' }}
+              position="absolute"
+              top={0}
+              left={0}
+              zIndex="tooltip"
             />
-          ) : (
-            <Typography
-              component="h1"
-              variant="body2"
-              className={classes.welcome}
-            >
-              使用您的 MediConnect 账号
-            </Typography>
           )}
 
-          <Container className={classes.checkboxInput}>
-            <TextField
-              error={
-                afterEmailCheck
-                  ? passwordInvalid
-                  : emailInvalid || emailFormInvalid
-              }
-              className={classes.input}
-              variant="outlined"
-              size={textFieldSize}
-              id="username_input_field"
-              {...textFieldClassProps}
-              label={
-                !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
-              }
-              helperText={inputBoxHelpterText}
-              name="username"
-              autoFocus
-              autoComplete={afterEmailCheck ? 'current-password' : 'email'}
-              fullWidth
-              value={inputContent}
-              onChange={handleInputChange}
-              type={afterEmailCheck && !showPassword ? 'password' : ''}
-            />
-
+          <Container
+            className={classes.borderedContainer}
+            style={{ filter: loadingData ? 'blur(5px)' : 'blur(0)' }}
+            position="absolute"
+            top={0}
+          >
+            <Typography component="h1" variant="h5" className={classes.welcome}>
+              {afterEmailCheck ? '欢迎' : '登录'}
+            </Typography>
             {afterEmailCheck ? (
-              <Container className={classes.checkboxContainer}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="remember" color="secondary" size="small" />
-                  }
-                  label={
-                    <Typography
-                      className={classes.centeredText}
-                      variant="caption"
-                      style={{
-                        marginLeft: -5,
-                      }}
-                    >
-                      显示密码
-                    </Typography>
-                  }
-                  checked={showPassword}
-                  onChange={handleCheckBoxChange}
-                  style={{
-                    marginRight: 0,
-                  }}
-                />
-              </Container>
+              <AvatarBar
+                email={validEmail}
+                avatarSrc="https://avatars.githubusercontent.com/u/43734697?v=4"
+                handleAvatarClick={handleAvatarClick}
+                avatarButtonClass={classes.avatarButton}
+                avatarIconClass={classes.smallAvatar}
+                avatarSourceClass={classes.centeredText}
+              />
             ) : (
-              <div />
+              <Typography
+                component="h1"
+                variant="body2"
+                className={classes.welcome}
+              >
+                使用您的 MediConnect 账号
+              </Typography>
             )}
-          </Container>
 
-          <Container className={classes.submit}>
-            <Link
-              onClick={handleSignup}
-              variant="caption"
-              className={classes.centeredText}
-            >
-              创建新账号
-            </Link>
-            <Button
-              className={classes.nextButton}
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={handleClick}
-            >
-              下一步
-            </Button>
-          </Container>
+            <Container className={classes.checkboxInput}>
+              <TextField
+                error={
+                  afterEmailCheck
+                    ? passwordInvalid
+                    : emailInvalid || emailFormInvalid
+                }
+                className={classes.input}
+                variant="outlined"
+                size={textFieldSize}
+                id="username_input_field"
+                {...textFieldClassProps}
+                label={
+                  !afterEmailCheck ? '输入您的电子邮件地址' : '输入您的登录密码'
+                }
+                helperText={inputBoxHelpterText}
+                name="username"
+                autoFocus
+                autoComplete={afterEmailCheck ? 'current-password' : 'email'}
+                fullWidth
+                value={inputContent}
+                onChange={handleInputChange}
+                type={afterEmailCheck && !showPassword ? 'password' : ''}
+              />
 
-          <Container>
-            <BottomBar className={classes.buttomBar} spaceOut />
+              {afterEmailCheck ? (
+                <Container className={classes.checkboxContainer}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        value="remember"
+                        color="secondary"
+                        size="small"
+                      />
+                    }
+                    label={
+                      <Typography
+                        className={classes.centeredText}
+                        variant="caption"
+                        style={{
+                          marginLeft: -5,
+                        }}
+                      >
+                        显示密码
+                      </Typography>
+                    }
+                    checked={showPassword}
+                    onChange={handleCheckBoxChange}
+                    style={{
+                      marginRight: 0,
+                    }}
+                  />
+                </Container>
+              ) : (
+                <div />
+              )}
+            </Container>
+
+            <Container className={classes.submit}>
+              <Link
+                onClick={handleSignup}
+                variant="caption"
+                className={classes.centeredText}
+              >
+                创建新账号
+              </Link>
+              <Button
+                className={classes.nextButton}
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={handleClick}
+              >
+                下一步
+              </Button>
+            </Container>
+
+            <Container>
+              <BottomBar className={classes.buttomBar} spaceOut />
+            </Container>
           </Container>
         </Box>
         <Copyright className={classes.copyright} />
