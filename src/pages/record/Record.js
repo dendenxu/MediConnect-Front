@@ -11,6 +11,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import { Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { useLocation } from 'react-router-dom';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -46,10 +48,13 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  buttontext: {
+    margin: theme.spacing(0.5, 0, 0),
+    padding: theme.spacing(0, 0.5),
+  },
   titletext: {
     color: theme.palette.primary.main,
-    height: '22px',
-    margin: theme.spacing(0, 1, 1),
+    margin: theme.spacing(1),
   },
   borderedContainer: {
     display: 'flex',
@@ -70,7 +75,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row-reverse',
   },
-
   expandButton: {
     margin: theme.spacing(0, 1, 1),
   },
@@ -382,7 +386,7 @@ export default function Home() {
             日间门诊
           </Typography>
           <Typography component="h5" alignCenter className={classes.headertext}>
-            {new Date().getFullYear}/{new Date().getMonth()}/
+            {new Date().getFullYear()}/{new Date().getMonth()}/
             {new Date().getDate()}
           </Typography>
           <Typography component="h5" className={classes.headertext}>
@@ -391,7 +395,7 @@ export default function Home() {
         </Container>
         <Container className={classes.pageContainer}>
           <Grid container direction="row" justify="right">
-            <Typography component="h3" className={classes.titletext}>
+            <Typography component="h2" className={classes.titletext}>
               就诊病历
             </Typography>
           </Grid>
@@ -494,22 +498,28 @@ export default function Home() {
           {expandButton ? (
             <Button
               color="primary"
-              size="large"
+              variant="outlined"
               onClick={() => {
                 SetExpand(false);
               }}
             >
-              X 处方
+              <CloseIcon color="primary" size="small" />
+              <Container className={classes.buttontext}>
+                <Typography component="h4">处方</Typography>
+              </Container>
             </Button>
           ) : (
             <Button
               color="primary"
-              size="large"
+              variant="outlined"
               onClick={() => {
                 SetExpand(true);
               }}
             >
-              + 处方
+              <AddIcon color="primary" size="small" />
+              <Container className={classes.buttontext}>
+                <Typography component="h4">处方</Typography>
+              </Container>
             </Button>
           )}
         </Container>
@@ -562,9 +572,11 @@ export default function Home() {
           <div />
         )}
         <Container className={classes.save}>
-          <Button color="primary" size="large" onClick={HandleSaveClick}>
-            {' '}
-            SAVE{' '}
+          <Button variant="outlined" color="primary" onClick={HandleSaveClick}>
+            <CheckIcon color="primary" size="small" />
+            <Container className={classes.buttontext}>
+              <Typography component="h4">保存</Typography>
+            </Container>
           </Button>
         </Container>
       </Grid>
