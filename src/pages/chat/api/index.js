@@ -1,4 +1,6 @@
-const socket = new WebSocket('ws://localhost:8080/ws');
+const socket = new WebSocket(
+  `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/111/chat`,
+);
 
 const connect = cb => {
   console.log('Connecting');

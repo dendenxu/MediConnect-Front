@@ -396,6 +396,11 @@ function Signup(props) {
       });
 
       console.log(response);
+
+      if (response.ok) {
+        console.log('Successfully registered the user');
+        history.push('/signin?registered');
+      }
     };
 
     try {

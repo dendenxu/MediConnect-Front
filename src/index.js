@@ -12,10 +12,10 @@ import decorateFetch from './fetch';
 
 // If we have a differing backend configured, replace the global fetch()
 if (
-  process.env.REACT_APP_BACKEND_API_BASE_URL !== undefined &&
-  process.env.REACT_APP_BACKEND_API_BASE_URL !== ''
+  process.env.REACT_APP_BACKEND_API_HOST !== undefined &&
+  process.env.REACT_APP_BACKEND_API_HOST !== ''
 ) {
-  decorateFetch(process.env.REACT_APP_BACKEND_API_BASE_URL);
+  decorateFetch(process.env.REACT_APP_BACKEND_API_HOST);
 }
 
 ReactDOM.render(
