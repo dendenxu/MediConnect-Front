@@ -353,6 +353,12 @@ function Signup(props) {
     accountTypeHelperText = '请选择类型';
   }
 
+  let accountTypeDisplayed = accountTypeDisplay[accountType];
+  console.log(`${accountTypeDisplayed}`);
+  if (accountTypeDisplayed === undefined) {
+    accountTypeDisplayed = '';
+  }
+
   const handleNextClick = async () => {
     let allchecked = true;
     const checkEmailWithServer = async () => {
@@ -561,7 +567,7 @@ function Signup(props) {
                 helperText={accountTypeHelperText}
                 name="user_account_typen"
                 autoFocus
-                value={accountTypeDisplay[accountType] ?? ''}
+                value={accountTypeDisplayed}
                 InputLabelProps={textFieldClassProps.InputLabelProps}
                 InputProps={{
                   ...textFieldClassProps.InputProps,
