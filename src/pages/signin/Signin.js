@@ -324,6 +324,13 @@ function Signin(props) {
     history.push('/signup');
   };
 
+  const handleEditPass = event => {
+    history.push({
+      pathname: '/editpass',
+      state: { email: validEmail },
+    });
+  };
+
   return (
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
@@ -433,13 +440,23 @@ function Signin(props) {
             </Container>
 
             <Container className={classes.submit}>
-              <Link
-                onClick={handleSignup}
-                variant="caption"
-                className={classes.centeredText}
-              >
-                创建新账号
-              </Link>
+              {afterEmailCheck ? (
+                <Link
+                  onClick={handleEditPass}
+                  variant="caption"
+                  className={classes.centeredText}
+                >
+                  忘记密码？
+                </Link>
+              ) : (
+                <Link
+                  onClick={handleSignup}
+                  variant="caption"
+                  className={classes.centeredText}
+                >
+                  创建新账号
+                </Link>
+              )}
               <Button
                 className={classes.nextButton}
                 type="submit"

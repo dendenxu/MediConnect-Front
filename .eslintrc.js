@@ -30,5 +30,6 @@ module.exports = {
     'no-else-return': 'warn',
     'react/jsx-props-no-spreading': 'warn',
     'no-irregular-whitespace': 'warn',
+    'react/destructuring-assignment': 'warn',
   },
 };
