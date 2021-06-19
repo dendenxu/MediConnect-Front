@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -20,6 +20,8 @@ import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
 import MediSearch from './pages/process/MediSearch';
 import ChatPatient from './pages/chat/ChatPatient';
+import RegList from './pages/process/RegList';
+import RegInfo from './pages/process/RegInfo';
 
 export default function App() {
   return (
@@ -36,11 +38,14 @@ export default function App() {
         {/* process G4 */}
         <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
+        <Route path="/department-info" component={DepartmentInfo} />
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
         <Route path="/fail" component={Fail} />
         <Route path="/browse" component={Browse} />
         <Route path="/record" component={Record} />
+        <Route path="/reglist" component={RegList} />
+        <Route path="/reginfo" component={RegInfo} />
         <Route>
           <NoMatch />
         </Route>

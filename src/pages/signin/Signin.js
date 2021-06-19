@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container';
 import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import { ReactComponent as IconHead } from '../../assets/images/icon.svg';
 import BottomBar from '../components/BottomBar';
 import Copyright from '../components/Copyright';
 import AvatarBar from '../components/AvatarBar';
@@ -335,7 +335,7 @@ function Signin(props) {
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
       <Container className={classes.paper}>
-        <Icon className={classes.icon} />
+        <IconHead className={classes.icon} />
 
         <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
           {loadingData && (
