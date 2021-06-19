@@ -4,10 +4,12 @@ import {
   makeStyles,
   Typography,
   IconButton,
+  Button,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import React from 'react';
 
 const useStyles = makeStyles(theme => ({
@@ -28,28 +30,77 @@ export default function Header(props) {
 
   const history = useHistory();
 
-  const { text } = props;
+  const { text, isRoot } = props;
 
   const HeaderText = (
-    <WhiteTextTypography variant="h6">{text}</WhiteTextTypography>
+    <WhiteTextTypography variant='h6'>{text}</WhiteTextTypography>
   );
 
   return (
-    <AppBar position="sticky" className={header}>
+    <AppBar position='sticky' className={header}>
       <Toolbar>
-        <IconButton
-          onClick={() => {
-            history.goBack();
-          }}
-          size="small"
-          edge="start"
-          style={{
-            color: '#FFFFFF',
-          }}
-        >
-          <ArrowBackIosIcon fontSize="small" />
-        </IconButton>
-        {HeaderText}
+        {isRoot ?
+          (<>
+            <Button>
+              <WhiteTextTypography>
+                首页
+              </WhiteTextTypography>
+            </Button>
+            <Button
+              onClick={() => {
+                history.push('/departments');
+              }}
+            >
+              <WhiteTextTypography>
+                科室
+              </WhiteTextTypography>
+            </Button>
+            <Button
+              onClick={() => {
+                history.push('/browse');
+              }}
+            >
+              <WhiteTextTypography>
+                病历
+              </WhiteTextTypography>
+            </Button>
+          </>) : (
+            <>
+              <IconButton
+                key='icon'
+                onClick={() => {
+                  history.goBack();
+                }}
+                size='small'
+                edge='start'
+                style={{
+                  color: '#FFFFFF',
+                }}
+              >
+                <ArrowBackIosIcon fontSize='small' />
+              </IconButton>
+              {HeaderText}
+            </>)
+        }
+
+        <div style={{
+          flexGrow: 1,
+        }} />
+
+        {isRoot && (
+          <IconButton
+            onClick={() => {
+              history.push('/signin');
+            }}
+            size='small'
+            edge='start'
+            style={{
+              color: '#FFFFFF',
+            }}
+          >
+            < AccountCircleIcon fontSize='medium' />
+          </IconButton>
+        )}
       </Toolbar>
     </AppBar>
   );
