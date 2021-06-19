@@ -17,6 +17,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main,
     width: '100%',
   },
+  buttonStyle: {
+    margin: 0,
+  },
 }));
 
 const WhiteTextTypography = withStyles({
@@ -26,79 +29,87 @@ const WhiteTextTypography = withStyles({
 })(Typography);
 
 export default function Header(props) {
-  const { header } = useStyles();
+  const classes = useStyles();
 
   const history = useHistory();
 
   const { text, isRoot } = props;
 
   const HeaderText = (
-    <WhiteTextTypography variant='h6'>{text}</WhiteTextTypography>
+    <WhiteTextTypography variant="h6">{text}</WhiteTextTypography>
   );
 
   return (
-    <AppBar position='sticky' className={header}>
-      <Toolbar>
-        {isRoot ?
-          (<>
-            <Button>
-              <WhiteTextTypography>
-                首页
-              </WhiteTextTypography>
+    <AppBar position="static" className={classes.header}>
+      <Toolbar
+        style={{
+          paddingLeft: 8,
+        }}
+      >
+        {isRoot ? (
+          <>
+            <Button
+              className={classes.buttonStyle}
+              // variant="outlined"
+            >
+              <WhiteTextTypography>首页</WhiteTextTypography>
             </Button>
             <Button
               onClick={() => {
                 history.push('/departments');
               }}
+              className={classes.buttonStyle}
+              // variant="outlined"
             >
-              <WhiteTextTypography>
-                科室
-              </WhiteTextTypography>
+              <WhiteTextTypography>科室</WhiteTextTypography>
             </Button>
             <Button
               onClick={() => {
                 history.push('/browse');
               }}
+              className={classes.buttonStyle}
+              // variant="outlined"
             >
-              <WhiteTextTypography>
-                病历
-              </WhiteTextTypography>
+              <WhiteTextTypography>病历</WhiteTextTypography>
             </Button>
-          </>) : (
-            <>
-              <IconButton
-                key='icon'
-                onClick={() => {
-                  history.goBack();
-                }}
-                size='small'
-                edge='start'
-                style={{
-                  color: '#FFFFFF',
-                }}
-              >
-                <ArrowBackIosIcon fontSize='small' />
-              </IconButton>
-              {HeaderText}
-            </>)
-        }
+          </>
+        ) : (
+          <>
+            <IconButton
+              key="icon"
+              onClick={() => {
+                history.goBack();
+              }}
+              size="small"
+              edge="start"
+              style={{
+                color: '#FFFFFF',
+              }}
+            >
+              <ArrowBackIosIcon fontSize="small" />
+            </IconButton>
+            {HeaderText}
+          </>
+        )}
 
-        <div style={{
-          flexGrow: 1,
-        }} />
+        <div
+          style={{
+            flexGrow: 1,
+          }}
+        />
 
         {isRoot && (
           <IconButton
             onClick={() => {
               history.push('/signin');
             }}
-            size='small'
-            edge='start'
+            size="small"
+            edge="start"
             style={{
               color: '#FFFFFF',
             }}
           >
-            < AccountCircleIcon fontSize='medium' />
+            <AccountCircleIcon fontSize="medium" />
           </IconButton>
         )}
       </Toolbar>
