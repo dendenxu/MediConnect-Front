@@ -1,62 +1,92 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 
-const useStyles = makeStyles(theme => ({
+import Header from '../components/Header';
+import theme from '../../theme/theme';
+
+const data = {
+  state: false,
+};
+
+function createData(name, calories) {
+  return { name, calories };
+}
+
+const rows = [
+  createData('单号', '114514'),
+  createData('科室', 'xxxx'),
+  createData('医生', 'PZY'),
+  createData('患者', 'aaaaaaaaah'),
+  createData('时间段', '2020'),
+  createData('状态', data.state ? '已完成' : '已提交'),
+];
+
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
     alignItems: 'center',
-    width: '100%',
+    width: '100vw',
   },
-  header: {
-    padding: '8px 4px',
+  body: {
+    padding: '10px 15px 0 15px',
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
     width: '100%',
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    flex: 1,
-  },
-  iconButton: {
-    padding: 10,
   },
 }));
 
 export default function RegInfo() {
   const classes = useStyles();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log('You clicked submit.');
-  };
-
   return (
-    <Box className={classes.root}>
-      <Box component="form" onSubmit={handleSubmit} className={classes.header}>
-        <TextField
-          className={classes.input}
-          label="智能导诊"
-          placeholder="请输入您的症状"
-          variant="outlined"
-          type="search"
-          inputProps={{ 'aria-label': 'search mediconnect' }}
-        />
-        <IconButton
-          color="primary"
-          type="submit"
-          className={classes.iconButton}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
-      </Box>
-    </Box>
+    <ThemeProvider theme={theme}>
+      <Header text="挂号详情" />
+      <div className={classes.body}>
+        <div>
+          <Table aria-label="simple table">
+            <TableBody>
+              {rows.map(row => (
+                <TableRow key={row.name}>
+                  <TableCell
+                    style={{
+                      borderBottom: 'none',
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                    }}
+                    component="th"
+                    scope="row"
+                  >
+                    {row.name}
+                  </TableCell>
+                  <TableCell
+                    style={{ borderBottom: 'none', fontSize: '18px' }}
+                    align="left"
+                  >
+                    {row.calories}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div>
+          {data.state ? (
+            <div>
+              温馨提示：诊断还没开始，如果您有其他安排，可以自己取消此次会诊。
+            </div>
+          ) : (
+            <div>
+              <h5>MileStones：</h5>
+              <h5>相关病例：</h5>
+            </div>
+          )}
+        </div>
+      </div>
+    </ThemeProvider>
   );
 }
