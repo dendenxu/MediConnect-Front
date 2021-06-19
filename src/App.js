@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -35,6 +35,7 @@ export default function App() {
         {/* process G4 */}
         <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
+        <Route path="/department-info" component={DepartmentInfo} />
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
         <Route path="/fail" component={Fail} />
