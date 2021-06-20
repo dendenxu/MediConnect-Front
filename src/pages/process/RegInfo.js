@@ -82,7 +82,7 @@ export default function RegInfo() {
           ) : (
             <div>
               <h5>MileStones：</h5>
-              <h5>相关病例：</h5>
+              <h5>相关病历：</h5>
             </div>
           )}
         </div>

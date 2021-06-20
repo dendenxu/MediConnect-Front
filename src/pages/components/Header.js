@@ -33,72 +33,69 @@ export default function Header(props) {
   const { text, isRoot } = props;
 
   const HeaderText = (
-    <WhiteTextTypography variant='h6'>{text}</WhiteTextTypography>
+    <WhiteTextTypography variant="h6">{text}</WhiteTextTypography>
   );
 
   return (
-    <AppBar position='sticky' className={header}>
+    <AppBar position="sticky" className={header}>
       <Toolbar>
-        {isRoot ?
-          (<>
+        {isRoot ? (
+          <>
             <Button>
-              <WhiteTextTypography>
-                首页
-              </WhiteTextTypography>
+              <WhiteTextTypography>首页</WhiteTextTypography>
             </Button>
             <Button
               onClick={() => {
                 history.push('/departments');
               }}
             >
-              <WhiteTextTypography>
-                科室
-              </WhiteTextTypography>
+              <WhiteTextTypography>科室</WhiteTextTypography>
             </Button>
             <Button
               onClick={() => {
-                history.push('/browse');
+                history.push('/reglist');
               }}
             >
-              <WhiteTextTypography>
-                病历
-              </WhiteTextTypography>
+              <WhiteTextTypography>挂号</WhiteTextTypography>
             </Button>
-          </>) : (
-            <>
-              <IconButton
-                key='icon'
-                onClick={() => {
-                  history.goBack();
-                }}
-                size='small'
-                edge='start'
-                style={{
-                  color: '#FFFFFF',
-                }}
-              >
-                <ArrowBackIosIcon fontSize='small' />
-              </IconButton>
-              {HeaderText}
-            </>)
-        }
+          </>
+        ) : (
+          <>
+            <IconButton
+              key="icon"
+              onClick={() => {
+                history.goBack();
+              }}
+              size="small"
+              edge="start"
+              style={{
+                color: '#FFFFFF',
+              }}
+            >
+              <ArrowBackIosIcon fontSize="small" />
+            </IconButton>
+            {HeaderText}
+          </>
+        )}
 
-        <div style={{
-          flexGrow: 1,
-        }} />
+        <div
+          style={{
+            flexGrow: 1,
+          }}
+        />
 
         {isRoot && (
           <IconButton
             onClick={() => {
               history.push('/signin');
             }}
-            size='small'
-            edge='start'
+            size="small"
+            edge="start"
             style={{
               color: '#FFFFFF',
             }}
           >
-            < AccountCircleIcon fontSize='medium' />
+            <AccountCircleIcon fontSize="medium" />
           </IconButton>
         )}
       </Toolbar>
