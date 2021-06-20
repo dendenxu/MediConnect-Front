@@ -13,7 +13,7 @@ export default function MediSearch() {
         alignItems: 'center',
       }}
     >
-      <Header text="Welcome" isRoot/>
+      <Header text="Welcome" isRoot />
       <SearchBar
         style={{
           width: '95%',

@@ -17,6 +17,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main,
     width: '100%',
   },
+  buttonStyle: {
+    margin: 0,
+  },
 }));
 
 const WhiteTextTypography = withStyles({
@@ -26,7 +29,7 @@ const WhiteTextTypography = withStyles({
 })(Typography);
 
 export default function Header(props) {
-  const { header } = useStyles();
+  const classes = useStyles();
 
   const history = useHistory();
 
@@ -37,17 +40,26 @@ export default function Header(props) {
   );
 
   return (
-    <AppBar position="sticky" className={header}>
-      <Toolbar>
+    <AppBar position="static" className={classes.header}>
+      <Toolbar
+        style={{
+          paddingLeft: 8,
+        }}
+      >
         {isRoot ? (
           <>
-            <Button>
+            <Button
+              className={classes.buttonStyle}
+              // variant="outlined"
+            >
               <WhiteTextTypography>首页</WhiteTextTypography>
             </Button>
             <Button
               onClick={() => {
                 history.push('/departments');
               }}
+              className={classes.buttonStyle}
+              // variant="outlined"
             >
               <WhiteTextTypography>科室</WhiteTextTypography>
             </Button>
@@ -55,6 +67,8 @@ export default function Header(props) {
               onClick={() => {
                 history.push('/reglist');
               }}
+              className={classes.buttonStyle}
+              // variant="outlined"
             >
               <WhiteTextTypography>挂号</WhiteTextTypography>
             </Button>
