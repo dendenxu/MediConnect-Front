@@ -11,6 +11,8 @@ import Signup from './pages/signin/Signup';
 import Chat from './pages/chat/Chat';
 import Record from './pages/record/Record';
 import Browse from './pages/case/Browse';
+import RecordPatient from './pages/record/Record_Patient';
+import BrowsePatient from './pages/case/Browse_Patient';
 // process-G4
 import Success from './pages/process/Success';
 import Fail from './pages/process/Fail';
@@ -44,6 +46,8 @@ export default function App() {
         <Route path="/record" component={Record} />
         <Route path="/reglist" component={RegList} />
         <Route path="/reginfo" component={RegInfo} />
+        <Route path="/browse_p" component={BrowsePatient} />
+        <Route path="/record_p" component={RecordPatient} />
         <Route>
           <NoMatch />
         </Route>

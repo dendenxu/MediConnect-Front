@@ -36,7 +36,7 @@ function toDisplayItem(info, index) {
   const history = useHistory();
   const handlerecord = event => {
     history.push({
-      pathname: '/Record',
+      pathname: '/Record_p',
       state: {
         Case_id: info.case_id,
         Patient_id: info.patient_id,
@@ -80,9 +80,9 @@ const Wrapper = ({ children }) => children;
 
 const data = [
   {
-    case_id: 3,
-    patient_id: 2,
-    doctor_id: 1,
+    case_id: '1',
+    patient_id: 8,
+    doctor_id: 99,
     doctor: 'foo1',
     patient: 'bar1',
     department: '太平间',
@@ -91,9 +91,9 @@ const data = [
     date: '2012-12-21',
   },
   {
-    case_id: 4,
-    patient_id: 2,
-    doctor_id: 1,
+    case_id: '2',
+    patient_id: 8,
+    doctor_id: 99,
     doctor: 'foo2',
     patient: 'bar1',
     department: '太平间',
@@ -103,61 +103,15 @@ const data = [
   },
 ];
 
-const tmpdoctorId = 1;
-const tmppatientId = 2;
-const tmpdepartment = '太平间';
-const tmpdate = '2021-06-06';
-let tmpcaseID = 999;
+const doctorId = 99;
+const patientId = 10;
+const department = '太平间';
 
 export default function Browse() {
   classes = useStyles();
   const [display, setDisplay] = useState(data);
   const displayItems = display.map(toDisplayItem);
   const history = useHistory();
-
-  const handlerecord = async () => {
-    const response = await fetch(`/api/patient/${tmppatientId}/case`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        complaint: ' ',
-        department: tmpdepartment,
-        diagnosis: ' ',
-        doctorID: tmpdoctorId,
-        history: ' ',
-        patientID: tmppatientId,
-        date: tmpdate.replace,
-        prescriptions: [],
-        treatment: ' ',
-      }),
-    });
-
-    console.log(response);
-    const message = await response.json();
-    if (response.ok) {
-      console.log(`The server says case creating is succcessful`);
-      console.log(message);
-    } else {
-      console.log(`Fail to create the case`);
-      console.log(message);
-    }
-
-    tmpcaseID = message.data;
-
-    console.log(tmpcaseID);
-
-    history.push({
-      pathname: '/Record',
-      state: {
-        Case_id: tmpcaseID,
-        Patient_id: tmppatientId,
-        Department: tmpdepartment,
-        Doctor_id: tmpdoctorId,
-      },
-    });
-  };
 
   const searchChange = event => {
     const str = event.target.value;
@@ -205,24 +159,6 @@ export default function Browse() {
             alignItems="center"
           >
             {displayItems}
-          </Grid>
-        </Grid>
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Paper className={classes.paper} onClick={handlerecord}>
-              <Grid container spacing={2} display="flex">
-                <Grid item xs={12} sm container>
-                  <AddCircleOutlinedIcon
-                    style={{ color: '#4e89ae', margin: 'auto', fontSize: 50 }}
-                  />
-                </Grid>
-              </Grid>
-            </Paper>
           </Grid>
         </Grid>
       </Grid>

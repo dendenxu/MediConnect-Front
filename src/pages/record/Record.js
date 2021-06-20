@@ -91,7 +91,6 @@ export default function Home() {
   const location = useLocation();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
-  const department = location.state.Department;
   const columns = [
     { field: 'name', headerName: '药品名', width: 320, editable: true },
     {
@@ -128,20 +127,37 @@ export default function Home() {
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
   // todo initialize these 4 IDs(maybe using get method),
   const CaseID = location.state.Case_id;
-  const PatientID = location.state.Patient_id;
+  const tmpPatientID = location.state.Patient_id;
+  const tmpDoctorID = location.state.Doctor_id;
   console.log(CaseID);
-  console.log(PatientID);
-  const DoctorID = location.state.Doctor_id;
-  const Department = '';
+  console.log(tmpPatientID);
+  console.log(tmpDoctorID);
+  const tmpDepartment = location.state.Department;
   const [editRowsModel, setEditRowsModel] = React.useState({});
   const [rows, setRows] = React.useState(defaultRows);
+
+  const Handleinitial = async () => {
+    const tmpresponse = await fetch(`/api/patient/${tmpPatientID}/case`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(tmpresponse);
+    const tmpmessage = await tmpresponse.json();
+    setDiagnosis(tmpmessage.data.Diagnosis);
+    setMedicalHistory(tmpmessage.data.History);
+    setChiefComplaint(tmpmessage.data.Complaint);
+    setOpinions(tmpmessage.data.Treatment);
+    setPrescriptions(tmpmessage.data.Prescriptions);
+  };
 
   const handleEditCellChangeCommitted = React.useCallback(
     ({ id, field, props }) => {
       if (field === 'name') {
         const data = props; // Fix eslint value is missing in prop-types for JS files
         const newname = data.value.toString();
-        const response = fetch(`api/medicine?q=${newname}`, {
+        const response = fetch(`/api/medicine?q=${newname}`, {
           method: 'get',
           headers: {
             'Content-Type': 'application/json',
@@ -240,7 +256,7 @@ export default function Home() {
 
   const HandleOnAddLine = async () => {
     const response = await fetch(
-      `/api/patient/${PatientID}/case/${CaseID}/prescription`,
+      `/api/patient/${tmpPatientID}/case/${CaseID}/prescription`,
       {
         method: 'post',
         headers: {
@@ -291,10 +307,11 @@ export default function Home() {
   };
 
   const HandleSaveClick = async () => {
-    for (let i = 0; i < linecount; i += 1) {
+    console.log(linecount);
+    for (let i = 0; i < linecount - 1; i += 1) {
       const PresID = allprescriptions[i].id;
       const response = fetch(
-        `api/patient/${PatientID}/case/${CaseID}/prescription/${PresID}`,
+        `/api/patient/${tmpPatientID}/case/${CaseID}/prescription/${PresID}`,
         {
           // todo
           method: 'put',
@@ -327,14 +344,15 @@ export default function Home() {
       }
     }
 
-    let response = await fetch(`api/patient/${PatientID}/case`, {
+    let response = await fetch(`/api/patient/${tmpPatientID}/case`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    const beforecase = await response.json().data;
+
     let message = await response.json();
+    const beforecase = await message.data;
     if (response.ok) {
       console.log(`The server says creating new prescription is succcessful`);
       console.log(message);
@@ -347,7 +365,7 @@ export default function Home() {
     beforecase.Treatment = opinions;
     beforecase.History = medicalHistory;
 
-    response = await fetch(`api/patient/${PatientID}/case/${CaseID}`, {
+    response = await fetch(`/api/patient/${tmpPatientID}/case/${CaseID}`, {
       // todo
       method: 'put',
       headers: {
@@ -355,9 +373,9 @@ export default function Home() {
       },
       body: JSON.stringify({
         ID: CaseID,
-        PatientID,
-        DoctorID,
-        Department,
+        PatientID: tmpPatientID,
+        DoctorID: tmpDoctorID,
+        Department: tmpDepartment,
         Complaint: chiefComplaint,
         Diagnosis: diagnosis,
         Treatment: opinions,
@@ -378,168 +396,173 @@ export default function Home() {
   };
 
   return (
-    <Container component="main" className={classes.verticalContainer}>
-      <CssBaseline />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Container className={classes.headerContainer}>
-          <Typography component="h5" className={classes.headertext}>
-            日间门诊
-          </Typography>
-          <Typography component="h5" alignCenter className={classes.headertext}>
-            {new Date().getFullYear()}/{new Date().getMonth()}/
-            {new Date().getDate()}
-          </Typography>
-          <Typography component="h5" className={classes.headertext}>
-            {department}
-          </Typography>
-        </Container>
-        <Container className={classes.pageContainer}>
-          <Grid container direction="row" justify="right">
-            <Typography component="h2" className={classes.titletext}>
-              就诊病历
+    <body onLoad={Handleinitial}>
+      <Container component="main" className={classes.verticalContainer}>
+        <CssBaseline />
+        <Grid container direction="column" justify="center" alignItems="center">
+          <Container className={classes.headerContainer}>
+            <Typography component="h5" className={classes.headertext}>
+              日间门诊
             </Typography>
-          </Grid>
-          <Box className={classes.borderedContainer}>
-            <Grid container spacing={3}>
-              <Grid item xs>
-                <TextField
-                  id="standard-read-only-input"
-                  label="患者姓名"
-                  defaultValue="Hello World"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  id="standard-read-only-input"
-                  label="患者性别"
-                  defaultValue="Hello World"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  id="standard-read-only-input"
-                  label="患者年龄"
-                  defaultValue="Hello World"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  id="standard-required"
-                  label="过敏史"
-                  defaultValue="无"
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={3}>
-              <Grid item xs>
-                <TextField
-                  required
-                  id="standard-multiline-static"
-                  label="主诉"
-                  multiline
-                  fullWidth
-                  rows={5}
-                  value={chiefComplaint}
-                  onChange={handleComplaintInput}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  id="standard-multiline-static"
-                  label="既往病史"
-                  multiline
-                  fullWidth
-                  rows={5}
-                  value={medicalHistory}
-                  onChange={handleMedicalHistoryInput}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={3}>
-              <Grid item xs>
-                <TextField
-                  required
-                  id="standard-multiline-static"
-                  label="诊断"
-                  multiline
-                  fullWidth
-                  rows={5}
-                  value={diagnosis}
-                  onChange={handleDiagnosisInput}
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  required
-                  id="standard-multiline-static"
-                  label="处理意见"
-                  multiline
-                  fullWidth
-                  rows={5}
-                  value={opinions}
-                  onChange={handleOpinionsInput}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-        <Container spacing={1} expandButton>
-          {expandButton ? (
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => {
-                SetExpand(false);
-              }}
+            <Typography
+              component="h5"
+              alignCenter
+              className={classes.headertext}
             >
-              <CloseIcon color="primary" size="small" />
-              <Container className={classes.buttontext}>
-                <Typography component="h4">处方</Typography>
-              </Container>
-            </Button>
-          ) : (
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => {
-                SetExpand(true);
-              }}
-            >
-              <AddIcon color="primary" size="small" />
-              <Container className={classes.buttontext}>
-                <Typography component="h4">处方</Typography>
-              </Container>
-            </Button>
-          )}
-        </Container>
-        {expandButton ? (
+              {new Date().getFullYear()}/{new Date().getMonth()}/
+              {new Date().getDate()}
+            </Typography>
+            <Typography component="h5" className={classes.headertext}>
+              {tmpDepartment}
+            </Typography>
+          </Container>
           <Container className={classes.pageContainer}>
+            <Grid container direction="row" justify="right">
+              <Typography component="h2" className={classes.titletext}>
+                就诊病历
+              </Typography>
+            </Grid>
             <Box className={classes.borderedContainer}>
-              <div style={{ height: 300, width: '100%' }}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  editRowsModel={editRowsModel}
-                  onEditCellChange={handleEditCellChangeCommitted}
-                />
-                <Container className={classes.addIcon}>
-                  <Fab size="small" color="primary" aria-label="add">
-                    <AddIcon onClick={HandleOnAddLine} />
-                  </Fab>
+              <Grid container spacing={3}>
+                <Grid item xs>
+                  <TextField
+                    id="standard-read-only-input"
+                    label="患者姓名"
+                    defaultValue="Hello World"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    id="standard-read-only-input"
+                    label="患者性别"
+                    defaultValue="男"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    id="standard-read-only-input"
+                    label="患者年龄"
+                    defaultValue="18"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    required
+                    id="standard-required"
+                    label="过敏史"
+                    defaultValue="无"
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={3}>
+                <Grid item xs>
+                  <TextField
+                    required
+                    id="standard-multiline-static"
+                    label="主诉"
+                    multiline
+                    fullWidth
+                    rows={5}
+                    value={chiefComplaint}
+                    onChange={handleComplaintInput}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    required
+                    id="standard-multiline-static"
+                    label="既往病史"
+                    multiline
+                    fullWidth
+                    rows={5}
+                    value={medicalHistory}
+                    onChange={handleMedicalHistoryInput}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={3}>
+                <Grid item xs>
+                  <TextField
+                    required
+                    id="standard-multiline-static"
+                    label="诊断"
+                    multiline
+                    fullWidth
+                    rows={5}
+                    value={diagnosis}
+                    onChange={handleDiagnosisInput}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    required
+                    id="standard-multiline-static"
+                    label="处理意见"
+                    multiline
+                    fullWidth
+                    rows={5}
+                    value={opinions}
+                    onChange={handleOpinionsInput}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          </Container>
+          <Container spacing={1} expandButton>
+            {expandButton ? (
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => {
+                  SetExpand(false);
+                }}
+              >
+                <CloseIcon color="primary" size="small" />
+                <Container className={classes.buttontext}>
+                  <Typography component="h4">处方</Typography>
                 </Container>
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => {
+                  SetExpand(true);
+                }}
+              >
+                <AddIcon color="primary" size="small" />
+                <Container className={classes.buttontext}>
+                  <Typography component="h4">处方</Typography>
+                </Container>
+              </Button>
+            )}
+          </Container>
+          {expandButton ? (
+            <Container className={classes.pageContainer}>
+              <Box className={classes.borderedContainer}>
+                <div style={{ height: 300, width: '100%' }}>
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    editRowsModel={editRowsModel}
+                    onEditCellChange={handleEditCellChangeCommitted}
+                  />
+                  <Container className={classes.addIcon}>
+                    <Fab size="small" color="primary" aria-label="add">
+                      <AddIcon onClick={HandleOnAddLine} />
+                    </Fab>
+                  </Container>
 
-                {/*
+                  {/*
                 <Table size="small">
                     <TableHead>
                     <TableRow>
@@ -565,21 +588,26 @@ export default function Home() {
                     </TableBody>
             </Table>
 */}
-              </div>
-            </Box>
-          </Container>
-        ) : (
-          <div />
-        )}
-        <Container className={classes.save}>
-          <Button variant="outlined" color="primary" onClick={HandleSaveClick}>
-            <CheckIcon color="primary" size="small" />
-            <Container className={classes.buttontext}>
-              <Typography component="h4">保存</Typography>
+                </div>
+              </Box>
             </Container>
-          </Button>
-        </Container>
-      </Grid>
-    </Container>
+          ) : (
+            <div />
+          )}
+          <Container className={classes.save}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={HandleSaveClick}
+            >
+              <CheckIcon color="primary" size="small" />
+              <Container className={classes.buttontext}>
+                <Typography component="h4">保存</Typography>
+              </Container>
+            </Button>
+          </Container>
+        </Grid>
+      </Container>
+    </body>
   );
 }
