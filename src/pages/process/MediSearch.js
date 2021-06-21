@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
+import Header from '../components/Header';
 
 export default function MediSearch() {
   const [inputContent, setInputContent] = useState('');
@@ -12,6 +13,7 @@ export default function MediSearch() {
         alignItems: 'center',
       }}
     >
+      <Header text="Welcome" isRoot />
       <SearchBar
         style={{
           width: '95%',
