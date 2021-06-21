@@ -330,7 +330,7 @@ function EditPass(props) {
         body: JSON.stringify({
           email,
           authcode: identifyCode,
-          passwd: password,
+          newpasswd: password,
         }),
       });
 
