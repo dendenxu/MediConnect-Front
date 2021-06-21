@@ -340,7 +340,7 @@ function ChatPatient() {
             ...msg3,
             {
               sender: dataFromServer.DoctorID,
-              content: `通过链接打开你的病历：${dataFromServer.Url}`,
+              content: `通过链接打开你的处方：${dataFromServer.Url}`,
               time: dataFromServer.Time,
             },
           ]);
