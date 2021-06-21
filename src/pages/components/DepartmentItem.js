@@ -1,10 +1,7 @@
 import {
-  createMuiTheme,
   Divider,
-  List,
   ListItem,
   ListItemText,
-  ThemeProvider,
   Typography,
   makeStyles,
 } from '@material-ui/core';
@@ -57,10 +54,10 @@ export default function DepartmentItem(props) {
     <div>
       <ListItem
         button
-        onClick={handleClick => {
+        onClick={() => {
           const url = `/api/department/${data.id}`;
           let depInfo = {};
-          const response = fetch(url, {
+          fetch(url, {
             method: 'get',
             headers: {
               'Content-Type': 'application/json',
@@ -75,7 +72,7 @@ export default function DepartmentItem(props) {
               });
             });
         }}
-        flexDirection="row"
+        // flexDirection="row"
       >
         <ListItemText
           primary={<Typography className={primaryText}>{data.name}</Typography>}

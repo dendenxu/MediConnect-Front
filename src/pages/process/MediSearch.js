@@ -4,6 +4,18 @@ import Header from '../components/Header';
 
 export default function MediSearch() {
   const [inputContent, setInputContent] = useState('');
+  const handleSubmit = () => {
+    fetch(`/api/medicine`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      });
+  };
 
   return (
     <div
@@ -25,9 +37,7 @@ export default function MediSearch() {
         onChange={() => {
           console.log(`Input content changed: ${inputContent}`);
         }}
-        onSubmit={() => {
-          console.log(`Submitting ${inputContent}`);
-        }}
+        onSubmit={handleSubmit}
       />
     </div>
   );

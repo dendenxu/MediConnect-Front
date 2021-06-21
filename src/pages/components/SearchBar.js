@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -27,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediSearch(props) {
+export default function SearchBar(props) {
   const { onSubmit, onChange } = props;
 
   let { label, placeholder } = props;
