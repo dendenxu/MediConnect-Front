@@ -256,11 +256,15 @@ function ChatPatient() {
   useEffect(() => {
     setSocket(
       new WebSocket(
-        `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
+        // `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
+        `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
       ),
     );
   }, [CurrentUserID]);
 
+  // const socket = new WebSocket(
+  //   `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
+  // );
   console.log(socket);
 
   const sendMessage = event => {
