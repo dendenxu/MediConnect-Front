@@ -417,9 +417,9 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <container key={message.time}>
+        <Container key={message.time}>
           <Message message={message} CurrentUserID={CurrentUserID} />
-        </container>
+        </Container>
       ))
     : {};
 
@@ -511,7 +511,10 @@ function Chat() {
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
+  const socket = new WebSocket(
+    `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/${CurrentUserID}/chat`,
+  );
+  // const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
 
   const closeChat = patientID => {
     const json = {

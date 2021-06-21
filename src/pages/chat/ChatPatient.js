@@ -128,8 +128,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const socket = new WebSocket('ws://172.27.197.171:12448/api/patient/222/chat');
-
 function InputBox({ message, setMessage, sendMessage }) {
   const classes = useStyles();
 
@@ -363,9 +361,9 @@ function Messages({ messages, CurrentUserID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
   const messagesA = messages.map(message => (
-    <container key={message.time}>
+    <Container key={message.time}>
       <Message message={message} CurrentUserID={CurrentUserID} />
-    </container>
+    </Container>
   ));
 
   console.log('messages:', messages);
@@ -419,6 +417,15 @@ function ChatPatient() {
   // const [Questions, setQuestions] = useState(['Q1', 'Q2']);
   // const [IsEmpty, setIsEmpty] = useState(true);
   // const [selectedIndex, setSelectedIndex] = useState();
+
+  // const socket = new WebSocket(
+  //   'ws://172.27.197.171:12448/api/patient/222/chat',
+  // );
+
+  const socket = new WebSocket(
+    `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
+  );
+  console.log(socket);
 
   const sendMessage = event => {
     event.preventDefault();
