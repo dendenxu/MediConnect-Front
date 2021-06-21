@@ -14,14 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
-// import {
-//   socket,
-//   // hello,
-//   closeChat,
-//   requireMedicalRecord,
-//   requirePrescription,
-//   // requireQuestions,
-// } from './api';
 import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
@@ -142,8 +134,10 @@ function InputBox({ message, setMessage, sendMessage }) {
 
   const handleMessageSend = event => {
     // const key = event.key;
-    if (event.key === 'Enter') sendMessage(event);
-    console.log(`Sending a new message.`);
+    if (event.key === 'Enter') {
+      sendMessage(event);
+      console.log(`Sending a new message.`);
+    }
   };
 
   return (
@@ -440,7 +434,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
 
 function Chat() {
   const classes = useStyles();
-  // const [CurrentUserID, setCurrentUserID] = useState('flora');
+  const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
@@ -511,12 +505,10 @@ function Chat() {
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const socket = new WebSocket(
-    `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/${CurrentUserID}/chat`,
-  );
-  // const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
-
   const closeChat = patientID => {
+    if (!socket) {
+      return;
+    }
     const json = {
       Type: 2,
       ReceiverID: patientID,
@@ -527,6 +519,9 @@ function Chat() {
   };
 
   const requireMedicalRecord = (patientID, doctorID) => {
+    if (!socket) {
+      return;
+    }
     const json = {
       Type: 3,
       DoctorID: doctorID,
@@ -537,6 +532,9 @@ function Chat() {
   };
 
   const requirePrescription = (patientID, doctorID) => {
+    if (!socket) {
+      return;
+    }
     const json = {
       Type: 4,
       DoctorID: doctorID,
@@ -559,6 +557,10 @@ function Chat() {
         Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
+      if (!socket) {
+        console.warn('Socket closed???');
+        return;
+      }
       socket.send(JSON.stringify(json));
 
       setMessage('');
@@ -577,6 +579,17 @@ function Chat() {
   };
 
   useEffect(() => {
+    setSocket(
+      new WebSocket(
+        `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/${CurrentUserID}/chat`,
+      ),
+    );
+  }, [CurrentUserID]);
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
     socket.onopen = () => {
       console.log('Successfully Connected');
       // hello('Doctor', CurrentUserID);
@@ -664,7 +677,7 @@ function Chat() {
     socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
-  });
+  }, [socket]);
 
   return (
     <Container className={classes.borderedContainer}>
