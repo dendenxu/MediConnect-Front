@@ -10,15 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-// import {
-//   // socket,
-//   socketPatient,
-//   // hello,
-//   // closeChat,
-//   // requireMedicalRecord,
-//   // requirePrescription,
-//   // requireQuestions,
-// } from './api';
 
 const useStyles = makeStyles(theme => ({
   NoSidePaddingContainer: {
@@ -186,59 +177,6 @@ function InputBox({ message, setMessage, sendMessage }) {
   );
 }
 
-// function PatientList({
-//   Patients,
-//   setCurrentDoctorID,
-//   setDoctorName,
-//   setSelectedIndex,
-//   selectedIndex,
-//   setIsEmpty,
-// }) {
-//   const classes = useStyles();
-
-//   const handleListItemClick = (event, index, PatientID, DoctorName) => {
-//     setIsEmpty(false);
-//     setSelectedIndex(index);
-//     setCurrentDoctorID(PatientID);
-//     setDoctorName(DoctorName);
-//   };
-
-//   console.log('Patients:', Patients);
-
-//   const patientsA = Patients.map(Patient => (
-//     <ListItem
-//       key={Patients.findIndex(obj => obj.PatientID === Patient.PatientID)}
-//       button
-//       selected={
-//         selectedIndex ===
-//         Patients.findIndex(obj => obj.PatientID === Patient.PatientID)
-//       }
-//       onClick={event =>
-//         handleListItemClick(
-//           event,
-//           Patients.findIndex(obj => obj.PatientID === Patient.PatientID),
-//           Patient.PatientID,
-//           Patient.DoctorName,
-//         )
-//       }
-//     >
-//       {/* <Badge badgeContent={4} color="primary"> */}
-//       <ListItemText primary={Patient.DoctorName} />
-//       {/* </Badge> */}
-//     </ListItem>
-//   ));
-
-//   console.log('PatientsA:', patientsA);
-
-//   return (
-//     <Container className={classes.list}>
-//       <List component="nav" aria-label="Patient List">
-//         {patientsA}
-//       </List>
-//     </Container>
-//   );
-// }
-
 function TopBar({ DoctorName }) {
   const classes = useStyles();
 
@@ -266,81 +204,6 @@ function TopBar({ DoctorName }) {
     </Container>
   );
 }
-
-// function ToolBar({ CurrentDoctorID, CurrentUserID }) {
-//   const classes = useStyles();
-
-//   const handleIconClick = event => {};
-//   const handlePicClick = event => {};
-//   const handleQuesClick = event => {
-//     requireQuestions(CurrentUserID);
-//   };
-//   const handleMedClick = event => {
-//     requirePrescription(CurrentDoctorID);
-//   };
-//   const handleRecClick = event => {
-//     requireMedicalRecord(CurrentDoctorID);
-//   };
-//   const fileInputEl = useRef(null);
-
-//   const handlePhoto = async event => {
-//     const files = [...event.target.files];
-//     if (files.length === 0) return;
-//     const result = await Promise.all(
-//       files.map(file => {
-//         let url = null;
-//         if (window.createObjectURL !== undefined) {
-//           url = window.createObjectURL(file);
-//         } else if (window.URL !== undefined) {
-//           url = window.URL.createObjectURL(file);
-//         } else if (window.webkitURL !== undefined) {
-//           url = window.webkitURL.createObjectURL(file);
-//         }
-//         return url;
-//       }),
-//     );
-//     console.log(result);
-//   };
-
-//   return (
-//     <Container className={classes.toolbar}>
-//       <Grid container spacing={1}>
-//         <Grid item xs={1}>
-//           <Button onClick={handleIconClick}>
-//             <EmojiIcon className={classes.icon} />
-//           </Button>
-//         </Grid>
-//         <Grid item xs={1}>
-//           <Button onClick={() => fileInputEl.current.click()}>
-//             <input
-//               ref={fileInputEl}
-//               type="file"
-//               accept="image/*"
-//               hidden
-//               onChange={event => handlePhoto(event)}
-//             />
-//             <PictureIcon className={classes.icon} />
-//           </Button>
-//         </Grid>
-//         <Grid item xs={1}>
-//           <Button onClick={handleQuesClick}>
-//             <QuestionsIcon className={classes.icon} />
-//           </Button>
-//         </Grid>
-//         <Grid item xs={1}>
-//           <Button onClick={handleMedClick}>
-//             <MedicineIcon className={classes.icon} />
-//           </Button>
-//         </Grid>
-//         <Grid item xs={1}>
-//           <Button onClick={handleRecClick}>
-//             <RecordIcon className={classes.icon} />
-//           </Button>
-//         </Grid>
-//       </Grid>
-//     </Container>
-//   );
-// }
 
 function Message({ message: { sender, content, time }, CurrentUserID }) {
   const classes = useStyles();
@@ -409,12 +272,9 @@ function Messages({ messages, CurrentUserID }) {
 
 function ChatPatient() {
   const classes = useStyles();
+  const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(1983);
   const [DoctorName, setDoctorName] = useState('内科王医生');
-  // const [Patients, setPatients] = useState([
-  //   { PatientID: 1983, DoctorName: 'Alice' },
-  //   { PatientID: 1985, DoctorName: 'Judy' },
-  // ]);
   const [CurrentDoctorID, setCurrentDoctorID] = useState(111);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
@@ -424,39 +284,11 @@ function ChatPatient() {
     { sender: 111, content: '医生发的第二条消息', time: '12:34' },
     { sender: 111, content: '医生发的第三条消息', time: '12:35' },
   ]);
-  // const [messages, setMessages] = useState(
-  //   Map({
-  //     1983: [
-  //       { sender: 111, content: 'hhhh', time: '23:33' },
-  //       { sender: 1983, content: 'oooooo', time: '12:33' },
-  //       {
-  //         sender: 'Alice',
-  //         content: 'Hi! I have some trouble with my head. It aches a lot.',
-  //         time: '12:33',
-  //       },
-  //       {
-  //         sender: 'flora',
-  //         content: 'Then, Where exactly the aching is?',
-  //         time: '23:33',
-  //       },
-  //     ],
-  //     1985: [
-  //       { sender: 'flora', content: 'react is cool', time: '23:33' },
-  //       { sender: 'Judy', content: 'so is Redux', time: '12:33' },
-  //     ],
-  //   }),
-  // );
-  // const [Questions, setQuestions] = useState(['Q1', 'Q2']);
-  // const [IsEmpty, setIsEmpty] = useState(true);
-  // const [selectedIndex, setSelectedIndex] = useState();
 
-  // const socket = new WebSocket(
-  //   'ws://172.27.197.171:12448/api/patient/222/chat',
-  // );
+  useEffect(() => {
+    setSocket(new WebSocket(`/api/patient/${CurrentUserID}/chat`));
+  }, [CurrentUserID]);
 
-  const socket = new WebSocket(
-    `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
-  );
   console.log(socket);
 
   const sendMessage = event => {
@@ -472,16 +304,14 @@ function ChatPatient() {
         Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
+      if (!socket) {
+        console.warn('Socket closed???');
+        return;
+      }
       socket.send(JSON.stringify(json));
 
       setMessage('');
 
-      // setMessages(msgs =>
-      //   msgs.update(CurrentDoctorID.toString(), msg => [
-      //     ...msg,
-      //     { sender: CurrentUserID, content: message, time: '12:12' },
-      //   ]),
-      // );
       setMessages(msgs => [
         ...msgs,
         {
@@ -494,16 +324,15 @@ function ChatPatient() {
   };
 
   useEffect(() => {
+    if (!socket) {
+      return;
+    }
     socket.onopen = () => {
       console.log('Successfully Connected');
       // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
       // const localPatients = JSON.parse(localStorage.getItem('Patients'));
       console.log('localMessages:', localMessages);
-      // console.log('localPatients:', localPatients);
-      // setMessages(msgs => Map(localMessages));
-      // setPatients(pas => localPatients);
-      // console.log('Patiens after local:', Patients);
     };
 
     socket.onmessage = msg => {
@@ -514,20 +343,6 @@ function ChatPatient() {
       console.log(dataFromServer);
       // console.log(dataFromServer.PatientID.toString());
       switch (dataFromServer.Type) {
-        // case 6:
-        //   // const pID = dataFromServer.PatientID.toString()
-        //   // console.log("pID",pID)
-        //   // console.log("NewPatient")
-        //   setPatients(pats => [
-        //     ...pats,
-        //     {
-        //       PatientID: dataFromServer.DoctorID,
-        //       DoctorName: dataFromServer.DoctorName,
-        //     },
-        //   ]);
-        //   setMessages(msgs => msgs.set(dataFromServer.DoctorID.toString(), []));
-        //   break;
-
         case 7:
           setMessages(msg1 => [
             ...msg1,
@@ -553,14 +368,11 @@ function ChatPatient() {
             ...msg3,
             {
               sender: dataFromServer.DoctorID,
-              content: `通过链接打开你的病历：${dataFromServer.Url}`,
+              content: `通过链接打开你的处方：${dataFromServer.Url}`,
               time: dataFromServer.Time,
             },
           ]);
           break;
-        // case 10:
-        //   setQuestions(ques => [...ques, dataFromServer.Questions]);
-        //   break;
         case 11:
           break;
         default:
@@ -578,7 +390,7 @@ function ChatPatient() {
     socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
-  });
+  }, [socket]);
 
   return (
     <Container style={{ alignItems: 'center' }}>
