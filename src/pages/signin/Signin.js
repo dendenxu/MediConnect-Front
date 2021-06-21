@@ -278,10 +278,9 @@ function Signin(props) {
           state: { email: validEmail },
         });
         return true;
-      } 
-        setPasswordInvalid(true);
-        return false;
-      
+      }
+      setPasswordInvalid(true);
+      return false;
     };
 
     setLoadingData(true);
