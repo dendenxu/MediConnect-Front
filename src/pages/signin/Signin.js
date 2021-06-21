@@ -263,17 +263,24 @@ function Signin(props) {
         body: JSON.stringify(payload),
       });
 
-      console.log(response);
-
       if (response.ok) {
         setPasswordInvalid(false);
+
+        // TODO: store token to local storage
+
+        const body = await response.json();
+        console.log(body);
+        const { token } = body.data; // trusting the server
+        localStorage.setItem('token', token);
+
         history.push({
           pathname: '/search',
           state: { email: validEmail },
         });
-      } else {
-        setPasswordInvalid(true);
+        return true;
       }
+      setPasswordInvalid(true);
+      return false;
     };
 
     setLoadingData(true);
@@ -285,13 +292,16 @@ function Signin(props) {
           await checkEmailWithServer();
         }
       } else {
-        await checkPasswordWithServer();
+        const ok = await checkPasswordWithServer();
+        console.log('Password is OK, returning');
+        if (ok) {
+          return;
+        }
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoadingData(false);
     }
+    setLoadingData(false);
   };
 
   const handleCheckBoxChange = event => {
@@ -402,6 +412,13 @@ function Signin(props) {
                 autoComplete={afterEmailCheck ? 'current-password' : 'email'}
                 fullWidth
                 value={inputContent}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    console.log(`Getting on key down event:`);
+                    console.log(e);
+                    handleClick();
+                  }
+                }}
                 onChange={handleInputChange}
                 type={afterEmailCheck && !showPassword ? 'password' : ''}
               />
