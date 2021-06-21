@@ -7,6 +7,7 @@ import theme from './theme/theme';
 import App from './App';
 import './index.css';
 import decorateFetch from './fetch';
+import decorateWebSocket from './WebSocket';
 
 // Server(); // actually instantiating the mock server
 
@@ -17,6 +18,8 @@ if (
 ) {
   decorateFetch(process.env.REACT_APP_BACKEND_API_HOST);
 }
+
+decorateWebSocket();
 
 ReactDOM.render(
   <React.StrictMode>
