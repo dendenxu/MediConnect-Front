@@ -277,9 +277,10 @@ function Signin(props) {
           pathname: '/search',
           state: { email: validEmail },
         });
-      } else {
-        setPasswordInvalid(true);
+        return true;
       }
+      setPasswordInvalid(true);
+      return false;
     };
 
     setLoadingData(true);
@@ -291,13 +292,16 @@ function Signin(props) {
           await checkEmailWithServer();
         }
       } else {
-        await checkPasswordWithServer();
+        const ok = await checkPasswordWithServer();
+        console.log('Password is OK, returning');
+        if (ok) {
+          return;
+        }
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoadingData(false);
     }
+    setLoadingData(false);
   };
 
   const handleCheckBoxChange = event => {
@@ -408,6 +412,13 @@ function Signin(props) {
                 autoComplete={afterEmailCheck ? 'current-password' : 'email'}
                 fullWidth
                 value={inputContent}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    console.log(`Getting on key down event:`);
+                    console.log(e);
+                    handleClick();
+                  }
+                }}
                 onChange={handleInputChange}
                 type={afterEmailCheck && !showPassword ? 'password' : ''}
               />
