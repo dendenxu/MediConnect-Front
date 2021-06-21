@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -91,7 +91,6 @@ export default function Home() {
   const location = useLocation();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
-  const department = location.state.Department;
   const columns = [
     { field: 'name', headerName: '药品名', width: 320, editable: false },
     {
@@ -110,11 +109,6 @@ export default function Home() {
 
   const defaultRows = [];
 
-  // function createData(id,name,size,qt,course,type,price) {
-  //   return { id,name,size,qt,course,type,price };
-  // }
-  // // todo
-
   function CreatePrescriptionData(id, name, size, qt) {
     return { id, name, size, qt };
   }
@@ -123,19 +117,43 @@ export default function Home() {
   const [medicalHistory, setMedicalHistory] = useState(''); //   to fill
   const [diagnosis, setDiagnosis] = useState(''); // to fill
   const [opinions, setOpinions] = useState(''); //   to fill
-  // todo initialize these 4 IDs(maybe using get method),
+  const [patientName, setPatientName] = useState('张三');
+  const [patientGender, setPatientGender] = useState('女');
+  const [patientAge, setPatientAge] = useState(18);
+  const [allergicHistory, setAllergicHistory] = useState('无');
+
   const CaseID = location.state.Case_id;
-  const PatientID = location.state.Patient_id;
+  const tmpPatientID = location.state.Patient_id;
+  const tmpDoctorID = location.state.Doctor_id;
   console.log(CaseID);
-  console.log(PatientID);
-  const DoctorID = location.state.Doctor_id;
-  const Department = '';
-  const PatientName = '';
-  const PatientGender = '';
-  const PatientAge = '';
-  const AllergicHistory = '';
+  console.log(tmpPatientID);
+  console.log(tmpDoctorID);
+  const tmpDepartment = location.state.Department;
+
   const [editRowsModel, setEditRowsModel] = React.useState({});
   const [rows, setRows] = React.useState(defaultRows);
+
+  useEffect(async () => {
+    const tmpresponse = await fetch(
+      `/api/patient/${tmpPatientID}/cases/${CaseID}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log(tmpresponse);
+    const tmpmessage = await tmpresponse.json();
+    setPatientName(tmpmessage.data.PatientName);
+    setPatientGender(tmpmessage.data.Gender);
+    setDiagnosis(tmpmessage.data.Diagnosis);
+    setMedicalHistory(tmpmessage.data.History);
+    setChiefComplaint(tmpmessage.data.Complaint);
+    setOpinions(tmpmessage.data.Treatment);
+    setPatientAge(tmpmessage.data.Age);
+  }, []);
+
   const guidelines = [];
   for (let i = 0; i < guidelines.length; i += 1) {
     const newrow = rows.concat([
@@ -169,7 +187,7 @@ export default function Home() {
             {new Date().getDate()}
           </Typography>
           <Typography component="h5" className={classes.headertext}>
-            {department}
+            {tmpDepartment}
           </Typography>
         </Container>
         <Container className={classes.pageContainer}>
@@ -185,7 +203,7 @@ export default function Home() {
                   id="standard-read-only-input"
                   label="患者姓名"
                   defaultValue="Hello World"
-                  value={PatientName}
+                  value={patientName}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -196,7 +214,7 @@ export default function Home() {
                   id="standard-read-only-input"
                   label="患者性别"
                   defaultValue="Hello World"
-                  value={PatientGender}
+                  value={patientGender}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -207,7 +225,7 @@ export default function Home() {
                   id="standard-read-only-input"
                   label="患者年龄"
                   defaultValue="Hello World"
-                  value={PatientAge}
+                  value={patientAge}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -220,7 +238,7 @@ export default function Home() {
                   }}
                   id="standard-required"
                   label="过敏史"
-                  value={AllergicHistory}
+                  value={allergicHistory}
                   defaultValue="无"
                 />
               </Grid>
