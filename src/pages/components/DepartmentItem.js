@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   primaryText: {
@@ -31,17 +31,56 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DepartmentItem(props) {
+  const history = useHistory();
+  const location = useLocation();
   const { primaryText, secondaryText } = useStyles();
-
   const { data } = props;
+
+  // const handleClick = async (id) =>{
+  //   const url=`/api/department/${id}`;
+  //   let depInfo={};
+  //   const response = await fetch(url, {
+  //     method: 'get',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }).then(res=>res.json()).then(rdata=>{
+  //     depInfo=rdata;
+  //     history.push({
+  //       pathname: '/departmentinfo',
+  //       state: depInfo,
+  //     });
+  //   });
+  // };
 
   return (
     <div>
-      <ListItem button component={Link} to={data.path} flexDirection="row">
+      <ListItem
+        button
+        onClick={handleClick => {
+          const url = `/api/department/${data.id}`;
+          let depInfo = {};
+          const response = fetch(url, {
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(res => res.json())
+            .then(rdata => {
+              depInfo = rdata;
+              history.push({
+                pathname: '/departmentinfo',
+                state: depInfo,
+              });
+            });
+        }}
+        flexDirection="row"
+      >
         <ListItemText
-          primary={<Typography className={primaryText}>{data.dep}</Typography>}
+          primary={<Typography className={primaryText}>{data.name}</Typography>}
           secondary={
-            <Typography className={secondaryText}>{data.intro}</Typography>
+            <Typography className={secondaryText}>{data.detail}</Typography>
           }
         />
         <ArrowForwardIosSharpIcon fontSize="small" color="secondary">

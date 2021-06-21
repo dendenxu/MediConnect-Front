@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-
+import { useHistory } from 'react-router';
 import Header from '../components/Header';
 import theme from '../../theme/theme';
 
@@ -30,14 +30,14 @@ const useStyles = makeStyles(() => ({
 
 export default function DepartmentInfo() {
   const classes = useStyles();
-
+  const history = useHistory();
   return (
     <ThemeProvider theme={theme}>
       <Header text={deptinfo[0].name} />
       <div className={classes.body}>
         <div>
           <h5>科室介绍</h5>
-          <p>aa</p>
+          <p>{history.location.state.data.detail}</p>
           <h5>主治病症</h5>
           <p>aa</p>
           <h5>医生</h5>

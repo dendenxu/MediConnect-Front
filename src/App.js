@@ -42,6 +42,7 @@ export default function App() {
         {/* process G4 */}
         <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
+        <Route path="/departmentinfo" component={DepartmentInfo} />
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
         <Route path="/fail" component={Fail} />
