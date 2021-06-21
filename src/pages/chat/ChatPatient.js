@@ -21,6 +21,9 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 // } from './api';
 
 const useStyles = makeStyles(theme => ({
+  NoSidePaddingContainer: {
+    padding: theme.spacing(1, 0),
+  },
   borderedContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -64,8 +67,9 @@ const useStyles = makeStyles(theme => ({
   namepaper: {
     border: 1,
     padding: theme.spacing(1),
-    textAlign: 'left',
+    textAlign: 'center',
     color: theme.palette.text.secondary,
+    backgroundColor: 'transparent',
   },
   icon: {
     width: '50%',
@@ -79,6 +83,7 @@ const useStyles = makeStyles(theme => ({
   topbar: {
     padding: theme.spacing(1),
     border: 1,
+    backgroundColor: 'rgba(230,229,230,.5)',
   },
   MessageContainer: {
     display: 'flex',
@@ -95,10 +100,21 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-start',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: '45%',
     backgroundColor: '#F1F0F3',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      left: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderRightColor: '#F1F0F3',
+    },
   },
   MyMessageBox: {
     display: 'flex',
@@ -107,11 +123,22 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-end',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: '45%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      right: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderLeftColor: theme.palette.primary.main,
+    },
   },
   timebox: {
     display: 'flex',
@@ -221,15 +248,15 @@ function TopBar({ DoctorName }) {
 
   return (
     <Container className={classes.topbar}>
-      <Grid container spacing={10}>
-        <Grid item>
+      <Grid container spacing={1}>
+        <Grid item xs={2}>
           <Button
           //  onClick={}
           >
             <ArrowBackIosIcon />
           </Button>
         </Grid>
-        <Grid item xs={0} spacing={0}>
+        <Grid item xs={9}>
           <Paper className={classes.namepaper} variant="outlined" square>
             {DoctorName}
           </Paper>
@@ -325,10 +352,14 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   return (
     <Container
       style={{
-        padding: 0,
+        padding: '0',
       }}
     >
-      <Container>
+      <Container
+        style={{
+          padding: '0',
+        }}
+      >
         <Typography
           variant="caption"
           className={classes.timetext}
@@ -342,6 +373,7 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
+          padding: '0',
         }}
       >
         <Paper
@@ -361,7 +393,7 @@ function Messages({ messages, CurrentUserID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
   const messagesA = messages.map(message => (
-    <Container key={message.time}>
+    <Container key={message.time} className={classes.NoSidePaddingContainer}>
       <Message message={message} CurrentUserID={CurrentUserID} />
     </Container>
   ));
@@ -549,33 +581,15 @@ function ChatPatient() {
   });
 
   return (
-    <Container className={classes.borderedContainer}>
-      <Grid container spacing={1}>
-        {/* <Grid container item xs={3} spacing={3}>
-          <PatientList
-            Patients={Patients}
-            setCurrentDoctorID={setCurrentDoctorID}
-            setDoctorName={setDoctorName}
-            setSelectedIndex={setSelectedIndex}
-            selectedIndex={selectedIndex}
-            setIsEmpty={setIsEmpty}
-          />
-        </Grid> */}
-        <Grid container item xs spacing={3}>
-          <TopBar DoctorName={DoctorName} />
-          <Messages messages={messages} CurrentUserID={CurrentUserID} />
-          <Divider flexItem />
-          {/* <ToolBar
-            CurrentDoctorID={CurrentDoctorID}
-            CurrentUserID={CurrentUserID}
-          /> */}
-          <InputBox
-            message={message}
-            setMessage={setMessage}
-            sendMessage={sendMessage}
-          />
-        </Grid>
-      </Grid>
+    <Container style={{ alignItems: 'center' }}>
+      <TopBar DoctorName={DoctorName} />
+      <Messages messages={messages} CurrentUserID={CurrentUserID} />
+      <Divider flexItem />
+      <InputBox
+        message={message}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+      />
     </Container>
   );
 }

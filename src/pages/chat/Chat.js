@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import { fromJS, Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Badge from '@material-ui/core/Badge';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -27,25 +28,30 @@ import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.s
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 
 const useStyles = makeStyles(theme => ({
-  borderedContainer: {
+  NoSidePaddingContainer: {
+    padding: theme.spacing(1, 0),
+  },
+  OutlineContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    border: 5,
-    borderRadius: 30,
-    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+    // border: 5,
+    // borderRadius: 30,
+    // boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
-    width: '70%',
+    margin: theme.spacing(0),
+    width: '100%',
     height: '100%',
   },
   textarea: {
     display: 'flex',
     width: '100%',
-    padding: theme.spacing(1),
+    // padding: theme.spacing(1),
+    margin: theme.spacing(1),
     lineHeight: 3,
-    border: 1,
+    // border: 1,
     // borderRadius: 30,
-    boxShadow: '0 1px 1px 1px rgba(9, 9, 9, .3)',
+    // boxShadow: '0 1px 1px 1px rgba(9, 9, 9, .3)',
   },
   list: {
     display: 'flex',
@@ -53,11 +59,11 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '100%',
     padding: theme.spacing(1),
+    backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
   },
   // listItem: {
-  //   // borderStyle: 'solid',
-  //   borderWidth: '0.5px'
+  //   backgroundColor:''
   // },
   endButton: {
     border: 1,
@@ -68,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     border: 1,
     padding: theme.spacing(1),
     textAlign: 'left',
-    color: theme.palette.text.secondary,
+    backgroundColor: 'transparent',
   },
   icon: {
     width: '50%',
@@ -76,20 +82,25 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
   },
   toolbar: {
-    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+    padding: theme.spacing(0),
     border: 1,
   },
   topbar: {
     padding: theme.spacing(1),
+    margin: theme.spacing(1),
     border: 1,
+    backgroundColor: 'rgba(230,229,230,.5)',
+    height: '8%',
   },
   MessageContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: theme.spacing(1),
+    margin: theme.spacing(1),
     width: '100%',
-    height: '200px',
+    height: '300px',
   },
   HisMessageBox: {
     display: 'flex',
@@ -98,10 +109,21 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-start',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: '45%',
     backgroundColor: '#F1F0F3',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      left: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderRightColor: '#F1F0F3',
+    },
   },
   MyMessageBox: {
     display: 'flex',
@@ -110,11 +132,22 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-end',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: '45%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      right: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderLeftColor: theme.palette.primary.main,
+    },
   },
   timebox: {
     display: 'flex',
@@ -128,6 +161,12 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     // ! special operation for Josefin Sans
     transform: 'translate(0px,1.5px)',
+  },
+  divider: {
+    background: 'rgba(bd,bd,bd,.5)',
+    width: '95%',
+    // padding: theme.spacing(1),
+    // margin: theme.spacing(1),
   },
 }));
 
@@ -147,7 +186,7 @@ function InputBox({ message, setMessage, sendMessage }) {
   };
 
   return (
-    <Container>
+    <Container style={{ margin: '0' }}>
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
@@ -169,6 +208,7 @@ function PatientList({
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
+  setPatients,
 }) {
   const classes = useStyles();
 
@@ -177,12 +217,24 @@ function PatientList({
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
+    setPatients(pats =>
+      pats.map(p => {
+        if (p.PatientID === PatientID)
+          return {
+            PatientID: p.PatientID,
+            PatientName: p.PatientName,
+            NewMessageCount: 0,
+          };
+        return p;
+      }),
+    );
   };
 
   console.log('Patients:', Patients);
 
   const patientsA = Patients.map(Patient => (
     <ListItem
+      divider
       className={classes.listItem}
       key={Patients.findIndex(obj => obj.PatientID === Patient.PatientID)}
       button
@@ -199,9 +251,9 @@ function PatientList({
         )
       }
     >
-      {/* <Badge badgeContent={4} color="primary"> */}
-      <ListItemText primary={Patient.PatientName} />
-      {/* </Badge> */}
+      <Badge badgeContent={Patient.NewMessageCount} color="primary">
+        <ListItemText primary={Patient.PatientName} />
+      </Badge>
     </ListItem>
   ));
 
@@ -255,15 +307,23 @@ function TopBar({
               {PatientName}
             </Paper>
           </Grid>
-          <Grid item>
-            <Button
-              className={classes.endButton}
-              variant="contained"
-              color="primary"
-              onClick={handleEndClick}
+          <Grid item xs={9}>
+            <Container
+              style={{
+                display: 'flex',
+                flexDirection: 'row-reverse',
+                alignItems: 'flex-end',
+              }}
             >
-              结束挂号
-            </Button>
+              <Button
+                className={classes.endButton}
+                variant="contained"
+                color="primary"
+                onClick={handleEndClick}
+              >
+                结束挂号
+              </Button>
+            </Container>
           </Grid>
         </Grid>
       ) : (
@@ -332,7 +392,7 @@ function ToolBar({
 
   return (
     <Container className={classes.toolbar}>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid item xs={1}>
           <Button onClick={handlePopoverOpen}>
             <QuestionsIcon />
@@ -382,8 +442,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   }
 
   return (
-    <Container>
-      <Container>
+    <Container style={{ padding: '0' }}>
+      <Container style={{ padding: '0' }}>
         <Typography
           variant="caption"
           className={classes.timetext}
@@ -397,6 +457,7 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
+          padding: '0',
         }}
       >
         <Paper
@@ -417,7 +478,10 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <Container key={message.time}>
+        <Container
+          key={message.time}
+          className={classes.NoSidePaddingContainer}
+        >
           <Message message={message} CurrentUserID={CurrentUserID} />
         </Container>
       ))
@@ -432,9 +496,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
       </ScrollToBottom>
     );
   return (
-    <ScrollToBottom className={classes.MessageContainer}>
-      请选择一个病人进行会话
-    </ScrollToBottom>
+    <ScrollToBottom className={classes.MessageContainer}>{}</ScrollToBottom>
   );
 }
 
@@ -444,9 +506,9 @@ function Chat() {
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: '张三' },
-    { PatientID: 1985, PatientName: '李四' },
-    { PatientID: 1987, PatientName: '王五' },
+    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
+    { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
+    { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -603,6 +665,7 @@ function Chat() {
             {
               PatientID: dataFromServer.PatientID,
               PatientName: dataFromServer.PatientName,
+              NewMessageCount: 0,
             },
           ]);
           setMessages(msgs =>
@@ -620,6 +683,17 @@ function Chat() {
                 time: dataFromServer.Time,
               },
             ]),
+          );
+          setPatients(pats =>
+            pats.map(p => {
+              if (p.PatientID === dataFromServer.SenderID.toString())
+                return {
+                  PatientID: p.PatientID,
+                  PatientName: p.PatientName,
+                  NewMessageCount: p.NewMessageCount + 1,
+                };
+              return p;
+            }),
           );
           break;
         case 8:
@@ -667,7 +741,7 @@ function Chat() {
   });
 
   return (
-    <Container className={classes.borderedContainer}>
+    <Container className={classes.OutlineContainer}>
       <Grid container spacing={1}>
         <Grid container item xs={3} spacing={3}>
           <PatientList
@@ -677,6 +751,7 @@ function Chat() {
             setSelectedIndex={setSelectedIndex}
             selectedIndex={selectedIndex}
             setIsEmpty={setIsEmpty}
+            setPatients={setPatients}
           />
         </Grid>
         <Grid container item xs spacing={3}>
@@ -699,7 +774,8 @@ function Chat() {
             IsEmpty={IsEmpty}
             CurrentPatientID={CurrentPatientID}
           />
-          <Divider flexItem />
+          {/* <Divider className={classes.divider} /> */}
+          <Divider className={classes.divider} variant="middle" />
           <ToolBar
             CurrentPatientID={CurrentPatientID}
             CurrentUserID={CurrentUserID}
