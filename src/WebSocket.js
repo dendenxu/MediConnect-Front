@@ -1,8 +1,8 @@
-const originalWebSocket = global.WebSocket;
+global.originalWebSocket = global.WebSocket;
 
 export default function decorateWebSocket(origin, protocol) {
   console.log(`decorating: ${protocol}://${origin}`);
-  class Decorated extends originalWebSocket {
+  class Decorated extends global.originalWebSocket {
     constructor(url, ...options) {
       let finalUrl = url;
 

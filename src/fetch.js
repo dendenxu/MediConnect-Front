@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 // remember the original fetch-function to delegate to
-const originalFetch = global.fetch;
+global.originalFetch = global.fetch;
 
 export default function decorateFetch(origin, protocol) {
   // replace the global fetch() with our version where we prefix the given URL with a baseUrl
@@ -22,6 +22,6 @@ export default function decorateFetch(origin, protocol) {
     }
     console.warn(`Apply base url: ${url}, result: ${finalUrl}`);
     console.warn(`Modifying credentials to: include`);
-    return originalFetch(finalUrl, finalOptions);
+    return global.originalFetch(finalUrl, finalOptions);
   };
 }
