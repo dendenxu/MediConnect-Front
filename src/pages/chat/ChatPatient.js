@@ -10,15 +10,15 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import {
-  // socket,
-  socketPatient,
-  // hello,
-  // closeChat,
-  // requireMedicalRecord,
-  // requirePrescription,
-  // requireQuestions,
-} from './api';
+// import {
+//   // socket,
+//   socketPatient,
+//   // hello,
+//   // closeChat,
+//   // requireMedicalRecord,
+//   // requirePrescription,
+//   // requireQuestions,
+// } from './api';
 
 const useStyles = makeStyles(theme => ({
   borderedContainer: {
@@ -127,6 +127,8 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(0px,1.5px)',
   },
 }));
+
+const socket = new WebSocket('ws://172.27.197.171:12448/api/patient/222/chat');
 
 function InputBox({ message, setMessage, sendMessage }) {
   const classes = useStyles();
@@ -431,7 +433,7 @@ function ChatPatient() {
         Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
-      socketPatient.send(JSON.stringify(json));
+      socket.send(JSON.stringify(json));
 
       setMessage('');
 
@@ -453,7 +455,7 @@ function ChatPatient() {
   };
 
   useEffect(() => {
-    socketPatient.onopen = () => {
+    socket.onopen = () => {
       console.log('Successfully Connected');
       // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
@@ -465,7 +467,7 @@ function ChatPatient() {
       // console.log('Patiens after local:', Patients);
     };
 
-    socketPatient.onmessage = msg => {
+    socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
       const dataFromServer = JSON.parse(msg.data);
       // const patientID = JSON.stringify(dataFromServer.PatientID);
@@ -530,11 +532,11 @@ function ChatPatient() {
       // localStorage.setItem('Patients', JSON.stringify(Patients));
     };
 
-    socketPatient.onclose = event => {
+    socket.onclose = event => {
       console.log('Socket Closed Connection: ', event);
     };
 
-    socketPatient.onerror = error => {
+    socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
   });
