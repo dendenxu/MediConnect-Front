@@ -512,7 +512,7 @@ function Chat() {
   const [selectedIndex, setSelectedIndex] = useState();
 
   const socket = new WebSocket(
-    `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/${CurrentUserID}/chat`,
+    `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/doctor/${CurrentUserID}/chat`,
   );
   // const socket = new WebSocket('ws://172.27.197.171:12448/api/doctor/111/chat');
 
