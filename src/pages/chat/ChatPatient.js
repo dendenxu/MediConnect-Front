@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   textarea: {
     display: 'flex',
-    width: '100%',
+    width: '95%',
     padding: theme.spacing(1),
     lineHeight: 3,
     border: 2,
@@ -162,7 +162,7 @@ function InputBox({ message, setMessage, sendMessage }) {
   };
 
   return (
-    <Container>
+    <Container style={{ padding: '0' }}>
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
