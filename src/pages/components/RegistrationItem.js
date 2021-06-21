@@ -53,19 +53,29 @@ export default function DepartmentItem(props) {
   const buttonStyle = ['primary', 'secondary', 'disabled'];
   const buttonText = ['已提交', '进行中', '已结束'];
 
+  function statTr(str) {
+    if (str === 'committed') return 0;
+    if (str === 'accepted') return 1;
+    return 2;
+  }
+
   return (
     <div>
       <ListItem button component={Link} to={data.path} flexDirection="row">
         <ListItemText
-          primary={<Typography className={primaryText}>{data.dep}</Typography>}
+          primary={
+            <Typography className={primaryText}>{data.department}</Typography>
+          }
           secondary={
-            <Typography className={secondaryText}>{data.date}</Typography>
+            <Typography
+              className={secondaryText}
+            >{`${data.year}-${data.month}-${data.day}-${data.halfday}`}</Typography>
           }
         />
         <ThemeProvider theme={registrationTheme}>
           <span style={{ cursor: 'not-allowed' }}>
-            <Button variant="outlined" color={buttonStyle[data.id]}>
-              {buttonText[data.id]}
+            <Button variant="outlined" color={buttonStyle[statTr(data.status)]}>
+              {buttonText[statTr(data.status)]}
             </Button>
           </span>
         </ThemeProvider>

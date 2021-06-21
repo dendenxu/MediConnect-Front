@@ -24,6 +24,7 @@ import MediSearch from './pages/process/MediSearch';
 import ChatPatient from './pages/chat/ChatPatient';
 import Patient from './pages/signin/Patient';
 import Doctor from './pages/signin/Doctor';
+import RegList from './pages/process/RegList';
 
 export default function App() {
   return (
@@ -48,7 +49,7 @@ export default function App() {
         <Route path="/fail" component={Fail} />
         <Route path="/browse" component={Browse} />
         <Route path="/record" component={Record} />
-        {/* <Route path="/reglist" component={RegList} /> */}
+        <Route path="/reglist" component={RegList} />
         {/* <Route path="/reginfo" component={RegInfo} /> */}
         <Route path="/browse_p" component={BrowsePatient} />
         <Route path="/record_p" component={RecordPatient} />
