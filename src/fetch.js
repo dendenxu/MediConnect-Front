@@ -12,8 +12,14 @@ export default function decorateFetch(origin) {
   const baseUrl = `${protocol}//${origin}`;
   global.fetch = (url, options) => {
     const finalUrl = baseUrl + url;
-    const finalOptions = options; // getting a reference
+    const finalOptions = options || { headers: {} }; // getting a reference
     finalOptions.credentials = 'include';
+    const token = localStorage.getItem('token');
+    console.log(`'Getting token from localStorage: ${token}`);
+    if (token) {
+      finalOptions.headers.Authorization = `Bearer ${token}`;
+      console.log(`Updated finalOptions: ${finalOptions}`);
+    }
     console.warn(`Apply base url: ${url}, result: ${finalUrl}`);
     console.warn(`Modifying credentials to: include`);
     return originalFetch(finalUrl, finalOptions);

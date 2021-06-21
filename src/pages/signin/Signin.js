@@ -263,10 +263,16 @@ function Signin(props) {
         body: JSON.stringify(payload),
       });
 
-      console.log(response);
-
       if (response.ok) {
         setPasswordInvalid(false);
+
+        // TODO: store token to local storage
+
+        const body = await response.json();
+        console.log(body);
+        const { token } = body.data; // trusting the server
+        localStorage.setItem('token', token);
+
         history.push({
           pathname: '/search',
           state: { email: validEmail },

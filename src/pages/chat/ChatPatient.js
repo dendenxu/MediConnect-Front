@@ -423,7 +423,7 @@ function ChatPatient() {
   // );
 
   const socket = new WebSocket(
-    `wss://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
+    `ws://${process.env.REACT_APP_BACKEND_API_HOST}/api/patient/${CurrentUserID}/chat`,
   );
   console.log(socket);
 

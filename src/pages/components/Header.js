@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import React from 'react';
 
 const useStyles = makeStyles(theme => ({
@@ -44,6 +45,7 @@ export default function Header(props) {
       <Toolbar
         style={{
           paddingLeft: 8,
+          paddingRight: 8,
         }}
       >
         {isRoot ? (
@@ -99,18 +101,33 @@ export default function Header(props) {
         />
 
         {isRoot && (
-          <IconButton
-            onClick={() => {
-              history.push('/signin');
-            }}
-            size="small"
-            edge="start"
+          <div
             style={{
-              color: '#FFFFFF',
+              display: 'flex',
             }}
           >
-            <AccountCircleIcon fontSize="medium" />
-          </IconButton>
+            <IconButton
+              onClick={() => {
+                history.push('/signin');
+              }}
+              style={{
+                color: '#FFFFFF',
+              }}
+            >
+              <AccountCircleIcon fontSize="medium" />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                localStorage.removeItem('token');
+                history.push('/signin');
+              }}
+              style={{
+                color: '#FFFFFF',
+              }}
+            >
+              <ExitToAppIcon fontSize="medium" />
+            </IconButton>
+          </div>
         )}
       </Toolbar>
     </AppBar>
