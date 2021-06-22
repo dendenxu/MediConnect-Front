@@ -462,6 +462,8 @@ function Signup(props) {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoadingData(false);
     }
   };
 
