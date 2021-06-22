@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Search from '@material-ui/icons/Search';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import SearchBar from '../components/SearchBar';
 
@@ -36,7 +36,7 @@ function toDisplayItem(info, index) {
   const history = useHistory();
   const handlerecord = event => {
     history.push({
-      pathname: '/Record_p',
+      pathname: '/record_p',
       state: {
         Case_id: info.ID,
         Patient_id: info.PatientID,

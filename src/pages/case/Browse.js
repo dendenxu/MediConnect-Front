@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Search from '@material-ui/icons/Search';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import SearchBar from '../components/SearchBar';
 
@@ -36,7 +36,7 @@ function toDisplayItem(info, index) {
   const history = useHistory();
   const handlerecord = event => {
     history.push({
-      pathname: '/Record',
+      pathname: '/record',
       state: {
         Case_id: info.ID,
         Patient_id: info.PatientID,
@@ -83,11 +83,14 @@ function toDisplayItem(info, index) {
 const Wrapper = ({ children }) => children;
 
 let Data = [];
-
 const tmpdoctorId = 1;
 const tmppatientId = 2;
 const tmpdepartment = '太平间';
-let tmpcaseID = 999;
+const patientname = '肖 瑞轩';
+const doctorname = '于 成笑';
+const patientgender = '男';
+const patientage = 18;
+const tmpcaseID = 999;
 
 export default function Browse() {
   classes = useStyles();
@@ -119,41 +122,44 @@ export default function Browse() {
   const displayItems = display.map(toDisplayItem);
 
   const handlerecord = async () => {
-    const response = await fetch(`/api/patient/${tmppatientId}/case`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        complaint: ' ',
-        department: tmpdepartment,
-        diagnosis: ' ',
-        doctorID: tmpdoctorId,
-        history: ' ',
-        patientID: tmppatientId,
-        prescriptions: [],
-        treatment: ' ',
-      }),
-    });
+    // const response = await fetch(`/api/patient/${tmppatientId}/case`, {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     complaint: ' ',
+    //     department: tmpdepartment,
+    //     diagnosis: ' ',
+    //     doctorID: tmpdoctorId,
+    //     history: ' ',
+    //     patientID: tmppatientId,
+    //     prescriptions: [],
+    //     treatment: ' ',
+    //   }),
+    // });
 
-    console.log(response);
-    const message = await response.json();
-    if (response.ok) {
-      console.log(`The server says case creating is succcessful`);
-      console.log(message);
-    } else {
-      console.log(`Fail to create the case`);
-      console.log(message);
-    }
+    // console.log(response);
+    // const message = await response.json();
+    // if (response.ok) {
+    //   console.log(`The server says case creating is succcessful`);
+    //   console.log(message);
+    // } else {
+    //   console.log(`Fail to create the case`);
+    //   console.log(message);
+    // }
 
-    tmpcaseID = message.data;
+    // tmpcaseID = message.data;
 
-    console.log(tmpcaseID);
+    // console.log(tmpcaseID);
 
     history.push({
-      pathname: '/Record',
+      pathname: '/create_record',
       state: {
-        Case_id: tmpcaseID,
+        // Case_id: tmpcaseID,
+        Patient_age: patientage,
+        Patient_gender: patientgender,
+        Patient_name: patientname,
         Patient_id: tmppatientId,
         Department: tmpdepartment,
         Doctor_id: tmpdoctorId,

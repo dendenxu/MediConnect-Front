@@ -10,10 +10,11 @@ import Container from '@material-ui/core/Container';
 import { DataGrid } from '@material-ui/data-grid';
 import { Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ContactsIcon from '@material-ui/icons/Contacts';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -96,6 +97,7 @@ let initial = -2;
 let whetherpres = 0;
 
 export default function Home() {
+  const history = useHistory();
   const location = useLocation();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
@@ -163,10 +165,17 @@ export default function Home() {
   const [patientName, setPatientName] = useState('张三');
   const [patientGender, setPatientGender] = useState('女');
   const [patientAge, setPatientAge] = useState(18);
-
-  // console.log(tmpCaseID);
-  // console.log(tmpPatientID);
-  // console.log(tmpDoctorID);
+  const [helperText1, setHelper1] = useState('');
+  const [helperText2, setHelper2] = useState('');
+  const [helperText3, setHelper3] = useState('');
+  const [helperText4, setHelper4] = useState('');
+  const [InputError1, setInputError1] = useState(false);
+  const [InputError2, setInputError2] = useState(false);
+  const [InputError3, setInputError3] = useState(false);
+  const [InputError4, setInputError4] = useState(false);
+  // // console.log(tmpCaseID);
+  // // console.log(tmpPatientID);
+  // // console.log(tmpDoctorID);
   const tmpDepartment = location.state.Department;
 
   const [editRowsModel, setEditRowsModel] = useState({});
@@ -174,7 +183,7 @@ export default function Home() {
 
   useEffect(async () => {
     if (initial <= 0) {
-      console.log(initial);
+      // console.log(initial);
       initial += 1;
       const tmpresponse = await fetch(
         `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
@@ -185,7 +194,7 @@ export default function Home() {
           },
         },
       );
-      // console.log(tmpresponse);
+      // // console.log(tmpresponse);
       const tmpmessage = await tmpresponse.json();
       setPatientName(tmpmessage.data.PatientName);
       setPatientGender(tmpmessage.data.Gender);
@@ -193,8 +202,8 @@ export default function Home() {
       setMedicalHistory(tmpmessage.data.History);
       setChiefComplaint(tmpmessage.data.Complaint);
       setOpinions(tmpmessage.data.Treatment);
-      console.log(tmpmessage.data.Prescriptions);
-      console.log(tmpmessage.data.Prescriptions.length);
+      // console.log(tmpmessage.data.Prescriptions);
+      // console.log(tmpmessage.data.Prescriptions.length);
       if (tmpmessage.data.Prescriptions.length === 0) {
         setRows(defaultRows);
       } else {
@@ -225,8 +234,8 @@ export default function Home() {
             ),
           ]);
         }
-        console.log(tempprescription);
-        console.log(temprows);
+        // console.log(tempprescription);
+        // console.log(temprows);
         defaultRows = temprows;
         defaultPrescription = tempprescription;
         setPrescriptions(tempprescription);
@@ -238,109 +247,132 @@ export default function Home() {
     } else {
       initial = -2;
     }
-    console.log(rows);
-    console.log(allprescriptions);
+    // console.log(rows);
+    // console.log(allprescriptions);
   }, [initial]);
 
-  const handleEditCellChangeCommitted = React.useCallback(
-    async ({ id, field, props }) => {
-      if (field === 'name') {
-        const data = props; // Fix eslint value is missing in prop-types for JS files
-        const newname = data.value.toString();
-        const response = await fetch(`/api/medicine?q=${newname}`, {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+  const handleEditCellChangeCommitted = async ({ id, field, props }) => {
+    if (field === 'name') {
+      const data = props; // Fix eslint value is missing in prop-types for JS files
+      const newname = data.value.toString();
+      const response = await fetch(`/api/medicine?q=${newname}`, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        const message = await response.json();
-        console.log(message);
-        const mediId = message.data[0].ID;
-        if (response.ok) {
-          console.log(`succeed in finding the medicine`);
-          console.log(message);
-        } else {
-          console.log(`fail to find the medicine`);
-          console.log(message);
+      const message = await response.json();
+      // console.log(message);
+      const mediId = message.data[0].ID;
+      if (response.ok) {
+        // console.log(`succeed in finding the medicine`);
+        // console.log(message);
+      } else {
+        // console.log(`fail to find the medicine`);
+        // console.log(message);
+      }
+
+      const updatedRows = rows.map(row => {
+        if (row.id === id) {
+          return { ...row, name: newname };
         }
+        return row;
+      });
+      setRows(updatedRows);
+      // console.log(mediId);
+      const updatedPres = allprescriptions.map(allprescription => {
+        if (allprescription.lineno === id) {
+          // console.log(mediId);
+          return { ...allprescription, MedicineId: mediId };
+        }
+        return allprescription;
+      });
+      setPrescriptions(updatedPres);
+    }
+    if (field === 'size') {
+      const data = props; // Fix eslint value is missing in prop-types for JS files
+      const newsize = Number(data.value);
+      const updatedRows = rows.map(row => {
+        if (row.id === id) {
+          return { ...row, size: newsize };
+        }
+        return row;
+      });
+      setRows(updatedRows);
 
-        const updatedRows = rows.map(row => {
-          if (row.id === id) {
-            return { ...row, name: newname };
-          }
-          return row;
-        });
-        setRows(updatedRows);
-        console.log(mediId);
-        const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.lineno === id) {
-            console.log(mediId);
-            return { ...allprescription, MedicineId: mediId };
-          }
-          return allprescription;
-        });
-        setPrescriptions(updatedPres);
-      }
-      if (field === 'size') {
-        const data = props; // Fix eslint value is missing in prop-types for JS files
-        const newsize = Number(data.value);
-        const updatedRows = rows.map(row => {
-          if (row.id === id) {
-            return { ...row, size: newsize };
-          }
-          return row;
-        });
-        setRows(updatedRows);
-
-        const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.lineno === id) {
-            return { ...allprescription, quantity: newsize };
-          }
-          return allprescription;
-        });
-        setPrescriptions(updatedPres);
-      }
-      if (field === 'qt') {
-        const data = props; // Fix eslint value is missing in prop-types for JS files
-        const newqt = data.value.toString();
-        const updatedRows = rows.map(row => {
-          if (row.id === id) {
-            return { ...row, qt: newqt };
-          }
-          return row;
-        });
-        setRows(updatedRows);
-
-        const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.lineno === id) {
-            return { ...allprescription, dosage: newqt };
-          }
-          return allprescription;
-        });
-        setPrescriptions(updatedPres);
-      }
-      console.log(rows);
-      console.log(allprescriptions);
-    },
-    [rows],
-  );
+      const updatedPres = allprescriptions.map(allprescription => {
+        if (allprescription.lineno === id) {
+          return { ...allprescription, quantity: newsize };
+        }
+        return allprescription;
+      });
+      setPrescriptions(updatedPres);
+    }
+    if (field === 'qt') {
+      const data = props; // Fix eslint value is missing in prop-types for JS files
+      const newqt = data.value.toString();
+      const updatedRows = rows.map(row => {
+        if (row.id === id) {
+          return { ...row, qt: newqt };
+        }
+        return row;
+      });
+      setRows(updatedRows);
+      const updatedPres = allprescriptions.map(allprescription => {
+        if (allprescription.lineno === id) {
+          return { ...allprescription, dosage: newqt };
+        }
+        return allprescription;
+      });
+      setPrescriptions(updatedPres);
+    }
+    // console.log(rows);
+  };
 
   const handleComplaintInput = event => {
     const text = event.target.value;
+    if (text === '') {
+      setHelper1('不能为空值');
+      setInputError1(true);
+    } else {
+      setHelper1('');
+      setInputError1(false);
+    }
     setChiefComplaint(text);
   };
 
   const handleMedicalHistoryInput = event => {
     const text = event.target.value;
+    if (text === '') {
+      setHelper2('不能为空值');
+      setInputError2(true);
+    } else {
+      setHelper2('');
+      setInputError2(false);
+    }
     setMedicalHistory(text);
   };
   const handleDiagnosisInput = event => {
     const text = event.target.value;
+    if (text === '') {
+      setHelper3('不能为空值');
+      setInputError3(true);
+    } else {
+      setHelper3('');
+      setInputError3(false);
+    }
     setDiagnosis(text);
   };
   const handleOpinionsInput = event => {
     const text = event.target.value;
+    if (text === '') {
+      setHelper4('不能为空值');
+      setInputError4(true);
+    } else {
+      setHelper4('');
+      setInputError4(false);
+    }
     setOpinions(text);
   };
 
@@ -364,21 +396,21 @@ export default function Home() {
         }),
       },
     );
-    // console.log(response);
+    // // console.log(response);
     const message = await response.json();
     desID = message.data;
-    console.log(desID);
+    // console.log(desID);
     if (response.ok) {
-      // console.log(`The server says creating new prescription is succcessful`);
-      // console.log(message);
+      // // console.log(`The server says creating new prescription is succcessful`);
+      // // console.log(message);
     } else {
-      // console.log(`Fail to create new prescription`);
-      // console.log(message);
+      // // console.log(`Fail to create new prescription`);
+      // // console.log(message);
     }
   };
 
   const HandleOnAddLine = async () => {
-    console.log(linecount);
+    // console.log(linecount);
     const newrow = rows.concat([
       CreatePrescriptionData(linecount, '输入药品名', '输入数量', '输入用法'),
     ]);
@@ -397,13 +429,13 @@ export default function Home() {
     setPrescriptions(newdefaultdescription);
     linecount += 1;
     setRows(newrow);
-    console.log(rows);
-    console.log(allprescriptions);
+    // console.log(rows);
+    // console.log(allprescriptions);
   };
 
   const HandleSaveClick = async () => {
-    console.log(linecount);
-    console.log(allprescriptions);
+    // console.log(linecount);
+    console.log(allprescriptions[0]);
     for (let i = 0; i < linecount - 1; i += 1) {
       const tmpguideline = [
         {
@@ -418,9 +450,9 @@ export default function Home() {
       const newallguidelines = allguidelines.concat(tmpguideline);
       allguidelines = newallguidelines;
     }
-    console.log(allprescriptions);
-    console.log(allguidelines);
-    console.log(tmpCaseID);
+    // console.log(allprescriptions);
+    // console.log(allguidelines);
+    // console.log(tmpCaseID);
     let response;
     let message;
     if (whetherpres === 1) {
@@ -442,11 +474,11 @@ export default function Home() {
       );
       message = await response.json();
       if (response.ok) {
-        // console.log(`The server says creating new prescription is succcessful`);
-        // console.log(message);
+        // // console.log(`The server says creating new prescription is succcessful`);
+        // // console.log(message);
       } else {
-        // console.log(`Fail to create new prescription`);
-        // console.log(message);
+        // // console.log(`Fail to create new prescription`);
+        // // console.log(message);
       }
     }
 
@@ -459,19 +491,19 @@ export default function Home() {
 
     message = await response.json();
     const beforecase = message.data;
-    console.log(beforecase);
+    // console.log(beforecase);
     if (response.ok) {
-      // console.log(`The server says creating new prescription is succcessful`);
-      // console.log(message);
+      // // console.log(`The server says creating new prescription is succcessful`);
+      // // console.log(message);
     } else {
-      // console.log(`Fail to create new prescription`);
-      // console.log(message);
+      // // console.log(`Fail to create new prescription`);
+      // // console.log(message);
     }
     beforecase.Complaint = chiefComplaint;
     beforecase.Diagnosis = diagnosis;
     beforecase.Treatment = opinions;
     beforecase.History = medicalHistory;
-    console.log(beforecase);
+    // console.log(beforecase);
     response = await fetch(`/api/patient/${tmpPatientID}/case/${tmpCaseID}`, {
       // todo
       method: 'put',
@@ -481,15 +513,21 @@ export default function Home() {
       body: JSON.stringify(beforecase),
     });
 
-    // console.log(response);
+    // // console.log(response);
     message = await response.json();
     if (response.ok) {
-      // console.log(`The server says saving is succcessful`);
-      // console.log(message);
+      // // console.log(`The server says saving is succcessful`);
+      // // console.log(message);
     } else {
-      // console.log(`Fail to save the case`);
-      // console.log(message);
+      // // console.log(`Fail to save the case`);
+      // // console.log(message);
     }
+  };
+
+  const HandleGoback = async () => {
+    history.push({
+      pathname: '/browse',
+    });
   };
 
   return (
@@ -497,11 +535,17 @@ export default function Home() {
       <CssBaseline />
       <Grid container direction="column" justify="center" alignItems="center">
         <Container className={classes.headerContainer}>
+          <Button variant="outlined" color="primary" onClick={HandleGoback}>
+            <ArrowBackIosIcon color="primary" size="small" />
+            <Container className={classes.buttontext}>
+              <Typography component="h4">返回</Typography>
+            </Container>
+          </Button>
           <Typography component="h5" className={classes.headertext}>
             日间门诊
           </Typography>
           <Typography component="h5" alignCenter className={classes.headertext}>
-            {new Date().getFullYear()}/{new Date().getMonth()}/
+            {new Date().getFullYear()}/{new Date().getMonth() + 1}/
             {new Date().getDate()}
           </Typography>
           <Typography component="h5" className={classes.headertext}>
@@ -567,6 +611,8 @@ export default function Home() {
                   fullWidth
                   rows={5}
                   value={chiefComplaint}
+                  helperText={helperText1}
+                  error={InputError1}
                   onChange={handleComplaintInput}
                 />
               </Grid>
@@ -579,6 +625,8 @@ export default function Home() {
                   fullWidth
                   rows={5}
                   value={medicalHistory}
+                  helperText={helperText2}
+                  error={InputError2}
                   onChange={handleMedicalHistoryInput}
                 />
               </Grid>
@@ -593,6 +641,8 @@ export default function Home() {
                   fullWidth
                   rows={5}
                   value={diagnosis}
+                  helperText={helperText3}
+                  error={InputError3}
                   onChange={handleDiagnosisInput}
                 />
               </Grid>
@@ -605,6 +655,8 @@ export default function Home() {
                   fullWidth
                   rows={5}
                   value={opinions}
+                  error={InputError4}
+                  helperText={helperText4}
                   onChange={handleOpinionsInput}
                 />
               </Grid>
