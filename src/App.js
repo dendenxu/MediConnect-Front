@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import Signin from './pages/signin/Signin';
 import Signup from './pages/signin/Signup';
+import EditPass from './pages/signin/EditPass';
 import Chat from './pages/chat/Chat';
 import Record from './pages/record/Record';
 import Browse from './pages/case/Browse';
@@ -21,8 +22,8 @@ import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
 import MediSearch from './pages/process/MediSearch';
 import ChatPatient from './pages/chat/ChatPatient';
-import RegList from './pages/process/RegList';
-import RegInfo from './pages/process/RegInfo';
+import Patient from './pages/signin/Patient';
+import Doctor from './pages/signin/Doctor';
 
 export default function App() {
   return (
@@ -33,19 +34,21 @@ export default function App() {
         </Route>
         <Route path="/signin" component={Signin} />
         <Route path="/signup" component={Signup} />
+        <Route path="/patient" component={Patient} />
+        <Route path="/doctor" component={Doctor} />
+        <Route path="/editpass" component={EditPass} />
         <Route path="/chat" component={Chat} />
         <Route exact path="/ChatPatient" component={ChatPatient} />
         {/* process G4 */}
         <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
-        <Route path="/department-info" component={DepartmentInfo} />
         <Route path="/guide-result" component={GuideResult} />
         <Route path="/success" component={Success} />
         <Route path="/fail" component={Fail} />
         <Route path="/browse" component={Browse} />
         <Route path="/record" component={Record} />
-        <Route path="/reglist" component={RegList} />
-        <Route path="/reginfo" component={RegInfo} />
+        {/* <Route path="/reglist" component={RegList} /> */}
+        {/* <Route path="/reginfo" component={RegInfo} /> */}
         <Route path="/browse_p" component={BrowsePatient} />
         <Route path="/record_p" component={RecordPatient} />
         <Route>

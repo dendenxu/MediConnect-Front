@@ -140,7 +140,7 @@ const useStyles = makeStyles(theme => ({
   },
   loadingProgress: {
     // color: '#27CD86',
-    position: 'relative',
+    // position: 'relative',
     // top: "50%",
     // left: "50%",
     zIndex: 1,
@@ -263,17 +263,24 @@ function Signin(props) {
         body: JSON.stringify(payload),
       });
 
-      console.log(response);
-
       if (response.ok) {
         setPasswordInvalid(false);
+
+        // TODO: store token to local storage
+
+        const body = await response.json();
+        console.log(body);
+        const { token } = body.data; // trusting the server
+        localStorage.setItem('token', token);
+
         history.push({
           pathname: '/search',
           state: { email: validEmail },
         });
-      } else {
-        setPasswordInvalid(true);
+        return true;
       }
+      setPasswordInvalid(true);
+      return false;
     };
 
     setLoadingData(true);
@@ -285,13 +292,16 @@ function Signin(props) {
           await checkEmailWithServer();
         }
       } else {
-        await checkPasswordWithServer();
+        const ok = await checkPasswordWithServer();
+        console.log('Password is OK, returning');
+        if (ok) {
+          return;
+        }
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoadingData(false);
     }
+    setLoadingData(false);
   };
 
   const handleCheckBoxChange = event => {
@@ -324,6 +334,45 @@ function Signin(props) {
     history.push('/signup');
   };
 
+  const handleEditPass = async () => {
+    const sendIdentifyCodeWithServer = async () => {
+      const payload = {
+        email: validEmail,
+      };
+
+      // todo
+      const response = await fetch('/api/account/sendemail', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log(response);
+
+      if (response.ok) {
+        history.push({
+          pathname: '/editpass',
+          state: { email: validEmail },
+        });
+      } else {
+        console.log('invalid access for password editting!');
+      }
+    };
+
+    setLoadingData(true);
+    try {
+      if (afterEmailCheck) {
+        await sendIdentifyCodeWithServer();
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      // setLoadingData(false);
+    }
+  };
+
   return (
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
@@ -332,7 +381,16 @@ function Signin(props) {
 
         <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
           {loadingData && (
-            <Box position="absolute" top="5%" left="44%">
+            <Box
+              position="absolute"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                paddingTop: '10%',
+              }}
+            >
               <CircularProgress size={68} className={classes.loadingProgress} />
             </Box>
           )}
@@ -395,6 +453,13 @@ function Signin(props) {
                 autoComplete={afterEmailCheck ? 'current-password' : 'email'}
                 fullWidth
                 value={inputContent}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    console.log(`Getting on key down event:`);
+                    console.log(e);
+                    handleClick();
+                  }
+                }}
                 onChange={handleInputChange}
                 type={afterEmailCheck && !showPassword ? 'password' : ''}
               />
@@ -433,13 +498,23 @@ function Signin(props) {
             </Container>
 
             <Container className={classes.submit}>
-              <Link
-                onClick={handleSignup}
-                variant="caption"
-                className={classes.centeredText}
-              >
-                创建新账号
-              </Link>
+              {afterEmailCheck ? (
+                <Link
+                  onClick={handleEditPass}
+                  variant="caption"
+                  className={classes.centeredText}
+                >
+                  忘记密码？
+                </Link>
+              ) : (
+                <Link
+                  onClick={handleSignup}
+                  variant="caption"
+                  className={classes.centeredText}
+                >
+                  创建新账号
+                </Link>
+              )}
               <Button
                 className={classes.nextButton}
                 type="submit"

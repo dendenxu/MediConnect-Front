@@ -4,8 +4,10 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable react/prefer-stateless-function */
 
-import { List, ThemeProvider } from '@material-ui/core';
+import { Grid, IconButton, List, ThemeProvider } from '@material-ui/core';
 import React from 'react';
+import { Link } from 'react-router-dom';
+import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import Header from '../components/Header';
 import theme from '../../theme/theme';
 import RegistrationItem from '../components/RegistrationItem';
@@ -44,6 +46,17 @@ class RegList extends React.Component {
             <RegistrationItem key={data.id} data={data} />
           ))}
         </List>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justfy="center"
+        >
+          <IconButton color="primary" size="medium">
+            <AddCircleOutlinedIcon fontSize="large" />
+          </IconButton>
+        </Grid>
       </ThemeProvider>
     );
   }

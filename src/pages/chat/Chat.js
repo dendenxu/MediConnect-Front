@@ -14,14 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
-import {
-  socket,
-  hello,
-  closeChat,
-  requireMedicalRecord,
-  requirePrescription,
-  // requireQuestions,
-} from './api';
 import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
@@ -142,8 +134,10 @@ function InputBox({ message, setMessage, sendMessage }) {
 
   const handleMessageSend = event => {
     // const key = event.key;
-    if (event.key === 'Enter') sendMessage(event);
-    console.log(`Sending a new message.`);
+    if (event.key === 'Enter') {
+      sendMessage(event);
+      console.log(`Sending a new message.`);
+    }
   };
 
   return (
@@ -227,11 +221,12 @@ function TopBar({
   IsEmpty,
   setIsEmpty,
   setSelectedIndex,
+  closeChat,
 }) {
   const classes = useStyles();
 
   const handleEndClick = event => {
-    closeChat(CurrentPatientID, CurrentUserID);
+    closeChat(CurrentPatientID);
 
     setIsEmpty(true);
     setSelectedIndex();
@@ -277,7 +272,14 @@ function TopBar({
   );
 }
 
-function ToolBar({ CurrentPatientID, CurrentUserID, Questions, setMessages }) {
+function ToolBar({
+  CurrentPatientID,
+  CurrentUserID,
+  Questions,
+  setMessages,
+  requireMedicalRecord,
+  requirePrescription,
+}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -409,9 +411,9 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <container key={message.time}>
+        <Container key={message.time}>
           <Message message={message} CurrentUserID={CurrentUserID} />
-        </container>
+        </Container>
       ))
     : {};
 
@@ -432,7 +434,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
 
 function Chat() {
   const classes = useStyles();
-  // const [CurrentUserID, setCurrentUserID] = useState('flora');
+  const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
@@ -503,6 +505,45 @@ function Chat() {
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
 
+  const closeChat = patientID => {
+    if (!socket) {
+      return;
+    }
+    const json = {
+      Type: 2,
+      ReceiverID: patientID,
+      // DoctorID: doctorID,
+    };
+    console.log('json from closeChat:', json);
+    socket.send(JSON.stringify(json));
+  };
+
+  const requireMedicalRecord = (patientID, doctorID) => {
+    if (!socket) {
+      return;
+    }
+    const json = {
+      Type: 3,
+      DoctorID: doctorID,
+      PatientID: patientID,
+    };
+    console.log('json from requireMedicalRecord:', json);
+    socket.send(JSON.stringify(json));
+  };
+
+  const requirePrescription = (patientID, doctorID) => {
+    if (!socket) {
+      return;
+    }
+    const json = {
+      Type: 4,
+      DoctorID: doctorID,
+      PatientID: patientID,
+    };
+    console.log('json from requirePrescription:', json);
+    socket.send(JSON.stringify(json));
+  };
+
   const sendMessage = event => {
     event.preventDefault();
 
@@ -516,6 +557,10 @@ function Chat() {
         Time: moment().format('HH:mm'),
       };
       console.log('json from msgFromClient:', json);
+      if (!socket) {
+        console.warn('Socket closed???');
+        return;
+      }
       socket.send(JSON.stringify(json));
 
       setMessage('');
@@ -534,9 +579,16 @@ function Chat() {
   };
 
   useEffect(() => {
+    setSocket(new WebSocket(`/api/doctor/${CurrentUserID}/chat`));
+  }, [CurrentUserID]);
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
     socket.onopen = () => {
       console.log('Successfully Connected');
-      hello('Doctor', CurrentUserID);
+      // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
       const localPatients = JSON.parse(localStorage.getItem('Patients'));
       console.log('localMessages:', localMessages);
@@ -621,7 +673,7 @@ function Chat() {
     socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
-  });
+  }, [socket]);
 
   return (
     <Container className={classes.borderedContainer}>
@@ -648,6 +700,7 @@ function Chat() {
             IsEmpty={IsEmpty}
             setIsEmpty={setIsEmpty}
             setSelectedIndex={setSelectedIndex}
+            closeChat={closeChat}
           />
           <Messages
             messages={messages}
@@ -661,6 +714,8 @@ function Chat() {
             CurrentUserID={CurrentUserID}
             Questions={Questions}
             setMessages={setMessages}
+            requireMedicalRecord={requireMedicalRecord}
+            requirePrescription={requirePrescription}
           />
           <InputBox
             message={message}
