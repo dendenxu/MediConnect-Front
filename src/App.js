@@ -15,8 +15,7 @@ import Browse from './pages/case/Browse';
 import RecordPatient from './pages/record/Record_Patient';
 import BrowsePatient from './pages/case/Browse_Patient';
 // process-G4
-import Success from './pages/process/Success';
-import Fail from './pages/process/Fail';
+import RegResult from './pages/process/RegResult';
 import GuideResult from './pages/process/GuideResult';
 import DepartmentList from './pages/process/DepartmentList';
 import DepartmentInfo from './pages/process/DepartmentInfo';
@@ -45,8 +44,7 @@ export default function App() {
         <Route path="/departments" component={DepartmentList} />
         <Route path="/departmentinfo" component={DepartmentInfo} />
         <Route path="/guide-result" component={GuideResult} />
-        <Route path="/success" component={Success} />
-        <Route path="/fail" component={Fail} />
+        <Route path="/reg-result" component={RegResult} />
         <Route path="/browse" component={Browse} />
         <Route path="/record" component={Record} />
         <Route path="/reglist" component={RegList} />

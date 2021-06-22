@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import Header from '../components/Header';
 import theme from '../../theme/theme';
 
@@ -28,6 +28,7 @@ export default function DepartmentInfo() {
   const [inputDate, setInputDate] = useState('2021-06-24T10:30');
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory();
   // const location = {
   //   state: {
   //     data: {
@@ -62,7 +63,56 @@ export default function DepartmentInfo() {
         day: rdate,
         halfday: rhalfday,
       }),
-    }).then(res => console.log(res));
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'error') {
+          history.push({
+            pathname: '/reg-result',
+            state: {
+              data: {
+                reason: rdata.data,
+              },
+            },
+          });
+        } else {
+          fetch(`/api/department/${depid}`, {
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(res => res.json())
+            .then(depinfo => {
+              console.log(depinfo);
+              fetch('/api/registration/1', {
+                method: 'get',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              })
+                .then(res => res.json())
+                .then(reginfo => {
+                  console.log(reginfo);
+                  history.push({
+                    pathname: '/reg-result',
+                    state: {
+                      data: {
+                        dep: depinfo.data.name,
+                        doc: reginfo.data.doctor,
+                        name: reginfo.data.patient,
+                        year: ryear,
+                        mon: rmonth,
+                        day: rdate,
+                        tim: rhalfday === 'morning' ? 0 : 1,
+                      },
+                    },
+                  });
+                });
+            });
+        }
+      });
   };
 
   return (
