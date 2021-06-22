@@ -20,6 +20,7 @@ import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from '../components/BottomBar';
 import Copyright from '../components/Copyright';
+import Loading from '../components/LoadingMask';
 
 const useStyles = makeStyles(theme => {
   const gridPadding = theme.spacing(0.5, 2.5);
@@ -298,6 +299,7 @@ function Signup(props) {
   const [accountType, setAccountType] = useState(-1);
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [loadingData, setLoadingData] = useState(false);
 
   const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
   const textFieldClassProps = {
@@ -384,31 +386,45 @@ function Signup(props) {
       }
     };
 
-    const registerUser = async () => {
-      const response = await fetch('/api/account/create', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          // id: validFormEmail,
+    const activateUser = async () => {
+      const sendIdentifyCodeWithServer = async () => {
+        const payload = {
           email: validFormEmail,
-          firstname: firstName,
-          lastname: lastName,
-          passwd: password,
-          type: accountTypeStorage[accountType],
-          // role: ['ADMIN'], //! dangerous now
-        }),
-      });
+        };
 
-      console.log(response);
+        // todo
+        const response = await fetch('/api/account/sendemail', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
 
-      if (response.ok) {
-        console.log('Successfully registered the user');
-        history.push('/signin?registered');
+        console.log(response);
+
+        if (response.ok) {
+          history.push('/activation', {
+            email: validFormEmail,
+            firstName,
+            lastName,
+            type: accountTypeStorage[accountType],
+            password,
+            registering: true,
+          });
+        } else {
+          console.log('invalid access for password editting!');
+        }
+      };
+
+      try {
+        await sendIdentifyCodeWithServer();
+      } catch (err) {
+        console.log(err);
       }
     };
 
+    setLoadingData(true);
     try {
       if (!validFormEmail) {
         console.log('Wrong email format, refusing to login');
@@ -440,7 +456,7 @@ function Signup(props) {
           `Valid form email: ${validFormEmail}, input content: ${inputContent}`,
         );
 
-        registerUser();
+        activateUser();
       } else {
         console.log('Something is wrong.');
       }
@@ -512,7 +528,11 @@ function Signup(props) {
       <CssBaseline />
 
       <Container className={classes.signUpContainer}>
-        <Box className={classes.borderedContainer}>
+        <Loading loadingData={loadingData} />
+        <Box
+          className={classes.borderedContainer}
+          style={{ filter: loadingData ? 'blur(5px)' : 'blur(0)' }}
+        >
           <Container className={classes.logoContainer}>
             <Icon className={classes.logo} />
 

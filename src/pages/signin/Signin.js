@@ -13,11 +13,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory, useLocation } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReactComponent as IconHead } from '../../assets/images/icon.svg';
 import BottomBar from '../components/BottomBar';
 import Copyright from '../components/Copyright';
 import AvatarBar from '../components/AvatarBar';
+import Loading from '../components/LoadingMask';
 
 const useStyles = makeStyles(theme => ({
   // TODO: fix these ugly naming...
@@ -138,28 +138,7 @@ const useStyles = makeStyles(theme => ({
       fontSize: '0.6rem',
     },
   },
-  loadingProgress: {
-    // color: '#27CD86',
-    // position: 'relative',
-    // top: "50%",
-    // left: "50%",
-    zIndex: 1,
-  },
 }));
-
-async function checkSigninStatus() {
-  // const [signedIn, setSignedIn] = useState(false);
-  const response = await fetch('/check_signed_in');
-  console.log(response);
-  const message = await response.json();
-
-  if (response.ok) {
-    console.log(message);
-    console.log('User is signed in, redirecting');
-    return true;
-  }
-  return false;
-}
 
 function Signin(props) {
   const { width } = props;
@@ -380,29 +359,7 @@ function Signin(props) {
         <IconHead className={classes.icon} />
 
         <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
-          {loadingData && (
-            <Box
-              position="absolute"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                paddingTop: '10%',
-              }}
-            >
-              <CircularProgress size={68} className={classes.loadingProgress} />
-            </Box>
-          )}
-          {loadingData && (
-            <Box
-              style={{ height: '100%', width: '100%', position: 'absolute' }}
-              position="absolute"
-              top={0}
-              left={0}
-              zIndex="tooltip"
-            />
-          )}
+          <Loading loadingData={loadingData} />
 
           <Container
             className={classes.borderedContainer}
