@@ -159,7 +159,7 @@ export default function Home() {
     const newrow = rows.concat([
       CreatePrescriptionData(
         linecount,
-        guidelines[i].Medicine.Name,
+        guidelines[i].MedicineName,
         guidelines[i].Quantity,
         guidelines[i].Dosage,
       ),

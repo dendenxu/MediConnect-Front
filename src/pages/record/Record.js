@@ -109,7 +109,7 @@ export default function Home() {
 
   const defaultRows = [];
 
-  let defaultPrescription = [];
+  const defaultPrescription = [];
 
   // function createData(id,name,size,qt,course,type,price) {
   //   return { id,name,size,qt,course,type,price };
@@ -120,22 +120,35 @@ export default function Home() {
     return { id, name, size, qt };
   }
 
+  function CreatePrescriptionDataBackEnd(
+    lineno,
+    id,
+    CaseID,
+    Advice,
+    MedicineId,
+    dosage,
+    quantity,
+  ) {
+    return { lineno, id, CaseID, Advice, MedicineId, dosage, quantity };
+  }
+
+  let allguidelines = [];
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [opinions, setOpinions] = useState('');
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
   // todo initialize these 4 IDs(maybe using get method),
-  const CaseID = location.state.Case_id;
+  const tmpCaseID = location.state.Case_id;
   const tmpPatientID = location.state.Patient_id;
   const tmpDoctorID = location.state.Doctor_id;
   const [patientName, setPatientName] = useState('张三');
   const [patientGender, setPatientGender] = useState('女');
   const [patientAge, setPatientAge] = useState(18);
 
-  console.log(CaseID);
-  console.log(tmpPatientID);
-  console.log(tmpDoctorID);
+  // console.log(tmpCaseID);
+  // console.log(tmpPatientID);
+  // console.log(tmpDoctorID);
   const tmpDepartment = location.state.Department;
 
   const [editRowsModel, setEditRowsModel] = React.useState({});
@@ -143,7 +156,7 @@ export default function Home() {
 
   useEffect(async () => {
     const tmpresponse = await fetch(
-      `/api/patient/${tmpPatientID}/cases/${CaseID}`,
+      `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
       {
         method: 'get',
         headers: {
@@ -151,7 +164,7 @@ export default function Home() {
         },
       },
     );
-    console.log(tmpresponse);
+    // console.log(tmpresponse);
     const tmpmessage = await tmpresponse.json();
     setPatientName(tmpmessage.data.PatientName);
     setPatientGender(tmpmessage.data.Gender);
@@ -159,23 +172,25 @@ export default function Home() {
     setMedicalHistory(tmpmessage.data.History);
     setChiefComplaint(tmpmessage.data.Complaint);
     setOpinions(tmpmessage.data.Treatment);
-    setPrescriptions(tmpmessage.data.Prescriptions);
+    // setPrescriptions(tmpmessage.data.Prescriptions);
   }, []);
 
   const handleEditCellChangeCommitted = React.useCallback(
-    ({ id, field, props }) => {
+    async ({ id, field, props }) => {
       if (field === 'name') {
         const data = props; // Fix eslint value is missing in prop-types for JS files
         const newname = data.value.toString();
-        const response = fetch(`/api/medicine?q=${newname}`, {
+        const response = await fetch(`/api/medicine?q=${newname}`, {
           method: 'get',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        console.log(response);
-        const message = response.json();
-        const mediId = message.data.ID;
+
+        const message = await response.json();
+        console.log(message);
+        const mediId = message.data[0].ID;
+        console.log(mediId);
         if (response.ok) {
           console.log(`succeed in finding the medicine`);
           console.log(message);
@@ -193,8 +208,8 @@ export default function Home() {
         setRows(updatedRows);
 
         const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.linecount === id) {
-            return { ...allprescription, medicine_id: mediId };
+          if (allprescription.lineno === id) {
+            return { ...allprescription, MedicineId: mediId };
           }
           return allprescription;
         });
@@ -202,7 +217,7 @@ export default function Home() {
       }
       if (field === 'size') {
         const data = props; // Fix eslint value is missing in prop-types for JS files
-        const newsize = data.value.toString();
+        const newsize = Number(data.value);
         const updatedRows = rows.map(row => {
           if (row.id === id) {
             return { ...row, size: newsize };
@@ -212,7 +227,7 @@ export default function Home() {
         setRows(updatedRows);
 
         const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.linecount === id) {
+          if (allprescription.lineno === id) {
             return { ...allprescription, quantity: newsize };
           }
           return allprescription;
@@ -231,13 +246,15 @@ export default function Home() {
         setRows(updatedRows);
 
         const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.linecount === id) {
-            return { ...allprescription, qt: newqt };
+          if (allprescription.lineno === id) {
+            return { ...allprescription, dosage: newqt };
           }
           return allprescription;
         });
         setPrescriptions(updatedPres);
       }
+      console.log(rows);
+      console.log(allprescriptions);
     },
     [rows],
   );
@@ -267,28 +284,29 @@ export default function Home() {
 
   const HandleOnAddLine = async () => {
     const response = await fetch(
-      `/api/patient/${tmpPatientID}/case/${CaseID}/prescription`,
+      `/api/patient/${tmpPatientID}/case/${tmpCaseID}/prescription`,
       {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          case_id: CaseID,
-          advice: ' ',
-          guidelines: [],
+          Caseid: tmpCaseID,
+          Advice: ' ',
+          Guidelines: [],
         }),
       },
     );
-    console.log(response);
+    // console.log(response);
     const message = await response.json();
     const desID = message.data;
+    // console.log(desID);
     if (response.ok) {
-      console.log(`The server says creating new prescription is succcessful`);
-      console.log(message);
+      // console.log(`The server says creating new prescription is succcessful`);
+      // console.log(message);
     } else {
-      console.log(`Fail to create new prescription`);
-      console.log(message);
+      // console.log(`Fail to create new prescription`);
+      // console.log(message);
     }
     const newrow = rows.concat([
       CreatePrescriptionData(
@@ -298,92 +316,96 @@ export default function Home() {
         '请输入用法',
       ),
     ]);
-    const tempdes = [
-      {
-        lineno: linecount,
-        id: desID,
-        case_id: CaseID,
-        Advice: '1',
-        medicine_id: -1,
-        dosage: ' ',
-        quantity: ' ',
-      },
-    ];
-    const newdefaultdescription = defaultPrescription.concat(tempdes);
-    defaultPrescription = newdefaultdescription;
+    const newdefaultdescription = allprescriptions.concat([
+      CreatePrescriptionDataBackEnd(
+        linecount,
+        desID,
+        tmpCaseID,
+        '1',
+        -1,
+        ' ',
+        ' ',
+      ),
+    ]);
+    setPrescriptions(newdefaultdescription);
     linecount += 1;
     setRows(newrow);
     console.log(rows);
-    console.log(defaultPrescription);
+    console.log(allprescriptions);
   };
 
   const HandleSaveClick = async () => {
     console.log(linecount);
     for (let i = 0; i < linecount - 1; i += 1) {
-      const PresID = allprescriptions[i].id;
-      const response = fetch(
-        `/api/patient/${tmpPatientID}/case/${CaseID}/prescription/${PresID}`,
+      const tmpguideline = [
         {
-          // todo
-          method: 'put',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ID: PresID,
-            CaseID,
-            Advice: '1',
-            Guidelines: [
-              {
-                ID: 2,
-                MedicineID: allprescriptions[i].medicine_id,
-                PrescriptionID: allprescriptions[i].ID,
-                Dosage: allprescriptions[i].qt,
-                Quantity: allprescriptions[i].size,
-              },
-            ],
-          }),
+          // to fill
+          MedicineID: allprescriptions[i].MedicineId,
+          PrescriptionID: allprescriptions[i].id,
+          Dosage: allprescriptions[i].dosage,
+          Quantity: Number(allprescriptions[i].quantity),
         },
-      );
-      const message = response.json();
-      if (response.ok) {
-        console.log(`The server says creating new prescription is succcessful`);
-        console.log(message);
-      } else {
-        console.log(`Fail to create new prescription`);
-        console.log(message);
-      }
+      ];
+      const newallguidelines = allguidelines.concat(tmpguideline);
+      allguidelines = newallguidelines;
+    }
+    console.log(allprescriptions);
+    const PresID = allprescriptions[0].id; // which ID to put?
+    console.log(allguidelines);
+    console.log(tmpCaseID);
+    let response = await fetch(
+      `/api/patient/${tmpPatientID}/case/${tmpCaseID}/prescription/${PresID}`,
+      {
+        // todo
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          CaseID: tmpCaseID,
+          Advice: '1',
+          Guidelines: allguidelines,
+        }),
+      },
+    );
+    let message = await response.json();
+    if (response.ok) {
+      // console.log(`The server says creating new prescription is succcessful`);
+      // console.log(message);
+    } else {
+      // console.log(`Fail to create new prescription`);
+      // console.log(message);
     }
 
-    let response = await fetch(`/api/patient/${tmpPatientID}/case`, {
+    response = await fetch(`/api/patient/${tmpPatientID}/case`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    let message = await response.json();
-    const beforecase = await message.data;
+    message = await response.json();
+    const beforecase = message.data;
     if (response.ok) {
-      console.log(`The server says creating new prescription is succcessful`);
-      console.log(message);
+      // console.log(`The server says creating new prescription is succcessful`);
+      // console.log(message);
     } else {
-      console.log(`Fail to create new prescription`);
-      console.log(message);
+      // console.log(`Fail to create new prescription`);
+      // console.log(message);
     }
     beforecase.Complaint = chiefComplaint;
     beforecase.Diagnosis = diagnosis;
     beforecase.Treatment = opinions;
     beforecase.History = medicalHistory;
 
-    response = await fetch(`/api/patient/${tmpPatientID}/case/${CaseID}`, {
+    response = await fetch(`/api/patient/${tmpPatientID}/case/${tmpCaseID}`, {
       // todo
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ID: CaseID,
+        ID: tmpCaseID,
         PatientID: tmpPatientID,
         DoctorID: tmpDoctorID,
         Department: tmpDepartment,
@@ -395,14 +417,14 @@ export default function Home() {
       }),
     });
 
-    console.log(response);
-    message = response.json();
+    // console.log(response);
+    message = await response.json();
     if (response.ok) {
-      console.log(`The server says saving is succcessful`);
-      console.log(message);
+      // console.log(`The server says saving is succcessful`);
+      // console.log(message);
     } else {
-      console.log(`Fail to save the case`);
-      console.log(message);
+      // console.log(`Fail to save the case`);
+      // console.log(message);
     }
   };
 
