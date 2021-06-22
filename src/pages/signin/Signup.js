@@ -509,7 +509,7 @@ function Signup(props) {
 
   return (
     <Container component="main" className={classes.layoutContainer}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
 
       <Container className={classes.signUpContainer}>
         <Box className={classes.borderedContainer}>

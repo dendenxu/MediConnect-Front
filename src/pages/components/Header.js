@@ -17,9 +17,11 @@ const useStyles = makeStyles(theme => ({
   header: {
     backgroundColor: theme.palette.primary.main,
     width: '100%',
+    borderRadius: '16px',
   },
   buttonStyle: {
     margin: 0,
+    minWidth: 32,
   },
 }));
 
@@ -37,15 +39,22 @@ export default function Header(props) {
   const { text, isRoot } = props;
 
   const HeaderText = (
-    <WhiteTextTypography variant="h6">{text}</WhiteTextTypography>
+    <WhiteTextTypography
+      style={{
+        fontWeight: 500,
+        fontSize: '1.1rem',
+      }}
+    >
+      {text}
+    </WhiteTextTypography>
   );
 
   return (
     <>
-      <AppBar position="fixed" className={classes.header}>
+      <AppBar position="static" className={classes.header}>
         <Toolbar
           style={{
-            paddingLeft: 8,
+            paddingLeft: 16,
             paddingRight: 8,
           }}
         >
@@ -83,8 +92,7 @@ export default function Header(props) {
                 onClick={() => {
                   history.goBack();
                 }}
-                size="small"
-                edge="start"
+                size="medium"
                 style={{
                   color: '#FFFFFF',
                 }}
@@ -132,7 +140,7 @@ export default function Header(props) {
           )}
         </Toolbar>
       </AppBar>
-      <Toolbar />
+      {/* <Toolbar /> */}
     </>
   );
 }

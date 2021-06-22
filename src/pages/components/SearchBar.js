@@ -19,6 +19,9 @@ const useStyles = makeStyles({
   input: {
     flex: 1,
     width: '100%',
+    '& div': {
+      borderRadius: 16,
+    },
   },
   iconButton: {
     marginRight: '-10px',

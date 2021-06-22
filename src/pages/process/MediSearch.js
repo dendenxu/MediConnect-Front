@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useTheme } from '@material-ui/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
 
 export default function MediSearch() {
+  const theme = useTheme();
   const [inputContent, setInputContent] = useState('');
   const handleSubmit = () => {
     fetch(`/api/medicine`, {
@@ -23,6 +26,8 @@ export default function MediSearch() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        // width: '100%',
+        // margin: theme.spacing(1),
       }}
     >
       <Header text="Welcome" isRoot />
