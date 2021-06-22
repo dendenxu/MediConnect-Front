@@ -20,8 +20,8 @@ import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.s
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 
 const useStyles = makeStyles(theme => ({
-  NoSidePaddingContainer: {
-    padding: theme.spacing(1, 0),
+  MessagePaddingContainer: {
+    padding: theme.spacing(1, 2),
   },
   OutlineContainer: {
     display: 'flex',
@@ -94,9 +94,9 @@ const useStyles = makeStyles(theme => ({
   },
   MessageContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'flex-end',
-    padding: theme.spacing(1),
+    padding: theme.spacing(0),
     margin: theme.spacing(1),
     width: '100%',
     height: '300px',
@@ -114,6 +114,7 @@ const useStyles = makeStyles(theme => ({
     width: 'fit-content',
     maxWidth: '80%',
     backgroundColor: '#F1F0F3',
+    fontSize: '90%',
     '&::after': {
       content: `''`,
       position: 'absolute',
@@ -133,11 +134,12 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'flex-end',
     textAlign: 'justify',
     position: 'relative',
-    margin: theme.spacing(1),
+    // margin: theme.spacing(1),
     padding: theme.spacing(1),
     width: 'fit-content',
     maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
+    fontSize: '90%',
     color: 'white',
     '&::after': {
       content: `''`,
@@ -492,7 +494,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
     ? messages.get(CurrentPatientID.toString()).map(message => (
         <Container
           key={message.time}
-          className={classes.NoSidePaddingContainer}
+          className={classes.MessagePaddingContainer}
         >
           <Message message={message} CurrentUserID={CurrentUserID} />
         </Container>

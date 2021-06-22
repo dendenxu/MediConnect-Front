@@ -12,8 +12,8 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const useStyles = makeStyles(theme => ({
-  NoSidePaddingContainer: {
-    padding: theme.spacing(1, 0),
+  MessagePaddingContainer: {
+    padding: theme.spacing(1, 2),
   },
   borderedContainer: {
     display: 'flex',
@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     padding: theme.spacing(1),
-    // width: '100%',
+    width: '100%',
     height: '78vh',
     // backgroundColor:theme.palette.text.secondary,
   },
@@ -97,6 +97,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     maxWidth: '80%',
     backgroundColor: '#F1F0F3',
+    fontSize: '90%',
     '&::after': {
       content: `''`,
       position: 'absolute',
@@ -121,6 +122,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
+    fontSize: '90%',
     '&::after': {
       content: `''`,
       position: 'absolute',
@@ -257,7 +259,7 @@ function Messages({ messages, CurrentUserID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
   const messagesA = messages.map(message => (
-    <Container key={message.time} className={classes.NoSidePaddingContainer}>
+    <Container key={message.time} className={classes.MessagePaddingContainer}>
       <Message message={message} CurrentUserID={CurrentUserID} />
     </Container>
   ));
