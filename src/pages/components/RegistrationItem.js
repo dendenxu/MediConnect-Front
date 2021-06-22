@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   createMuiTheme,
   Divider,
@@ -11,7 +12,7 @@ import {
 } from '@material-ui/core';
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const registrationTheme = createMuiTheme({
   palette: {
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function DepartmentItem(props) {
   const { primaryText, secondaryText } = useStyles();
-
+  const history = useHistory();
   const { data } = props;
 
   const buttonStyle = ['primary', 'secondary', 'default'];
@@ -61,7 +62,18 @@ export default function DepartmentItem(props) {
 
   return (
     <div>
-      <ListItem button to={data.path}>
+      <ListItem
+        button
+        onClick={() => {
+          console.log(data.id);
+          const did = data.id;
+          history.push({
+            pathname: '/reginfo',
+            state: did,
+          });
+        }}
+        // to={data.path}
+      >
         <ListItemText
           primary={
             <Typography className={primaryText}>{data.department}</Typography>

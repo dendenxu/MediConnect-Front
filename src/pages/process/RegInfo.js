@@ -1,29 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button';
+import { useLocation } from 'react-router';
 
 import Header from '../components/Header';
 import theme from '../../theme/theme';
 
-const data = {
-  state: false,
-};
-
 function createData(name, calories) {
   return { name, calories };
 }
-
-const rows = [
-  createData('单号', '114514'),
-  createData('科室', 'xxxx'),
-  createData('医生', 'PZY'),
-  createData('患者', 'aaaaaaaaah'),
-  createData('时间段', '2020'),
-  createData('状态', data.state ? '已完成' : '已提交'),
-];
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -38,10 +27,94 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     width: '100%',
   },
+  bottom: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: '10px 10px 0 15px',
+  },
+  bottomtext: {
+    width: '65%',
+  },
+  bottombutton: {
+    marginLeft: '15px',
+    width: '30px',
+  },
 }));
 
 export default function RegInfo() {
   const classes = useStyles();
+  const location = useLocation();
+  const [regData, setRegData] = useState({
+    day: 22,
+    department: '太平间',
+    doctor: '孙笑川',
+    halfday: 'morning',
+    id: 1,
+    month: 6,
+    patient: 'XuZhen',
+    status: 'committed',
+    terminated_cause: '',
+    year: 2021,
+  });
+
+  useEffect(async () => {
+    await fetch(`/api/registration/${location.state}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.data);
+        setRegData(data.data);
+      });
+    // console.log(result)
+  }, []);
+
+  let { status } = regData;
+
+  if (status === 'committed') status = '已提交';
+  else if (status === 'accepted') status = '进行中';
+  else if (status === 'terminated') status = '已结束';
+  else status = '';
+
+  const handleClick = () => {
+    console.log('a');
+    const url = `/api/registration/${regData.id}`;
+    fetch(url, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status: 'terminated',
+        terminatedCause: 'cancel',
+      }),
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'ok') {
+          setRegData({ ...regData, status: 'terminated' });
+          console.log(regData);
+        }
+      });
+  };
+
+  const rows = [
+    createData('单号', regData.id),
+    createData('科室', regData.department),
+    createData('医生', regData.doctor),
+    createData('患者', regData.patient),
+    createData(
+      '时间段',
+      `${regData.year}-${regData.month}-${regData.day} ${
+        regData.halfday === 'morning' ? '上午' : '下午'
+      }`,
+    ),
+    createData('状态', status),
+  ];
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,14 +148,24 @@ export default function RegInfo() {
           </Table>
         </div>
         <div>
-          {data.state ? (
-            <div>
-              温馨提示：诊断还没开始，如果您有其他安排，可以自己取消此次会诊。
+          {regData.status === 'committed' ? (
+            <div className={classes.bottom}>
+              <div className={classes.bottomtext}>
+                温馨提示：诊断还没开始，如果您有其他安排，可以自己取消此次会诊。
+              </div>
+              <Button
+                className={classes.bottombutton}
+                variant="contained"
+                color="secondary"
+                onClick={handleClick}
+              >
+                取消
+              </Button>
             </div>
           ) : (
             <div>
-              <h5>MileStones：</h5>
-              <h5>相关病历：</h5>
+              <h3>MileStones：</h3>
+              <h3>相关病历：</h3>
             </div>
           )}
         </div>
