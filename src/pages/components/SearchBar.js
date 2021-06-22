@@ -81,34 +81,35 @@ export default function SearchBar(props) {
           console.log('Setting to blurred');
         }}
         InputProps={{
-          ariaLabel: 'search mediconnect',
           endAdornment: (
             <InputAdornment position="end">
-              {inputContent === '' || (
+              <div display="flex">
+                {inputContent === '' || (
+                  <IconButton
+                    className={classes.cancelButton}
+                    size="medium"
+                    onClick={() => {
+                      setInputContent('');
+                      document.getElementById('search-box').focus();
+                    }}
+                  >
+                    <CancelIcon fontSize="small" />
+                  </IconButton>
+                )}
+
                 <IconButton
-                  className={classes.cancelButton}
-                  size="medium"
-                  onClick={() => {
-                    setInputContent('');
-                    document.getElementById('search-box').focus();
+                  color="primary"
+                  // type="submit"
+                  onClick={onSubmit}
+                  className={classes.iconButton}
+                  aria-label="search"
+                  style={{
+                    color: iconColor,
                   }}
                 >
-                  <CancelIcon fontSize="small" />
+                  <SearchIcon />
                 </IconButton>
-              )}
-
-              <IconButton
-                color="primary"
-                // type="submit"
-                onClick={onSubmit}
-                className={classes.iconButton}
-                aria-label="search"
-                style={{
-                  color: iconColor,
-                }}
-              >
-                <SearchIcon />
-              </IconButton>
+              </div>
             </InputAdornment>
           ),
         }}

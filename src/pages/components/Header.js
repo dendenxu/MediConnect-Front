@@ -41,95 +41,98 @@ export default function Header(props) {
   );
 
   return (
-    <AppBar position="static" className={classes.header}>
-      <Toolbar
-        style={{
-          paddingLeft: 8,
-          paddingRight: 8,
-        }}
-      >
-        {isRoot ? (
-          <>
-            <Button
-              className={classes.buttonStyle}
-              // variant="outlined"
-            >
-              <WhiteTextTypography>首页</WhiteTextTypography>
-            </Button>
-            <Button
-              onClick={() => {
-                history.push('/departments');
-              }}
-              className={classes.buttonStyle}
-              // variant="outlined"
-            >
-              <WhiteTextTypography>科室</WhiteTextTypography>
-            </Button>
-            <Button
-              onClick={() => {
-                history.push('/reglist');
-              }}
-              className={classes.buttonStyle}
-              // variant="outlined"
-            >
-              <WhiteTextTypography>挂号</WhiteTextTypography>
-            </Button>
-          </>
-        ) : (
-          <>
-            <IconButton
-              key="icon"
-              onClick={() => {
-                history.goBack();
-              }}
-              size="small"
-              edge="start"
-              style={{
-                color: '#FFFFFF',
-              }}
-            >
-              <ArrowBackIosIcon fontSize="small" />
-            </IconButton>
-            {HeaderText}
-          </>
-        )}
-
-        <div
+    <>
+      <AppBar position="fixed" className={classes.header}>
+        <Toolbar
           style={{
-            flexGrow: 1,
+            paddingLeft: 8,
+            paddingRight: 8,
           }}
-        />
+        >
+          {isRoot ? (
+            <>
+              <Button
+                className={classes.buttonStyle}
+                // variant="outlined"
+              >
+                <WhiteTextTypography>首页</WhiteTextTypography>
+              </Button>
+              <Button
+                onClick={() => {
+                  history.push('/departments');
+                }}
+                className={classes.buttonStyle}
+                // variant="outlined"
+              >
+                <WhiteTextTypography>科室</WhiteTextTypography>
+              </Button>
+              <Button
+                onClick={() => {
+                  history.push('/reglist');
+                }}
+                className={classes.buttonStyle}
+                // variant="outlined"
+              >
+                <WhiteTextTypography>挂号</WhiteTextTypography>
+              </Button>
+            </>
+          ) : (
+            <>
+              <IconButton
+                key="icon"
+                onClick={() => {
+                  history.goBack();
+                }}
+                size="small"
+                edge="start"
+                style={{
+                  color: '#FFFFFF',
+                }}
+              >
+                <ArrowBackIosIcon fontSize="small" />
+              </IconButton>
+              {HeaderText}
+            </>
+          )}
 
-        {isRoot && (
           <div
             style={{
-              display: 'flex',
+              flexGrow: 1,
             }}
-          >
-            <IconButton
-              onClick={() => {
-                history.push('/signin');
-              }}
+          />
+
+          {isRoot && (
+            <div
               style={{
-                color: '#FFFFFF',
+                display: 'flex',
               }}
             >
-              <AccountCircleIcon fontSize="medium" />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                localStorage.removeItem('token');
-                history.push('/signin');
-              }}
-              style={{
-                color: '#FFFFFF',
-              }}
-            >
-              <ExitToAppIcon fontSize="medium" />
-            </IconButton>
-          </div>
-        )}
-      </Toolbar>
-    </AppBar>
+              <IconButton
+                onClick={() => {
+                  history.push('/signin');
+                }}
+                style={{
+                  color: '#FFFFFF',
+                }}
+              >
+                <AccountCircleIcon fontSize="default" />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  history.push('/signin');
+                }}
+                style={{
+                  color: '#FFFFFF',
+                }}
+              >
+                <ExitToAppIcon fontSize="default" />
+              </IconButton>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+    </>
   );
 }
