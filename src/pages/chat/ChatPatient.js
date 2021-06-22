@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    Maxwidth: '45%',
+    maxWidth: '80%',
     backgroundColor: '#F1F0F3',
     '&::after': {
       content: `''`,
@@ -118,7 +118,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    Maxwidth: '45%',
+    maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     '&::after': {
@@ -168,7 +168,7 @@ function InputBox({ message, setMessage, sendMessage }) {
         className={classes.textarea}
         id="standard-multiline-flexible"
         multiline
-        rows={1}
+        rowsMax={4}
         // defaultValue="Type a message..."
         value={message}
         onChange={handleMessageChange}

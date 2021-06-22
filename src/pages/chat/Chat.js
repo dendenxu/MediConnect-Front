@@ -112,7 +112,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     padding: theme.spacing(1),
     width: 'fit-content',
-    maxWidth: '45%',
+    maxWidth: '80%',
     backgroundColor: '#F1F0F3',
     '&::after': {
       content: `''`,
@@ -136,7 +136,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     padding: theme.spacing(1),
     width: 'fit-content',
-    maxWidth: '45%',
+    maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     '&::after': {
