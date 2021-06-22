@@ -23,6 +23,9 @@ const useStyles = makeStyles(theme => ({
   MessagePaddingContainer: {
     padding: theme.spacing(1, 2),
   },
+  NoSidePaddingContainer: {
+    padding: theme.spacing(1, 0),
+  },
   OutlineContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -457,7 +460,7 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 
   return (
     <Container style={{ padding: '0' }}>
-      <Container style={{ padding: '0' }}>
+      <Container className={classes.NoSidePaddingContainer}>
         <Typography
           variant="caption"
           className={classes.timetext}
