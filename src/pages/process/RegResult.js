@@ -57,29 +57,14 @@ class RegResult extends React.Component {
       if (this.props.location.state.data.dep !== undefined) {
         return (
           <ThemeProvider theme={theme}>
+            <Header text="挂号结果" />
+
             <Box
               display="flex"
               flexDirection="column"
               height={window.innerHeight}
               bgcolor="primary"
             >
-              <Box
-                display="flex"
-                height={window.innerHeight / 10}
-                width={window.innerWidth}
-                bgcolor={theme.palette.primary.main}
-              >
-                <Box
-                  display="flex"
-                  fontSize={window.innerHeight / 30}
-                  fontWeight="bold"
-                  color="success.main"
-                  marginY="auto"
-                  marginX="3vh"
-                >
-                  挂号结果
-                </Box>
-              </Box>
               <Box marginX="auto" marginTop="3vh" marginBottom="1vh">
                 <SuccessIcon
                   width={Math.min(window.innerWidth, window.innerHeight) / 3}
@@ -215,23 +200,8 @@ class RegResult extends React.Component {
             height={window.innerHeight}
             bgcolor="primary"
           >
-            <Box
-              display="flex"
-              height={window.innerHeight / 10}
-              width={window.innerWidth}
-              bgcolor={theme.palette.primary.main}
-            >
-              <Box
-                display="flex"
-                fontSize={window.innerHeight / 30}
-                fontWeight="bold"
-                color="success.main"
-                marginY="auto"
-                marginX="3vh"
-              >
-                挂号结果
-              </Box>
-            </Box>
+            <Header text="挂号结果" />
+
             <Box marginX="auto" marginTop="3vh" marginBottom="1vh">
               <FailIcon
                 width={Math.min(window.innerWidth, window.innerHeight) / 3}
