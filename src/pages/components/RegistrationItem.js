@@ -21,7 +21,7 @@ const registrationTheme = createMuiTheme({
     secondary: {
       main: '#52C41A',
     },
-    disabled: {
+    default: {
       main: '#888888',
     },
   },
@@ -50,7 +50,7 @@ export default function DepartmentItem(props) {
 
   const { data } = props;
 
-  const buttonStyle = ['primary', 'secondary', 'disabled'];
+  const buttonStyle = ['primary', 'secondary', 'default'];
   const buttonText = ['已提交', '进行中', '已结束'];
 
   function statTr(str) {
@@ -61,7 +61,7 @@ export default function DepartmentItem(props) {
 
   return (
     <div>
-      <ListItem button component={Link} to={data.path} flexDirection="row">
+      <ListItem button to={data.path}>
         <ListItemText
           primary={
             <Typography className={primaryText}>{data.department}</Typography>

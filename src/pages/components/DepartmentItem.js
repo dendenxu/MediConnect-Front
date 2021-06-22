@@ -72,7 +72,6 @@ export default function DepartmentItem(props) {
               });
             });
         }}
-        // flexDirection="row"
       >
         <ListItemText
           primary={<Typography className={primaryText}>{data.name}</Typography>}

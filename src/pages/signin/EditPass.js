@@ -298,7 +298,7 @@ function EditPass(props) {
 
   return (
     <Container component="main" className={classes.verticalContainer}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
         <Container
