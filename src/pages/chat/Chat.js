@@ -51,22 +51,28 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '100%',
     padding: theme.spacing(1),
-    backgroundColor: 'rgba(230,229,230,.5)',
+    backgroundColor: theme.palette.primary.main,
+    // backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
   },
-  // listItem: {
-  //   backgroundColor:''
-  // },
+  listItem: {
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    color: 'white',
+  },
   endButton: {
     border: 1,
     color: 'white',
     padding: theme.spacing(1),
+    background: 'rgb(243,166,123)',
   },
   namepaper: {
     border: 1,
     padding: theme.spacing(1),
     textAlign: 'left',
+    // fontSize:'120%',
     backgroundColor: 'transparent',
+    color: 'white',
   },
   icon: {
     width: '50%',
@@ -82,7 +88,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     margin: theme.spacing(1),
     border: 1,
-    backgroundColor: 'rgba(230,229,230,.5)',
+    // backgroundColor: 'rgba(230,229,230,.5)',
+    backgroundColor: theme.palette.primary.main,
     height: '8%',
   },
   MessageContainer: {
@@ -104,7 +111,8 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '45%',
+    width: 'fit-content',
+    maxWidth: '45%',
     backgroundColor: '#F1F0F3',
     '&::after': {
       content: `''`,
@@ -127,7 +135,8 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '45%',
+    width: 'fit-content',
+    maxWidth: '45%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     '&::after': {
@@ -155,10 +164,15 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(0px,1.5px)',
   },
   divider: {
-    background: 'rgba(bd,bd,bd,.5)',
+    // background: 'rgba(bd,bd,bd,.5)',
+    background: theme.palette.primary.main,
     width: '95%',
     // padding: theme.spacing(1),
     // margin: theme.spacing(1),
+  },
+  badge: {
+    backgroundColor: 'rgb(243,166,123)',
+    // backgroundColor: theme.palette.primary.main,
   },
 }));
 
@@ -245,7 +259,11 @@ function PatientList({
         )
       }
     >
-      <Badge badgeContent={Patient.NewMessageCount} color="primary">
+      <Badge
+        badgeContent={Patient.NewMessageCount}
+        classes={{ badge: classes.badge }}
+        max={99}
+      >
         <ListItemText primary={Patient.PatientName} />
       </Badge>
     </ListItem>
@@ -363,7 +381,7 @@ function ToolBar({
 
   const QuestionsA = Questions.map(Question => (
     <ListItem
-      className={classes.listItem}
+      // className={classes.listItem}
       key={Questions.findIndex(obj => obj === Question)}
       button
       onClick={event => {
@@ -763,6 +781,7 @@ function Chat() {
             setPatients={setPatients}
           />
         </Grid>
+        <Divider orientation="vertical" flexItem />
         <Grid container item xs spacing={3}>
           <TopBar
             Patients={Patients}

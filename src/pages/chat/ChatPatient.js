@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   textarea: {
     display: 'flex',
-    width: '95%',
+    // width: '100%',
     padding: theme.spacing(1),
     lineHeight: 3,
     border: 2,
@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
     border: 1,
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: 'white',
     backgroundColor: 'transparent',
   },
   icon: {
@@ -74,13 +74,14 @@ const useStyles = makeStyles(theme => ({
   topbar: {
     padding: theme.spacing(1),
     border: 1,
-    backgroundColor: 'rgba(230,229,230,.5)',
+    // backgroundColor: 'rgba(230,229,230,.5)',
+    backgroundColor: theme.palette.primary.main,
   },
   MessageContainer: {
     display: 'flex',
     flexDirection: 'row',
-    padding: theme.spacing(0),
-    width: '100%',
+    padding: theme.spacing(1),
+    // width: '100%',
     height: '78vh',
     // backgroundColor:theme.palette.text.secondary,
   },
@@ -94,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '45%',
+    Maxwidth: '45%',
     backgroundColor: '#F1F0F3',
     '&::after': {
       content: `''`,
@@ -117,7 +118,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '45%',
+    Maxwidth: '45%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     '&::after': {
@@ -191,7 +192,7 @@ function TopBar({ DoctorName }) {
           <Button
           //  onClick={}
           >
-            <ArrowBackIosIcon />
+            <ArrowBackIosIcon style={{ color: 'white' }} />
           </Button>
         </Grid>
         <Grid item xs={9}>
