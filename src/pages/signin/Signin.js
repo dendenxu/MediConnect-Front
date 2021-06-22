@@ -140,7 +140,7 @@ const useStyles = makeStyles(theme => ({
   },
   loadingProgress: {
     // color: '#27CD86',
-    position: 'relative',
+    // position: 'relative',
     // top: "50%",
     // left: "50%",
     zIndex: 1,
@@ -334,11 +334,43 @@ function Signin(props) {
     history.push('/signup');
   };
 
-  const handleEditPass = event => {
-    history.push({
-      pathname: '/editpass',
-      state: { email: validEmail },
-    });
+  const handleEditPass = async () => {
+    const sendIdentifyCodeWithServer = async () => {
+      const payload = {
+        email: validEmail,
+      };
+
+      // todo
+      const response = await fetch('/api/account/sendemail', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log(response);
+
+      if (response.ok) {
+        history.push({
+          pathname: '/editpass',
+          state: { email: validEmail },
+        });
+      } else {
+        console.log('invalid access for password editting!');
+      }
+    };
+
+    setLoadingData(true);
+    try {
+      if (afterEmailCheck) {
+        await sendIdentifyCodeWithServer();
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      // setLoadingData(false);
+    }
   };
 
   return (
@@ -349,7 +381,16 @@ function Signin(props) {
 
         <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
           {loadingData && (
-            <Box position="absolute" top="5%" left="44%">
+            <Box
+              position="absolute"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                paddingTop: '10%',
+              }}
+            >
               <CircularProgress size={68} className={classes.loadingProgress} />
             </Box>
           )}
