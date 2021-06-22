@@ -47,7 +47,7 @@ export default function DepartmentInfo() {
     const depid = location.state.data.id;
     const fulldate = new Date(inputDate);
     const ryear = fulldate.getFullYear();
-    const rmonth = fulldate.getMonth();
+    const rmonth = fulldate.getMonth() + 1;
     const rdate = fulldate.getDate();
     const rhalfday = fulldate.getHours() < 12 ? 'morning' : 'afternoon';
     const url = `/api/registrations`;
