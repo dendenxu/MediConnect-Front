@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useLocation } from 'react-router-dom';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
+import ContactsIcon from '@material-ui/icons/Contacts';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -86,7 +87,12 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'flex-end',
   },
 }));
+
 let linecount = 1;
+let tempprescription = [];
+let temprows = [];
+let initial = -2;
+
 export default function Home() {
   const location = useLocation();
   const classes = useStyles();
@@ -134,25 +140,55 @@ export default function Home() {
   const [rows, setRows] = React.useState(defaultRows);
 
   useEffect(async () => {
-    const tmpresponse = await fetch(
-      `/api/patient/${tmpPatientID}/cases/${CaseID}`,
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
+    if (initial <= 0) {
+      console.log(initial);
+      initial += 1;
+      const tmpresponse = await fetch(
+        `/api/patient/${tmpPatientID}/cases/${CaseID}`,
+        {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-    console.log(tmpresponse);
-    const tmpmessage = await tmpresponse.json();
-    setPatientName(tmpmessage.data.PatientName);
-    setPatientGender(tmpmessage.data.Gender);
-    setDiagnosis(tmpmessage.data.Diagnosis);
-    setMedicalHistory(tmpmessage.data.History);
-    setChiefComplaint(tmpmessage.data.Complaint);
-    setOpinions(tmpmessage.data.Treatment);
-    setPatientAge(tmpmessage.data.Age);
-  }, []);
+      );
+      // console.log(tmpresponse);
+      const tmpmessage = await tmpresponse.json();
+      setPatientName(tmpmessage.data.PatientName);
+      setPatientGender(tmpmessage.data.Gender);
+      setDiagnosis(tmpmessage.data.Diagnosis);
+      setMedicalHistory(tmpmessage.data.History);
+      setChiefComplaint(tmpmessage.data.Complaint);
+      setOpinions(tmpmessage.data.Treatment);
+      console.log(tmpmessage.data.Prescriptions);
+      console.log(tmpmessage.data.Prescriptions.length);
+      if (tmpmessage.data.Prescriptions.length === 0) {
+        setRows(defaultRows);
+      } else {
+        SetExpand(true);
+        const tmpPres = tmpmessage.data.Prescriptions[0];
+        const tmpGL = tmpPres.Guidelines;
+        for (let i = 0; i < tmpGL.length; i += 1) {
+          temprows = temprows.concat([
+            CreatePrescriptionData(
+              i + 1,
+              tmpGL[i].Medicine.Name,
+              tmpGL[i].Quantity,
+              tmpGL[i].Dosage,
+            ),
+          ]);
+        }
+        console.log(temprows);
+        setRows(temprows);
+        tempprescription = [];
+        temprows = [];
+        linecount = tmpGL.length + 1;
+      }
+    } else {
+      initial = -2;
+    }
+    console.log(rows);
+  }, [initial]);
 
   const guidelines = [];
   for (let i = 0; i < guidelines.length; i += 1) {
@@ -301,7 +337,14 @@ export default function Home() {
             </Grid>
           </Box>
         </Container>
-
+        <Container spacing={1}>
+          <Button color="primary" variant="outlined">
+            <ContactsIcon Icon color="primary" size="small" />
+            <Container className={classes.buttontext}>
+              <Typography component="h4">处方</Typography>
+            </Container>
+          </Button>
+        </Container>
         <Container className={classes.pageContainer}>
           <Box className={classes.borderedContainer}>
             <div style={{ height: 300, width: '100%' }}>

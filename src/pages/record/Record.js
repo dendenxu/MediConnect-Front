@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useLocation } from 'react-router-dom';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
+import ContactsIcon from '@material-ui/icons/Contacts';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -86,7 +87,14 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'flex-end',
   },
 }));
+
 let linecount = 1;
+let desID;
+let tempprescription = [];
+let temprows = [];
+let initial = -2;
+let whetherpres = 0;
+
 export default function Home() {
   const location = useLocation();
   const classes = useStyles();
@@ -107,9 +115,9 @@ export default function Home() {
     },
   ];
 
-  const defaultRows = [];
+  let defaultRows = [];
 
-  const defaultPrescription = [];
+  let defaultPrescription = [];
 
   // function createData(id,name,size,qt,course,type,price) {
   //   return { id,name,size,qt,course,type,price };
@@ -123,13 +131,23 @@ export default function Home() {
   function CreatePrescriptionDataBackEnd(
     lineno,
     id,
+    guidelineId,
     CaseID,
     Advice,
     MedicineId,
     dosage,
     quantity,
   ) {
-    return { lineno, id, CaseID, Advice, MedicineId, dosage, quantity };
+    return {
+      lineno,
+      id,
+      guidelineId,
+      CaseID,
+      Advice,
+      MedicineId,
+      dosage,
+      quantity,
+    };
   }
 
   let allguidelines = [];
@@ -151,29 +169,78 @@ export default function Home() {
   // console.log(tmpDoctorID);
   const tmpDepartment = location.state.Department;
 
-  const [editRowsModel, setEditRowsModel] = React.useState({});
-  const [rows, setRows] = React.useState(defaultRows);
+  const [editRowsModel, setEditRowsModel] = useState({});
+  const [rows, setRows] = useState(defaultRows);
 
   useEffect(async () => {
-    const tmpresponse = await fetch(
-      `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
+    if (initial <= 0) {
+      console.log(initial);
+      initial += 1;
+      const tmpresponse = await fetch(
+        `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
+        {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-    // console.log(tmpresponse);
-    const tmpmessage = await tmpresponse.json();
-    setPatientName(tmpmessage.data.PatientName);
-    setPatientGender(tmpmessage.data.Gender);
-    setDiagnosis(tmpmessage.data.Diagnosis);
-    setMedicalHistory(tmpmessage.data.History);
-    setChiefComplaint(tmpmessage.data.Complaint);
-    setOpinions(tmpmessage.data.Treatment);
-    // setPrescriptions(tmpmessage.data.Prescriptions);
-  }, []);
+      );
+      // console.log(tmpresponse);
+      const tmpmessage = await tmpresponse.json();
+      setPatientName(tmpmessage.data.PatientName);
+      setPatientGender(tmpmessage.data.Gender);
+      setDiagnosis(tmpmessage.data.Diagnosis);
+      setMedicalHistory(tmpmessage.data.History);
+      setChiefComplaint(tmpmessage.data.Complaint);
+      setOpinions(tmpmessage.data.Treatment);
+      console.log(tmpmessage.data.Prescriptions);
+      console.log(tmpmessage.data.Prescriptions.length);
+      if (tmpmessage.data.Prescriptions.length === 0) {
+        setRows(defaultRows);
+      } else {
+        whetherpres = 1;
+        SetExpand(true);
+        const tmpPres = tmpmessage.data.Prescriptions[0];
+        desID = tmpPres.ID;
+        const tmpGL = tmpPres.Guidelines;
+        for (let i = 0; i < tmpGL.length; i += 1) {
+          tempprescription = tempprescription.concat([
+            CreatePrescriptionDataBackEnd(
+              i + 1,
+              desID,
+              tmpGL[i].ID,
+              tmpCaseID,
+              tmpPres.Advice,
+              tmpGL[i].MedicineID,
+              tmpGL[i].Dosage,
+              tmpGL[i].Quantity,
+            ),
+          ]);
+          temprows = temprows.concat([
+            CreatePrescriptionData(
+              i + 1,
+              tmpGL[i].Medicine.Name,
+              tmpGL[i].Quantity,
+              tmpGL[i].Dosage,
+            ),
+          ]);
+        }
+        console.log(tempprescription);
+        console.log(temprows);
+        defaultRows = temprows;
+        defaultPrescription = tempprescription;
+        setPrescriptions(tempprescription);
+        setRows(temprows);
+        tempprescription = [];
+        temprows = [];
+        linecount = tmpGL.length + 1;
+      }
+    } else {
+      initial = -2;
+    }
+    console.log(rows);
+    console.log(allprescriptions);
+  }, [initial]);
 
   const handleEditCellChangeCommitted = React.useCallback(
     async ({ id, field, props }) => {
@@ -190,7 +257,6 @@ export default function Home() {
         const message = await response.json();
         console.log(message);
         const mediId = message.data[0].ID;
-        console.log(mediId);
         if (response.ok) {
           console.log(`succeed in finding the medicine`);
           console.log(message);
@@ -206,9 +272,10 @@ export default function Home() {
           return row;
         });
         setRows(updatedRows);
-
+        console.log(mediId);
         const updatedPres = allprescriptions.map(allprescription => {
           if (allprescription.lineno === id) {
+            console.log(mediId);
             return { ...allprescription, MedicineId: mediId };
           }
           return allprescription;
@@ -281,8 +348,8 @@ export default function Home() {
   //     const text = event.target.value;
   //     setOpinions(text);
   //     };
-
-  const HandleOnAddLine = async () => {
+  const HandleOnAddPrescrption = async () => {
+    SetExpand(true);
     const response = await fetch(
       `/api/patient/${tmpPatientID}/case/${tmpCaseID}/prescription`,
       {
@@ -299,8 +366,8 @@ export default function Home() {
     );
     // console.log(response);
     const message = await response.json();
-    const desID = message.data;
-    // console.log(desID);
+    desID = message.data;
+    console.log(desID);
     if (response.ok) {
       // console.log(`The server says creating new prescription is succcessful`);
       // console.log(message);
@@ -308,18 +375,18 @@ export default function Home() {
       // console.log(`Fail to create new prescription`);
       // console.log(message);
     }
+  };
+
+  const HandleOnAddLine = async () => {
+    console.log(linecount);
     const newrow = rows.concat([
-      CreatePrescriptionData(
-        linecount,
-        '请输入药品名',
-        '请输入数量',
-        '请输入用法',
-      ),
+      CreatePrescriptionData(linecount, '输入药品名', '输入数量', '输入用法'),
     ]);
     const newdefaultdescription = allprescriptions.concat([
       CreatePrescriptionDataBackEnd(
         linecount,
         desID,
+        0,
         tmpCaseID,
         '1',
         -1,
@@ -336,10 +403,12 @@ export default function Home() {
 
   const HandleSaveClick = async () => {
     console.log(linecount);
+    console.log(allprescriptions);
     for (let i = 0; i < linecount - 1; i += 1) {
       const tmpguideline = [
         {
           // to fill
+          ID: allprescriptions[i].guidelineId,
           MedicineID: allprescriptions[i].MedicineId,
           PrescriptionID: allprescriptions[i].id,
           Dosage: allprescriptions[i].dosage,
@@ -350,34 +419,38 @@ export default function Home() {
       allguidelines = newallguidelines;
     }
     console.log(allprescriptions);
-    const PresID = allprescriptions[0].id; // which ID to put?
     console.log(allguidelines);
     console.log(tmpCaseID);
-    let response = await fetch(
-      `/api/patient/${tmpPatientID}/case/${tmpCaseID}/prescription/${PresID}`,
-      {
-        // todo
-        method: 'put',
-        headers: {
-          'Content-Type': 'application/json',
+    let response;
+    let message;
+    if (whetherpres === 1) {
+      response = await fetch(
+        `/api/patient/${tmpPatientID}/case/${tmpCaseID}/prescription/${desID}`,
+        {
+          // todo
+          method: 'put',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ID: desID,
+            CaseID: tmpCaseID,
+            Advice: '1',
+            Guidelines: allguidelines,
+          }),
         },
-        body: JSON.stringify({
-          CaseID: tmpCaseID,
-          Advice: '1',
-          Guidelines: allguidelines,
-        }),
-      },
-    );
-    let message = await response.json();
-    if (response.ok) {
-      // console.log(`The server says creating new prescription is succcessful`);
-      // console.log(message);
-    } else {
-      // console.log(`Fail to create new prescription`);
-      // console.log(message);
+      );
+      message = await response.json();
+      if (response.ok) {
+        // console.log(`The server says creating new prescription is succcessful`);
+        // console.log(message);
+      } else {
+        // console.log(`Fail to create new prescription`);
+        // console.log(message);
+      }
     }
 
-    response = await fetch(`/api/patient/${tmpPatientID}/case`, {
+    response = await fetch(`/api/patient/${tmpPatientID}/cases/${tmpCaseID}`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -386,6 +459,7 @@ export default function Home() {
 
     message = await response.json();
     const beforecase = message.data;
+    console.log(beforecase);
     if (response.ok) {
       // console.log(`The server says creating new prescription is succcessful`);
       // console.log(message);
@@ -397,24 +471,14 @@ export default function Home() {
     beforecase.Diagnosis = diagnosis;
     beforecase.Treatment = opinions;
     beforecase.History = medicalHistory;
-
+    console.log(beforecase);
     response = await fetch(`/api/patient/${tmpPatientID}/case/${tmpCaseID}`, {
       // todo
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        ID: tmpCaseID,
-        PatientID: tmpPatientID,
-        DoctorID: tmpDoctorID,
-        Department: tmpDepartment,
-        Complaint: chiefComplaint,
-        Diagnosis: diagnosis,
-        Treatment: opinions,
-        History: medicalHistory,
-        Prescriptions: allprescriptions,
-      }),
+      body: JSON.stringify(beforecase),
     });
 
     // console.log(response);
@@ -549,14 +613,8 @@ export default function Home() {
         </Container>
         <Container spacing={1} expandButton>
           {expandButton ? (
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => {
-                SetExpand(false);
-              }}
-            >
-              <CloseIcon color="primary" size="small" />
+            <Button color="primary" variant="outlined">
+              <ContactsIcon Icon color="primary" size="small" />
               <Container className={classes.buttontext}>
                 <Typography component="h4">处方</Typography>
               </Container>
@@ -565,9 +623,7 @@ export default function Home() {
             <Button
               color="primary"
               variant="outlined"
-              onClick={() => {
-                SetExpand(true);
-              }}
+              onClick={HandleOnAddPrescrption}
             >
               <AddIcon color="primary" size="small" />
               <Container className={classes.buttontext}>
@@ -583,41 +639,13 @@ export default function Home() {
                 <DataGrid
                   rows={rows}
                   columns={columns}
-                  editRowsModel={editRowsModel}
-                  onEditCellChange={handleEditCellChangeCommitted}
+                  onEditCellChangeCommitted={handleEditCellChangeCommitted}
                 />
                 <Container className={classes.addIcon}>
                   <Fab size="small" color="primary" aria-label="add">
                     <AddIcon onClick={HandleOnAddLine} />
                   </Fab>
                 </Container>
-
-                {/*
-                <Table size="small">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell>药品名</TableCell>
-                        <TableCell>规格</TableCell>
-                        <TableCell>剂量</TableCell>
-                        <TableCell>疗程</TableCell>
-                        <TableCell>类别</TableCell>
-                        <TableCell align="right">价格</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.id}>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.size}</TableCell>
-                        <TableCell>{row.qt}</TableCell>
-                        <TableCell>{row.course}</TableCell>
-                        <TableCell>{row.type}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-            </Table>
-*/}
               </div>
             </Box>
           </Container>
