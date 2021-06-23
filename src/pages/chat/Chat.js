@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import { fromJS, Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,7 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Button, Input } from '@material-ui/core';
+import { Button, Input, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
@@ -20,30 +19,30 @@ import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.s
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 
 const useStyles = makeStyles(theme => ({
-  MessagePaddingContainer: {
+  MessagePaddingdiv: {
     padding: theme.spacing(1, 2),
   },
-  NoSidePaddingContainer: {
+  NoSidePaddingdiv: {
     padding: theme.spacing(1, 0),
   },
-  OutlineContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    // border: 5,
-    // borderRadius: 30,
-    // boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
-    padding: theme.spacing(3),
-    margin: theme.spacing(0),
-    width: '100%',
-    height: '100%',
+  Outlinediv: {
+    // display: 'flex',
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    // // border: 5,
+    // // borderRadius: 30,
+    // // boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+    // padding: theme.spacing(0),
+    // margin: theme.spacing(0),
+    // width: '100%',
+    // height: '100%',
   },
   textarea: {
-    display: 'flex',
-    width: '100%',
+    // display: 'flex',
+    // width: '100%',
     // padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    lineHeight: 3,
+    // margin: theme.spacing(1),
+    // lineHeight: 3,
     // border: 1,
     // borderRadius: 30,
     // boxShadow: '0 1px 1px 1px rgba(9, 9, 9, .3)',
@@ -51,16 +50,24 @@ const useStyles = makeStyles(theme => ({
   list: {
     display: 'flex',
     flexDirection: 'column',
+    width: '25%',
     margin: theme.spacing(1),
-    width: '100%',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
     // backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
+    border: 5,
+    borderRadius: 25,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   listItem: {
     // alignItems: 'center',
     // justifyContent: 'center',
+    // color: 'white',
+    border: 5,
+    borderColor: 'white',
+    borderRadius: 16,
+    // backgroundColor: '#0001',
     color: 'white',
   },
   endButton: {
@@ -70,39 +77,71 @@ const useStyles = makeStyles(theme => ({
     background: 'rgb(243,166,123)',
   },
   namepaper: {
-    border: 1,
-    padding: theme.spacing(1),
-    textAlign: 'left',
-    // fontSize:'120%',
-    backgroundColor: 'transparent',
-    color: 'white',
+    // border: 1,
+    // padding: theme.spacing(1),
+    // textAlign: 'left',
+    // // fontSize:'120%',
+    // backgroundColor: 'transparent',
+    // color: 'white',
   },
   icon: {
-    width: '50%',
-    height: '50%',
+    // width: '50%',
+    // height: '50%',
     color: theme.palette.text.secondary,
   },
   toolbar: {
-    margin: theme.spacing(1),
-    padding: theme.spacing(0),
-    border: 1,
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    margin: theme.spacing(1, 0),
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   topbar: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    border: 1,
+    // padding: theme.spacing(0),
+    padding: theme.spacing(1, 2),
+    margin: theme.spacing(0),
     // backgroundColor: 'rgba(230,229,230,.5)',
     backgroundColor: theme.palette.primary.main,
-    height: '8%',
+    display: 'flex',
+    alignItems: 'center',
+    // height: '8%',
+    // width: '100%',
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
-  MessageContainer: {
+  message: {
+    width: '75%',
+    margin: theme.spacing(1),
+    padding: theme.spacing(2),
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+  },
+  Messagediv: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    padding: theme.spacing(0),
-    margin: theme.spacing(1),
-    width: '100%',
-    height: '300px',
+    padding: theme.spacing(1),
+    margin: theme.spacing(1, 0),
+    // width: '100%',
+    // height: '30%',
+    height: 300,
+    flexGrow: '1',
+    // maxHeight: '300px',
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+  },
+
+  input: {
+    margin: theme.spacing(0, 0),
+    padding: theme.spacing(2, 2),
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   HisMessageBox: {
     display: 'flex',
@@ -197,18 +236,22 @@ function InputBox({ message, setMessage, sendMessage }) {
   };
 
   return (
-    <Container style={{ margin: '0' }}>
+    <div className={classes.input}>
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
         multiline
-        rows={10}
+        rows={8}
+        fullWidth
+        InputProps={{
+          disableUnderline: true,
+        }}
         // defaultValue="Type a message..."
         value={message}
         onChange={handleMessageChange}
         onKeyPress={handleMessageSend}
       />
-    </Container>
+    </div>
   );
 }
 
@@ -272,11 +315,11 @@ function PatientList({
   ));
 
   return (
-    <Container className={classes.list}>
+    <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
         {patientsA}
       </List>
-    </Container>
+    </div>
   );
 }
 
@@ -309,42 +352,41 @@ function TopBar({
   };
 
   return (
-    <Container className={classes.topbar}>
-      {!IsEmpty ? (
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Paper className={classes.namepaper} variant="outlined" square>
-              {PatientName}
-            </Paper>
-          </Grid>
-          <Grid item xs={9}>
-            <Container
-              style={{
-                display: 'flex',
-                flexDirection: 'row-reverse',
-                alignItems: 'flex-end',
-              }}
-            >
-              <Button
-                className={classes.endButton}
-                variant="contained"
-                color="primary"
-                onClick={handleEndClick}
-              >
-                结束挂号
-              </Button>
-            </Container>
-          </Grid>
-        </Grid>
-      ) : (
-        <Grid container spacing={2}>
-          {' '}
-          <Grid item xs={3}>
-            <Paper className={classes.namepaper} variant="outlined" square />
-          </Grid>
-        </Grid>
+    <div className={classes.topbar}>
+      {!IsEmpty && (
+        <>
+          {/* <Paper className={classes.namepaper} variant="outlined" square> */}
+          <Typography
+            style={{
+              color: 'white',
+            }}
+          >
+            {PatientName}
+          </Typography>
+          {/* </Paper> */}
+          <div
+            style={{
+              flexGrow: 1,
+            }}
+          />
+        </>
       )}
-    </Container>
+      <div
+        style={{
+          flexGrow: 1,
+        }}
+      />
+      <Button
+        disabled={IsEmpty}
+        className={classes.endButton}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={handleEndClick}
+      >
+        结束挂号
+      </Button>
+    </div>
   );
 }
 
@@ -401,46 +443,38 @@ function ToolBar({
   ));
 
   return (
-    <Container className={classes.toolbar}>
-      <Grid container spacing={2}>
-        <Grid item xs={1}>
-          <Button onClick={handlePopoverOpen}>
-            <QuestionsIcon />
-          </Button>
-          <Popover
-            id="mouse-over-popover"
-            className={classes.popover}
-            classes={{
-              paper: classes.paper,
-            }}
-            open={open}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            onClose={handlePopoverClose}
-            disableRestoreFocus
-          >
-            <List>{QuestionsA}</List>
-          </Popover>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={handleMedClick}>
-            <MedicineIcon className={classes.icon} />
-          </Button>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={handleRecClick}>
-            <RecordIcon className={classes.icon} />
-          </Button>
-        </Grid>
-      </Grid>
-    </Container>
+    <div className={classes.toolbar}>
+      <IconButton onClick={handlePopoverOpen}>
+        <QuestionsIcon className={classes.icon} />
+      </IconButton>
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <List>{QuestionsA}</List>
+      </Popover>
+      <IconButton onClick={handleMedClick}>
+        <MedicineIcon className={classes.icon} />
+      </IconButton>
+      <IconButton onClick={handleRecClick}>
+        <RecordIcon className={classes.icon} />
+      </IconButton>
+    </div>
   );
 }
 
@@ -452,8 +486,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   }
 
   return (
-    <Container style={{ padding: '0' }}>
-      <Container className={classes.NoSidePaddingContainer}>
+    <div>
+      <div className={classes.NoSidePaddingdiv}>
         <Typography
           variant="caption"
           className={classes.timetext}
@@ -461,8 +495,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
         >
           {time}
         </Typography>
-      </Container>
-      <Container
+      </div>
+      <div
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -478,8 +512,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
         >
           {content}
         </Paper>
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 }
 
@@ -487,27 +521,22 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <Container
-          key={message.time}
-          className={classes.MessagePaddingContainer}
-        >
+        <div key={message.time} className={classes.MessagePaddingdiv}>
           <Message message={message} CurrentUserID={CurrentUserID} />
-        </Container>
+        </div>
       ))
     : {};
 
   if (!IsEmpty)
     return (
-      <ScrollToBottom className={classes.MessageContainer}>
+      <ScrollToBottom className={classes.Messagediv}>
         {messagesA}
       </ScrollToBottom>
     );
-  return (
-    <ScrollToBottom className={classes.MessageContainer}>{}</ScrollToBottom>
-  );
+  return <ScrollToBottom className={classes.Messagediv}>{}</ScrollToBottom>;
 }
 
-function Chat() {
+function Chat(props) {
   const classes = useStyles();
   const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(111);
@@ -740,58 +769,66 @@ function Chat() {
   }, [socket, CurrentPatientID]);
 
   return (
-    <Container className={classes.OutlineContainer}>
-      <Grid container spacing={1}>
-        <Grid container item xs={3} spacing={3}>
-          <PatientList
-            Patients={Patients}
-            setCurrentPatientID={setCurrentPatientID}
-            setPatientName={setPatientName}
-            setSelectedIndex={setSelectedIndex}
-            selectedIndex={selectedIndex}
-            setIsEmpty={setIsEmpty}
-            setPatients={setPatients}
-          />
-        </Grid>
-        <Divider orientation="vertical" flexItem />
-        <Grid container item xs spacing={3}>
-          <TopBar
-            Patients={Patients}
-            setPatients={setPatients}
-            CurrentUserID={CurrentUserID}
-            CurrentPatientID={CurrentPatientID}
-            setCurrentPatientID={setCurrentPatientID}
-            setPatientName={setPatientName}
-            PatientName={PatientName}
-            IsEmpty={IsEmpty}
-            setIsEmpty={setIsEmpty}
-            setSelectedIndex={setSelectedIndex}
-            closeChat={closeChat}
-          />
-          <Messages
-            messages={messages}
-            CurrentUserID={CurrentUserID}
-            IsEmpty={IsEmpty}
-            CurrentPatientID={CurrentPatientID}
-          />
-          {/* <Divider className={classes.divider} /> */}
-          <Divider className={classes.divider} variant="middle" />
-          <ToolBar
-            CurrentPatientID={CurrentPatientID}
-            CurrentUserID={CurrentUserID}
-            Questions={Questions}
-            setMessages={setMessages}
-            requireMedicalRecord={requireMedicalRecord}
-            requirePrescription={requirePrescription}
-          />
-          <InputBox
-            message={message}
-            setMessage={setMessage}
-            sendMessage={sendMessage}
-          />
-        </Grid>
-      </Grid>
-    </Container>
+    <div {...props} className={`${classes.Outlinediv} ${props.className}`}>
+      {/* <Grid
+        div
+        spacing={1}
+        style={{
+          height: '100%',
+        }}
+      > */}
+      {/* <Grid div item xs={3} spacing={3}> */}
+      <PatientList
+        Patients={Patients}
+        setCurrentPatientID={setCurrentPatientID}
+        setPatientName={setPatientName}
+        setSelectedIndex={setSelectedIndex}
+        selectedIndex={selectedIndex}
+        setIsEmpty={setIsEmpty}
+        setPatients={setPatients}
+      />
+      {/* </Grid> */}
+      {/* <Divider orientation="vertical" flexItem /> */}
+      {/* <Grid div item xs spacing={3}> */}
+      <div className={classes.message}>
+        <TopBar
+          Patients={Patients}
+          setPatients={setPatients}
+          CurrentUserID={CurrentUserID}
+          CurrentPatientID={CurrentPatientID}
+          setCurrentPatientID={setCurrentPatientID}
+          setPatientName={setPatientName}
+          PatientName={PatientName}
+          IsEmpty={IsEmpty}
+          setIsEmpty={setIsEmpty}
+          setSelectedIndex={setSelectedIndex}
+          closeChat={closeChat}
+        />
+        <Messages
+          messages={messages}
+          CurrentUserID={CurrentUserID}
+          IsEmpty={IsEmpty}
+          CurrentPatientID={CurrentPatientID}
+        />
+        {/* <Divider className={classes.divider} /> */}
+        {/* <Divider className={classes.divider} variant="middle" /> */}
+        <ToolBar
+          CurrentPatientID={CurrentPatientID}
+          CurrentUserID={CurrentUserID}
+          Questions={Questions}
+          setMessages={setMessages}
+          requireMedicalRecord={requireMedicalRecord}
+          requirePrescription={requirePrescription}
+        />
+        <InputBox
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
+      </div>
+      {/* </Grid> */}
+      {/* </Grid> */}
+    </div>
   );
 }
 

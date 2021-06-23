@@ -13,9 +13,10 @@ import SearchBar from '../components/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
-    padding: theme.spacing(0),
-    margin: 'auto',
-    width: '100%',
+    // padding: theme.spacing(0),
+    // margin: 'auto',
+    // width: '100%',
+    // height: '100%',
   },
   paper: {
     padding: theme.spacing(1),
@@ -92,7 +93,7 @@ const patientgender = '男';
 const patientage = 18;
 const tmpcaseID = 999;
 
-export default function Browse() {
+export default function Browse(props) {
   classes = useStyles();
   const [display, setDisplay] = useState(Data);
   const history = useHistory();
@@ -110,13 +111,13 @@ export default function Browse() {
     if (response.ok) {
       console.log(`The server says case initialization is succcessful`);
       console.log(message);
+      Data = message.data;
+      console.log(Data);
+      setDisplay(Data);
     } else {
       console.log(`Fail to display the case`);
       console.log(message);
     }
-    Data = message.data;
-    console.log(Data);
-    setDisplay(Data);
   }, []);
 
   const displayItems = display.map(toDisplayItem);
@@ -188,7 +189,8 @@ export default function Browse() {
         direction="column"
         justify="flex-start"
         alignItems="stretch"
-        className={classes.verticalContainer}
+        {...props}
+        className={`${classes.verticalContainer} ${props.className}`}
         spacing={1}
       >
         <Grid item>
