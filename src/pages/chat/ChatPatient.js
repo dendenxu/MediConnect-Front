@@ -294,7 +294,9 @@ function ChatPatient() {
 
   useEffect(() => {
     const localMessages = JSON.parse(localStorage.getItem('messages'));
-    setMessages(msgs => localMessages);
+    if (localMessages) {
+      setMessages(msgs => localMessages);
+    }
   }, []);
 
   useEffect(() => {
