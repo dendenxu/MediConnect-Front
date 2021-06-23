@@ -678,17 +678,21 @@ function Chat() {
               },
             ]),
           );
-          setPatients(pats =>
-            pats.map(p => {
-              if (p.PatientID === dataFromServer.SenderID)
-                return {
-                  PatientID: p.PatientID,
-                  PatientName: p.PatientName,
-                  NewMessageCount: p.NewMessageCount + 1,
-                };
-              return p;
-            }),
-          );
+          console.log(CurrentPatientID);
+          console.log(dataFromServer.SenderID);
+          if (CurrentPatientID !== dataFromServer.SenderID) {
+            setPatients(pats =>
+              pats.map(p => {
+                if (p.PatientID === dataFromServer.SenderID)
+                  return {
+                    PatientID: p.PatientID,
+                    PatientName: p.PatientName,
+                    NewMessageCount: p.NewMessageCount + 1,
+                  };
+                return p;
+              }),
+            );
+          }
           console.log('In case 7:', Patients);
           break;
         case 8:
@@ -733,7 +737,7 @@ function Chat() {
     socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
-  }, [socket]);
+  }, [socket, CurrentPatientID]);
 
   return (
     <Container className={classes.OutlineContainer}>
