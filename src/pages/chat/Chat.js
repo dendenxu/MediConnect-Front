@@ -528,7 +528,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
           key={messages
             .get(CurrentPatientID.toString())
             .findIndex(obj => obj === message)}
-          className={classes.MessagePaddingContainer}
+          className={classes.MessagePaddingdiv}
         >
           <Message message={message} CurrentUserID={CurrentUserID} />
         </div>
@@ -550,7 +550,7 @@ function Chat(props) {
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    // { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
+    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
     { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
     { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
   ]);
@@ -558,28 +558,28 @@ function Chat(props) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(
     Map({
-      // 1983: [
-      //   { sender: 111, content: '医生发的第一条消息', time: '12:20' },
-      //   { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
-      //   { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
-      //   { sender: 111, content: '医生发的第二条消息', time: '12:34' },
-      //   { sender: 111, content: '医生发的第三条消息', time: '12:35' },
-      //   { sender: 111, content: '医生发的第四条消息', time: '12:36' },
-      //   { sender: 111, content: '医生发的第五条消息', time: '12：37' },
-      //   { sender: 111, content: '医生发的第六条消息', time: '12：38' },
-      //   { sender: 111, content: '医生发的第七条消息', time: '12：39' },
-      //   { sender: 111, content: '医生发的第八条消息', time: '12：40' },
-      //   { sender: 111, content: '医生发的第九条消息', time: '12：41' },
-      //   { sender: 111, content: '医生发的第十条消息', time: '12：42' },
-      //   { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
-      //   { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
-      //   { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
-      //   { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
-      //   { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
-      //   { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
-      //   { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
-      //   { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
-      // ],
+      1983: [
+        { sender: 111, content: '医生发的第一条消息', time: '12:20' },
+        { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
+        { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+        { sender: 111, content: '医生发的第二条消息', time: '12:34' },
+        { sender: 111, content: '医生发的第三条消息', time: '12:35' },
+        { sender: 111, content: '医生发的第四条消息', time: '12:36' },
+        { sender: 111, content: '医生发的第五条消息', time: '12：37' },
+        { sender: 111, content: '医生发的第六条消息', time: '12：38' },
+        { sender: 111, content: '医生发的第七条消息', time: '12：39' },
+        { sender: 111, content: '医生发的第八条消息', time: '12：40' },
+        { sender: 111, content: '医生发的第九条消息', time: '12：41' },
+        { sender: 111, content: '医生发的第十条消息', time: '12：42' },
+        { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
+        { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
+        { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
+        { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
+        { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
+        { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
+        { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
+        { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
+      ],
       1985: [
         { sender: 111, content: '医生发的第一条消息', time: '14:30' },
         { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
@@ -677,10 +677,14 @@ function Chat(props) {
     const localPatients = JSON.parse(localStorage.getItem('Patients'));
     console.log('localMessages: ', localMessages);
     console.log('localPatients: ', localPatients);
-    setMessages(msgs => Map(localMessages));
-    setPatients(pas => localPatients);
-    console.log('Messages: ', messages);
-    console.log('Patients: ', Patients);
+    if (localMessages) {
+      setMessages(msgs => Map(localMessages));
+      console.log('Messages: ', messages);
+    }
+    if (localPatients) {
+      setPatients(pas => localPatients);
+      console.log('Patients: ', Patients);
+    }
   }, []);
 
   useEffect(() => {
