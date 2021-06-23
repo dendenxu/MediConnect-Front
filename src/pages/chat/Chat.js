@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import { fromJS, Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Badge from '@material-ui/core/Badge';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -19,25 +20,33 @@ import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.s
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 
 const useStyles = makeStyles(theme => ({
-  borderedContainer: {
+  MessagePaddingContainer: {
+    padding: theme.spacing(1, 2),
+  },
+  NoSidePaddingContainer: {
+    padding: theme.spacing(1, 0),
+  },
+  OutlineContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    border: 5,
-    borderRadius: 30,
-    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+    // border: 5,
+    // borderRadius: 30,
+    // boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
-    width: '70%',
+    margin: theme.spacing(0),
+    width: '100%',
     height: '100%',
   },
   textarea: {
     display: 'flex',
     width: '100%',
-    padding: theme.spacing(1),
+    // padding: theme.spacing(1),
+    margin: theme.spacing(1),
     lineHeight: 3,
-    border: 1,
+    // border: 1,
     // borderRadius: 30,
-    boxShadow: '0 1px 1px 1px rgba(9, 9, 9, .3)',
+    // boxShadow: '0 1px 1px 1px rgba(9, 9, 9, .3)',
   },
   list: {
     display: 'flex',
@@ -45,22 +54,28 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '100%',
     padding: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
+    // backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
   },
-  // listItem: {
-  //   // borderStyle: 'solid',
-  //   borderWidth: '0.5px'
-  // },
+  listItem: {
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    color: 'white',
+  },
   endButton: {
     border: 1,
     color: 'white',
     padding: theme.spacing(1),
+    background: 'rgb(243,166,123)',
   },
   namepaper: {
     border: 1,
     padding: theme.spacing(1),
     textAlign: 'left',
-    color: theme.palette.text.secondary,
+    // fontSize:'120%',
+    backgroundColor: 'transparent',
+    color: 'white',
   },
   icon: {
     width: '50%',
@@ -68,20 +83,26 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
   },
   toolbar: {
-    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+    padding: theme.spacing(0),
     border: 1,
   },
   topbar: {
     padding: theme.spacing(1),
+    margin: theme.spacing(1),
     border: 1,
+    // backgroundColor: 'rgba(230,229,230,.5)',
+    backgroundColor: theme.palette.primary.main,
+    height: '8%',
   },
   MessageContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'flex-end',
-    padding: theme.spacing(1),
+    padding: theme.spacing(0),
+    margin: theme.spacing(1),
     width: '100%',
-    height: '200px',
+    height: '300px',
   },
   HisMessageBox: {
     display: 'flex',
@@ -90,10 +111,23 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-start',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: 'fit-content',
+    maxWidth: '80%',
     backgroundColor: '#F1F0F3',
+    fontSize: '90%',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      left: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderRightColor: '#F1F0F3',
+    },
   },
   MyMessageBox: {
     display: 'flex',
@@ -102,11 +136,24 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-end',
     textAlign: 'justify',
-    margin: theme.spacing(1),
+    position: 'relative',
+    // margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    width: 'fit-content',
+    maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
+    fontSize: '90%',
     color: 'white',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      right: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderLeftColor: theme.palette.primary.main,
+    },
   },
   timebox: {
     display: 'flex',
@@ -121,6 +168,17 @@ const useStyles = makeStyles(theme => ({
     // ! special operation for Josefin Sans
     transform: 'translate(0px,1.5px)',
   },
+  divider: {
+    // background: 'rgba(bd,bd,bd,.5)',
+    background: theme.palette.primary.main,
+    width: '95%',
+    // padding: theme.spacing(1),
+    // margin: theme.spacing(1),
+  },
+  badge: {
+    backgroundColor: 'rgb(243,166,123)',
+    // backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 function InputBox({ message, setMessage, sendMessage }) {
@@ -129,11 +187,9 @@ function InputBox({ message, setMessage, sendMessage }) {
   const handleMessageChange = event => {
     const newMessage = event.target.value;
     setMessage(newMessage);
-    console.log(`Getting a new message: ${newMessage}`);
   };
 
   const handleMessageSend = event => {
-    // const key = event.key;
     if (event.key === 'Enter') {
       sendMessage(event);
       console.log(`Sending a new message.`);
@@ -141,7 +197,7 @@ function InputBox({ message, setMessage, sendMessage }) {
   };
 
   return (
-    <Container>
+    <Container style={{ margin: '0' }}>
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
@@ -163,6 +219,7 @@ function PatientList({
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
+  setPatients,
 }) {
   const classes = useStyles();
 
@@ -171,12 +228,23 @@ function PatientList({
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
+    setPatients(pats =>
+      pats.map(p => {
+        if (p.PatientID === PatientID)
+          return {
+            PatientID: p.PatientID,
+            PatientName: p.PatientName,
+            NewMessageCount: 0,
+          };
+        return p;
+      }),
+    );
+    console.log('In handleListItemClick:', Patients);
   };
-
-  console.log('Patients:', Patients);
 
   const patientsA = Patients.map(Patient => (
     <ListItem
+      divider
       className={classes.listItem}
       key={Patients.findIndex(obj => obj.PatientID === Patient.PatientID)}
       button
@@ -193,13 +261,15 @@ function PatientList({
         )
       }
     >
-      {/* <Badge badgeContent={4} color="primary"> */}
-      <ListItemText primary={Patient.PatientName} />
-      {/* </Badge> */}
+      <Badge
+        badgeContent={Patient.NewMessageCount}
+        classes={{ badge: classes.badge }}
+        max={99}
+      >
+        <ListItemText primary={Patient.PatientName} />
+      </Badge>
     </ListItem>
   ));
-
-  console.log('PatientsA:', patientsA);
 
   return (
     <Container className={classes.list}>
@@ -236,8 +306,6 @@ function TopBar({
 
     setPatientName('');
     setCurrentPatientID('');
-
-    console.log('patients:', Patients);
   };
 
   return (
@@ -249,15 +317,23 @@ function TopBar({
               {PatientName}
             </Paper>
           </Grid>
-          <Grid item>
-            <Button
-              className={classes.endButton}
-              variant="contained"
-              color="primary"
-              onClick={handleEndClick}
+          <Grid item xs={9}>
+            <Container
+              style={{
+                display: 'flex',
+                flexDirection: 'row-reverse',
+                alignItems: 'flex-end',
+              }}
             >
-              结束挂号
-            </Button>
+              <Button
+                className={classes.endButton}
+                variant="contained"
+                color="primary"
+                onClick={handleEndClick}
+              >
+                结束挂号
+              </Button>
+            </Container>
           </Grid>
         </Grid>
       ) : (
@@ -303,7 +379,7 @@ function ToolBar({
 
   const QuestionsA = Questions.map(Question => (
     <ListItem
-      className={classes.listItem}
+      // className={classes.listItem}
       key={Questions.findIndex(obj => obj === Question)}
       button
       onClick={event => {
@@ -326,7 +402,7 @@ function ToolBar({
 
   return (
     <Container className={classes.toolbar}>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid item xs={1}>
           <Button onClick={handlePopoverOpen}>
             <QuestionsIcon />
@@ -376,8 +452,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   }
 
   return (
-    <Container>
-      <Container>
+    <Container style={{ padding: '0' }}>
+      <Container className={classes.NoSidePaddingContainer}>
         <Typography
           variant="caption"
           className={classes.timetext}
@@ -391,6 +467,7 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
+          padding: '0',
         }}
       >
         <Paper
@@ -408,16 +485,18 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
-  console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <Container key={message.time}>
+        <Container
+          key={messages
+            .get(CurrentPatientID.toString())
+            .findIndex(obj => obj === message)}
+          className={classes.MessagePaddingContainer}
+        >
           <Message message={message} CurrentUserID={CurrentUserID} />
         </Container>
       ))
     : {};
-
-  console.log('messages:', messages);
 
   if (!IsEmpty)
     return (
@@ -426,9 +505,7 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
       </ScrollToBottom>
     );
   return (
-    <ScrollToBottom className={classes.MessageContainer}>
-      请选择一个病人进行会话
-    </ScrollToBottom>
+    <ScrollToBottom className={classes.MessageContainer}>{}</ScrollToBottom>
   );
 }
 
@@ -438,9 +515,9 @@ function Chat() {
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: '张三' },
-    { PatientID: 1985, PatientName: '李四' },
-    { PatientID: 1987, PatientName: '王五' },
+    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
+    { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
+    { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -490,17 +567,6 @@ function Chat() {
     '请问您有任何药物或食物过敏吗',
     '请问您有测过体温吗？体温是多少呢？',
     '能具体说说你昨天吃了什么东西吗？',
-    '这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题',
-    '检测多条问题的问题一',
-    '检测多条问题的问题二',
-    '检测多条问题的问题三',
-    '检测多条问题的问题四',
-    '检测多条问题的问题五',
-    '检测多条问题的问题六',
-    '检测多条问题的问题七',
-    '检测多条问题的问题八',
-    '检测多条问题的问题九',
-    '检测多条问题的问题十',
   ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -514,7 +580,6 @@ function Chat() {
       ReceiverID: patientID,
       // DoctorID: doctorID,
     };
-    console.log('json from closeChat:', json);
     socket.send(JSON.stringify(json));
   };
 
@@ -527,7 +592,6 @@ function Chat() {
       DoctorID: doctorID,
       PatientID: patientID,
     };
-    console.log('json from requireMedicalRecord:', json);
     socket.send(JSON.stringify(json));
   };
 
@@ -540,14 +604,11 @@ function Chat() {
       DoctorID: doctorID,
       PatientID: patientID,
     };
-    console.log('json from requirePrescription:', json);
     socket.send(JSON.stringify(json));
   };
 
   const sendMessage = event => {
     event.preventDefault();
-
-    console.log('sending msg: ', message);
     if (message) {
       const json = {
         Type: 1,
@@ -556,9 +617,7 @@ function Chat() {
         Content: message,
         Time: moment().format('HH:mm'),
       };
-      console.log('json from msgFromClient:', json);
       if (!socket) {
-        console.warn('Socket closed???');
         return;
       }
       socket.send(JSON.stringify(json));
@@ -591,27 +650,18 @@ function Chat() {
       // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
       const localPatients = JSON.parse(localStorage.getItem('Patients'));
-      console.log('localMessages:', localMessages);
-      console.log('localPatients:', localPatients);
-      console.log('Patiens after local:', Patients);
     };
 
     socket.onmessage = msg => {
-      console.log('Backend testing: ', msg);
       const dataFromServer = JSON.parse(msg.data);
-      const patientID = JSON.stringify(dataFromServer.PatientID);
-      console.log('patientID:', patientID);
-      console.log(dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
-          // const pID = dataFromServer.PatientID.toString()
-          // console.log("pID",pID)
-          // console.log("NewPatient")
           setPatients(pats => [
             ...pats,
             {
               PatientID: dataFromServer.PatientID,
               PatientName: dataFromServer.PatientName,
+              NewMessageCount: 0,
             },
           ]);
           setMessages(msgs =>
@@ -630,13 +680,29 @@ function Chat() {
               },
             ]),
           );
+          console.log(CurrentPatientID);
+          console.log(dataFromServer.SenderID);
+          if (CurrentPatientID !== dataFromServer.SenderID) {
+            setPatients(pats =>
+              pats.map(p => {
+                if (p.PatientID === dataFromServer.SenderID)
+                  return {
+                    PatientID: p.PatientID,
+                    PatientName: p.PatientName,
+                    NewMessageCount: p.NewMessageCount + 1,
+                  };
+                return p;
+              }),
+            );
+          }
+          console.log('In case 7:', Patients);
           break;
         case 8:
           setMessages(msgs =>
             msgs.update(dataFromServer.PatientID.toString(), msg2 => [
               ...msg2,
               {
-                sender: dataFromServer.PatientID,
+                sender: CurrentUserID,
                 content: `通过链接打开你的病历：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
@@ -648,7 +714,7 @@ function Chat() {
             msgs.update(dataFromServer.PatientID.toString(), msg3 => [
               ...msg3,
               {
-                sender: dataFromServer.PatientID,
+                sender: CurrentUserID,
                 content: `通过链接打开你的处方：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
@@ -661,7 +727,7 @@ function Chat() {
         default:
           break;
       }
-      console.log('Store messages:', messages);
+      console.log(Patients);
       localStorage.setItem('messages', JSON.stringify(messages));
       localStorage.setItem('Patients', JSON.stringify(Patients));
     };
@@ -673,10 +739,10 @@ function Chat() {
     socket.onerror = error => {
       console.log('Socket Error: ', error);
     };
-  }, [socket]);
+  }, [socket, CurrentPatientID]);
 
   return (
-    <Container className={classes.borderedContainer}>
+    <Container className={classes.OutlineContainer}>
       <Grid container spacing={1}>
         <Grid container item xs={3} spacing={3}>
           <PatientList
@@ -686,8 +752,10 @@ function Chat() {
             setSelectedIndex={setSelectedIndex}
             selectedIndex={selectedIndex}
             setIsEmpty={setIsEmpty}
+            setPatients={setPatients}
           />
         </Grid>
+        <Divider orientation="vertical" flexItem />
         <Grid container item xs spacing={3}>
           <TopBar
             Patients={Patients}
@@ -708,7 +776,8 @@ function Chat() {
             IsEmpty={IsEmpty}
             CurrentPatientID={CurrentPatientID}
           />
-          <Divider flexItem />
+          {/* <Divider className={classes.divider} /> */}
+          <Divider className={classes.divider} variant="middle" />
           <ToolBar
             CurrentPatientID={CurrentPatientID}
             CurrentUserID={CurrentUserID}

@@ -5,6 +5,31 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900');
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900');
 
+html {
+  --scrollbarBG: #0001;
+  --thumbBG: #4e89ae;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
 body {
-  margin: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbarBG);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  border: solid 3px transparent;
+  box-shadow: inset 0 0 10px 10px var(--thumbBG);
 }
