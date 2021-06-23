@@ -488,7 +488,9 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
         <Container
-          key={message.time}
+          key={messages
+            .get(CurrentPatientID.toString())
+            .findIndex(obj => obj === message)}
           className={classes.MessagePaddingContainer}
         >
           <Message message={message} CurrentUserID={CurrentUserID} />
