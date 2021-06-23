@@ -306,7 +306,6 @@ function ChatPatient() {
         Content: message,
         Time: moment().format('HH:mm'),
       };
-      console.log('json from msgFromClient:', json);
       if (!socket) {
         console.warn('Socket closed???');
         return;
@@ -332,19 +331,12 @@ function ChatPatient() {
     }
     socket.onopen = () => {
       console.log('Successfully Connected');
-      // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
-      // const localPatients = JSON.parse(localStorage.getItem('Patients'));
-      console.log('localMessages:', localMessages);
     };
 
     socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
       const dataFromServer = JSON.parse(msg.data);
-      // const patientID = JSON.stringify(dataFromServer.PatientID);
-      // console.log('patientID:', patientID);
-      console.log(dataFromServer);
-      // console.log(dataFromServer.PatientID.toString());
       switch (dataFromServer.Type) {
         case 7:
           setMessages(msg1 => [
@@ -381,7 +373,6 @@ function ChatPatient() {
         default:
           break;
       }
-      console.log('Store messages:', messages);
       localStorage.setItem('messages', JSON.stringify(messages));
       // localStorage.setItem('Patients', JSON.stringify(Patients));
     };
