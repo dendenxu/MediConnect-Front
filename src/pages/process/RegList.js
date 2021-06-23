@@ -36,13 +36,29 @@ const regs = [
   },
 ];
 
+let myRegs = [];
+
 class RegList extends React.Component {
+  componentDidMount() {
+    fetch(`/api/registrations`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.data);
+        this.setState((myRegs = data.data));
+      });
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
         <Header text="所有挂号一览" />
         <List>
-          {regs.map(data => (
+          {myRegs.map(data => (
             <RegistrationItem key={data.id} data={data} />
           ))}
         </List>

@@ -527,7 +527,7 @@ function Signup(props) {
 
   return (
     <Container component="main" className={classes.layoutContainer}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
 
       <Container className={classes.signUpContainer}>
         <Loading loadingData={loadingData} />

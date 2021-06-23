@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -18,6 +19,9 @@ const useStyles = makeStyles({
   input: {
     flex: 1,
     width: '100%',
+    '& div': {
+      borderRadius: 16,
+    },
   },
   iconButton: {
     marginRight: '-10px',
@@ -27,7 +31,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediSearch(props) {
+export default function SearchBar(props) {
   const { onSubmit, onChange } = props;
 
   let { label, placeholder } = props;
@@ -80,34 +84,35 @@ export default function MediSearch(props) {
           console.log('Setting to blurred');
         }}
         InputProps={{
-          ariaLabel: 'search mediconnect',
           endAdornment: (
             <InputAdornment position="end">
-              {inputContent === '' || (
+              <div display="flex">
+                {inputContent === '' || (
+                  <IconButton
+                    className={classes.cancelButton}
+                    size="medium"
+                    onClick={() => {
+                      setInputContent('');
+                      document.getElementById('search-box').focus();
+                    }}
+                  >
+                    <CancelIcon fontSize="small" />
+                  </IconButton>
+                )}
+
                 <IconButton
-                  className={classes.cancelButton}
-                  size="medium"
-                  onClick={() => {
-                    setInputContent('');
-                    document.getElementById('search-box').focus();
+                  color="primary"
+                  // type="submit"
+                  onClick={onSubmit}
+                  className={classes.iconButton}
+                  aria-label="search"
+                  style={{
+                    color: iconColor,
                   }}
                 >
-                  <CancelIcon fontSize="small" />
+                  <SearchIcon />
                 </IconButton>
-              )}
-
-              <IconButton
-                color="primary"
-                // type="submit"
-                onClick={onSubmit}
-                className={classes.iconButton}
-                aria-label="search"
-                style={{
-                  color: iconColor,
-                }}
-              >
-                <SearchIcon />
-              </IconButton>
+              </div>
             </InputAdornment>
           ),
         }}
