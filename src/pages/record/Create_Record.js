@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -91,7 +92,7 @@ const useStyles = makeStyles(theme => ({
 
 let initial = -2;
 
-export default function Home() {
+export default function Home(props) {
   const location = useLocation();
   const classes = useStyles();
   const history = useHistory();
@@ -102,11 +103,16 @@ export default function Home() {
   const [opinions, setOpinions] = useState('');
   // todo initialize these 4 IDs(maybe using get method),
   // const tmpCaseID = location.state.Case_id;
-  const tmpPatientID = location.state.Patient_id;
-  const tmpDoctorID = location.state.Doctor_id;
-  const patientGender = location.state.Patient_gender;
-  const patientAge = location.state.Patient_age;
-  const patientName = location.state.Patient_name;
+  const {
+    Patient_id: tmpPatientID,
+    Doctor_id: tmpDoctorID,
+    Patient_gender: patientGender,
+    Patient_age: patientAge,
+    Patient_name: patientName,
+    Department: tmpDepartment,
+  } = props.state;
+
+  const { state, setState } = props;
   const [helperText1, setHelper1] = useState('');
   const [helperText2, setHelper2] = useState('');
   const [helperText3, setHelper3] = useState('');
@@ -115,7 +121,6 @@ export default function Home() {
   const [InputError2, setInputError2] = useState(true);
   const [InputError3, setInputError3] = useState(true);
   const [InputError4, setInputError4] = useState(true);
-  const tmpDepartment = location.state.Department;
 
   useEffect(async () => {
     if (initial <= 0) {
@@ -223,10 +228,8 @@ export default function Home() {
     });
   };
 
-  const HandleGoback = async () => {
-    history.push({
-      pathname: '/browse',
-    });
+  const HandleGoback = () => {
+    setState(null);
   };
 
   return (

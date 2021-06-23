@@ -10,7 +10,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles({
   header: {
-    marginTop: '16px',
+    // marginTop: '16px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

@@ -19,9 +19,13 @@ const useStyles = makeStyles(theme => ({
     // height: '100%',
   },
   paper: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 0),
     marginTop: '20px',
     width: '100%',
+    flexGrow: 1,
+    border: 5,
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
 
   input: {
@@ -84,22 +88,27 @@ function toDisplayItem(info, index) {
 const Wrapper = ({ children }) => children;
 
 let Data = [];
-const tmpdoctorId = 1;
-const tmppatientId = 2;
-const tmpdepartment = '太平间';
-const patientname = '肖 瑞轩';
-const doctorname = '于 成笑';
-const patientgender = '男';
-const patientage = 18;
-const tmpcaseID = 999;
 
 export default function Browse(props) {
+  const {
+    doctorId,
+    patientId,
+    department,
+    patientname,
+    doctorname,
+    patientgender,
+    patientage,
+    caseID,
+  } = props.state;
+
+  const { record, setRecord, creation, setCreation } = props;
+
   classes = useStyles();
   const [display, setDisplay] = useState(Data);
   const history = useHistory();
 
   useEffect(async () => {
-    const response = await fetch(`/api/patient/${tmppatientId}/cases`, {
+    const response = await fetch(`/api/patient/${patientId}/cases`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -154,18 +163,17 @@ export default function Browse(props) {
 
     // console.log(tmpcaseID);
 
-    history.push({
-      pathname: '/create_record',
-      state: {
-        // Case_id: tmpcaseID,
-        Patient_age: patientage,
-        Patient_gender: patientgender,
-        Patient_name: patientname,
-        Patient_id: tmppatientId,
-        Department: tmpdepartment,
-        Doctor_id: tmpdoctorId,
-      },
-    });
+    const state = {
+      // Case_id: tmpcaseID,
+      Patient_age: patientage,
+      Patient_gender: patientgender,
+      Patient_name: patientname,
+      Patient_id: patientId,
+      Department: department,
+      Doctor_id: doctorId,
+    };
+
+    setCreation(state);
   };
 
   const searchChange = event => {
