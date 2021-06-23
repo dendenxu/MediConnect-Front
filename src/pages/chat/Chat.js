@@ -524,7 +524,12 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   console.log('In Messages: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
-        <div key={message.time} className={classes.MessagePaddingdiv}>
+        <div
+          key={messages
+            .get(CurrentPatientID.toString())
+            .findIndex(obj => obj === message)}
+          className={classes.MessagePaddingContainer}
+        >
           <Message message={message} CurrentUserID={CurrentUserID} />
         </div>
       ))
