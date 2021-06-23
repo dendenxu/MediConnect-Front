@@ -187,11 +187,9 @@ function InputBox({ message, setMessage, sendMessage }) {
   const handleMessageChange = event => {
     const newMessage = event.target.value;
     setMessage(newMessage);
-    console.log(`Getting a new message: ${newMessage}`);
   };
 
   const handleMessageSend = event => {
-    // const key = event.key;
     if (event.key === 'Enter') {
       sendMessage(event);
       console.log(`Sending a new message.`);
@@ -241,9 +239,8 @@ function PatientList({
         return p;
       }),
     );
+    console.log('In handleListItemClick:', Patients);
   };
-
-  console.log('Patients:', Patients);
 
   const patientsA = Patients.map(Patient => (
     <ListItem
@@ -273,8 +270,6 @@ function PatientList({
       </Badge>
     </ListItem>
   ));
-
-  console.log('PatientsA:', patientsA);
 
   return (
     <Container className={classes.list}>
@@ -311,8 +306,6 @@ function TopBar({
 
     setPatientName('');
     setCurrentPatientID('');
-
-    console.log('patients:', Patients);
   };
 
   return (
@@ -492,7 +485,6 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
-  console.log('Before messageA: ', messages);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
         <Container
@@ -503,8 +495,6 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
         </Container>
       ))
     : {};
-
-  console.log('messages:', messages);
 
   if (!IsEmpty)
     return (
@@ -575,17 +565,6 @@ function Chat() {
     '请问您有任何药物或食物过敏吗',
     '请问您有测过体温吗？体温是多少呢？',
     '能具体说说你昨天吃了什么东西吗？',
-    '这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题这是一条很长的问题',
-    '检测多条问题的问题一',
-    '检测多条问题的问题二',
-    '检测多条问题的问题三',
-    '检测多条问题的问题四',
-    '检测多条问题的问题五',
-    '检测多条问题的问题六',
-    '检测多条问题的问题七',
-    '检测多条问题的问题八',
-    '检测多条问题的问题九',
-    '检测多条问题的问题十',
   ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -599,7 +578,6 @@ function Chat() {
       ReceiverID: patientID,
       // DoctorID: doctorID,
     };
-    console.log('json from closeChat:', json);
     socket.send(JSON.stringify(json));
   };
 
@@ -612,7 +590,6 @@ function Chat() {
       DoctorID: doctorID,
       PatientID: patientID,
     };
-    console.log('json from requireMedicalRecord:', json);
     socket.send(JSON.stringify(json));
   };
 
@@ -625,14 +602,11 @@ function Chat() {
       DoctorID: doctorID,
       PatientID: patientID,
     };
-    console.log('json from requirePrescription:', json);
     socket.send(JSON.stringify(json));
   };
 
   const sendMessage = event => {
     event.preventDefault();
-
-    console.log('sending msg: ', message);
     if (message) {
       const json = {
         Type: 1,
@@ -641,9 +615,7 @@ function Chat() {
         Content: message,
         Time: moment().format('HH:mm'),
       };
-      console.log('json from msgFromClient:', json);
       if (!socket) {
-        console.warn('Socket closed???');
         return;
       }
       socket.send(JSON.stringify(json));
@@ -676,22 +648,12 @@ function Chat() {
       // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
       const localPatients = JSON.parse(localStorage.getItem('Patients'));
-      console.log('localMessages:', localMessages);
-      console.log('localPatients:', localPatients);
-      console.log('Patiens after local:', Patients);
     };
 
     socket.onmessage = msg => {
-      console.log('Backend testing: ', msg);
       const dataFromServer = JSON.parse(msg.data);
-      const patientID = JSON.stringify(dataFromServer.PatientID);
-      console.log('patientID:', patientID);
-      console.log(dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
-          // const pID = dataFromServer.PatientID.toString()
-          // console.log("pID",pID)
-          // console.log("NewPatient")
           setPatients(pats => [
             ...pats,
             {
@@ -718,7 +680,7 @@ function Chat() {
           );
           setPatients(pats =>
             pats.map(p => {
-              if (p.PatientID === dataFromServer.SenderID.toString())
+              if (p.PatientID === dataFromServer.SenderID)
                 return {
                   PatientID: p.PatientID,
                   PatientName: p.PatientName,
@@ -727,13 +689,14 @@ function Chat() {
               return p;
             }),
           );
+          console.log('In case 7:', Patients);
           break;
         case 8:
           setMessages(msgs =>
             msgs.update(dataFromServer.PatientID.toString(), msg2 => [
               ...msg2,
               {
-                sender: dataFromServer.PatientID,
+                sender: CurrentUserID,
                 content: `通过链接打开你的病历：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
@@ -745,7 +708,7 @@ function Chat() {
             msgs.update(dataFromServer.PatientID.toString(), msg3 => [
               ...msg3,
               {
-                sender: dataFromServer.PatientID,
+                sender: CurrentUserID,
                 content: `通过链接打开你的处方：${dataFromServer.Url}`,
                 time: dataFromServer.Time,
               },
@@ -758,7 +721,7 @@ function Chat() {
         default:
           break;
       }
-      console.log('Store messages:', messages);
+      console.log(Patients);
       localStorage.setItem('messages', JSON.stringify(messages));
       localStorage.setItem('Patients', JSON.stringify(Patients));
     };
