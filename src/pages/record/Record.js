@@ -206,6 +206,8 @@ export default function Home() {
       // console.log(tmpmessage.data.Prescriptions.length);
       if (tmpmessage.data.Prescriptions.length === 0) {
         setRows(defaultRows);
+        linecount = 1;
+        whetherpres = 1;
       } else {
         whetherpres = 1;
         SetExpand(true);
@@ -434,7 +436,7 @@ export default function Home() {
   };
 
   const HandleSaveClick = async () => {
-    // console.log(linecount);
+    console.log(linecount);
     console.log(allprescriptions[0]);
     for (let i = 0; i < linecount - 1; i += 1) {
       const tmpguideline = [
@@ -450,9 +452,7 @@ export default function Home() {
       const newallguidelines = allguidelines.concat(tmpguideline);
       allguidelines = newallguidelines;
     }
-    // console.log(allprescriptions);
-    // console.log(allguidelines);
-    // console.log(tmpCaseID);
+
     let response;
     let message;
     if (whetherpres === 1) {
@@ -474,11 +474,11 @@ export default function Home() {
       );
       message = await response.json();
       if (response.ok) {
-        // // console.log(`The server says creating new prescription is succcessful`);
-        // // console.log(message);
+        console.log(`The server says creating new prescription is succcessful`);
+        console.log(message);
       } else {
-        // // console.log(`Fail to create new prescription`);
-        // // console.log(message);
+        console.log(`Fail to create new prescription`);
+        console.log(message);
       }
     }
 
