@@ -38,6 +38,7 @@ export default function App() {
         <Route path="/signup" component={Signup} />
         <Route path="/patient" component={Patient} />
         <Route path="/doctor" component={Doctor} />
+        <Route path="/activation" component={EditPass} />
         <Route path="/editpass" component={EditPass} />
         <Route path="/chat" component={Chat} />
         <Route exact path="/ChatPatient" component={ChatPatient} />
