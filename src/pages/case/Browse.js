@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -39,6 +39,7 @@ let classes;
 
 function toDisplayItem(info, index) {
   const history = useHistory();
+  const theme = useTheme();
   const handlerecord = event => {
     history.push({
       pathname: '/record',
@@ -52,33 +53,37 @@ function toDisplayItem(info, index) {
   };
   return (
     <Paper className={classes.paper} key={index} onClick={handlerecord}>
-      <Grid container spacing={2} display="flex">
-        <Grid item xs={12} sm container>
-          <Grid item xs={6} container direction="column" spacing={2}>
-            <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" color="text">
-                {info.Department}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body2" color="textSecondary">
-                主诉：{info.Complaint}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                诊断：{info.Diagnosis}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="subtitle1">
-              主诊医生：{info.DoctorName}
+      <Grid
+        item
+        xs={12}
+        sm
+        container
+        style={{
+          padding: theme.spacing(2),
+        }}
+      >
+        <Grid item xs={6} container direction="column" spacing={2}>
+          <Grid item xs>
+            <Typography gutterBottom variant="subtitle1" color="text">
+              {info.Department}
             </Typography>
           </Grid>
-          <Grid item xs={2}>
-            <Typography variant="subtitle1">
-              {info.Date.substr(0, 10)}
+          <Grid item>
+            <Typography variant="body2" color="textSecondary">
+              主诉：{info.Complaint}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              诊断：{info.Diagnosis}
             </Typography>
           </Grid>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="subtitle1">
+            主诊医生：{info.DoctorName}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography variant="subtitle1">{info.Date.substr(0, 10)}</Typography>
         </Grid>
       </Grid>
     </Paper>

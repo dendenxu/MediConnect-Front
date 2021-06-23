@@ -61,13 +61,27 @@ export default function Home(props) {
       <div className={classes.content}>
         <Chat className={classes.full} />
 
-        {record && <Record state={record} setState={setRecord} />}
-        {creation && <CreateRecord state={creation} setState={setCreation} />}
+        {record && (
+          <Record
+            record={record}
+            setRecord={setRecord}
+            creation={creation}
+            setCreation={setCreation}
+          />
+        )}
+        {creation && (
+          <CreateRecord
+            record={record}
+            setRecord={setRecord}
+            creation={creation}
+            setCreation={setCreation}
+          />
+        )}
         {!record && !creation && (
           <Browse
+            className={classes.full}
             state={browse}
             setState={setBrowse}
-            className={classes.full}
             record={record}
             setRecord={setRecord}
             creation={creation}

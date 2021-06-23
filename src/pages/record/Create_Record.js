@@ -110,9 +110,9 @@ export default function Home(props) {
     Patient_age: patientAge,
     Patient_name: patientName,
     Department: tmpDepartment,
-  } = props.state;
+  } = props.creation;
 
-  const { state, setState } = props;
+  const { setCreation, setRecord } = props;
   const [helperText1, setHelper1] = useState('');
   const [helperText2, setHelper2] = useState('');
   const [helperText3, setHelper3] = useState('');
@@ -214,22 +214,22 @@ export default function Home(props) {
 
     console.log(tmpcaseID);
 
-    history.push({
-      pathname: '/record',
-      state: {
-        Case_id: tmpcaseID,
-        // Patient_age: patientage,
-        // Patient_gender: patientgender,
-        // Patient_name: patientname,
-        Patient_id: tmpPatientID,
-        Department: tmpDepartment,
-        Doctor_id: tmpDoctorID,
-      },
-    });
+    const newRecord = {
+      Case_id: tmpcaseID,
+      Patient_age: patientAge,
+      Patient_gender: patientGender,
+      Patient_name: patientName,
+      Patient_id: tmpPatientID,
+      Department: tmpDepartment,
+      Doctor_id: tmpDoctorID,
+    };
+
+    setRecord(newRecord);
+    setCreation(null);
   };
 
   const HandleGoback = () => {
-    setState(null);
+    setCreation(null);
   };
 
   return (
