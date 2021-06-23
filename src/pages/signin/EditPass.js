@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,18 +7,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
-import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
@@ -207,7 +202,14 @@ function EditPass(props) {
   if (!props.location.state) {
     return <h1>Invalid Access</h1>;
   }
-  const { email } = props.location.state;
+  const {
+    email,
+    firstName: firstname,
+    lastName: lastname,
+    password: passwd,
+    type,
+    registering,
+  } = props.location.state;
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
@@ -286,6 +288,31 @@ function EditPass(props) {
     history.push('/signin');
   };
 
+  const registerUser = async () => {
+    const response = await fetch('/api/account/create', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        firstname,
+        lastname,
+        passwd,
+        type,
+      }),
+    });
+
+    console.log(response);
+
+    if (response.ok) {
+      console.log('Successfully registered the user for activation');
+      setAfterEmailCheck(true);
+      setIdentifyCodeInvalid(false);
+      // history.push('/signin?registered');
+    }
+  };
+
   const handleEmailCheckClick = async () => {
     const checkIdentifyCodeWithServer = async () => {
       const response = await fetch('/api/account/checkauthcode', {
@@ -299,8 +326,12 @@ function EditPass(props) {
       console.log(response);
 
       if (response.ok) {
-        setAfterEmailCheck(true);
-        setIdentifyCodeInvalid(false);
+        if (registering) {
+          registerUser();
+        } else {
+          setAfterEmailCheck(true);
+          setIdentifyCodeInvalid(false);
+        }
       } else {
         setAfterEmailCheck(false);
         setIdentifyCodeInvalid(true);
@@ -411,13 +442,15 @@ function EditPass(props) {
               avatarSourceClass={classes.centeredText}
             />
 
-            {passwdEdited ? (
+            {passwdEdited || (afterEmailCheck && registering) ? (
               <Typography
                 component="h2"
                 variant="body2"
                 className={classes.welcome}
               >
-                密码修改成功，请跳转登陆界面重新登录
+                {registering
+                  ? '验证通过，请使用您的账号登录邮箱'
+                  : '密码修改成功，请跳转登陆界面重新登录'}
               </Typography>
             ) : (
               <Typography
@@ -430,7 +463,7 @@ function EditPass(props) {
                   : '验证通过，请为您的账号设置新的密码'}
               </Typography>
             )}
-            {!passwdEdited && (
+            {!passwdEdited && !(afterEmailCheck && registering) && (
               <Box>
                 {!afterEmailCheck && (
                   <Container className={classes.idCodeContainer}>
