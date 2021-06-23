@@ -12,6 +12,9 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const useStyles = makeStyles(theme => ({
+  MessagePaddingContainer: {
+    padding: theme.spacing(1, 2),
+  },
   borderedContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -32,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   textarea: {
     display: 'flex',
-    width: '100%',
+    // width: '100%',
     padding: theme.spacing(1),
     lineHeight: 3,
     border: 2,
@@ -55,8 +58,9 @@ const useStyles = makeStyles(theme => ({
   namepaper: {
     border: 1,
     padding: theme.spacing(1),
-    textAlign: 'left',
-    color: theme.palette.text.secondary,
+    textAlign: 'center',
+    color: 'white',
+    backgroundColor: 'transparent',
   },
   icon: {
     width: '50%',
@@ -70,11 +74,13 @@ const useStyles = makeStyles(theme => ({
   topbar: {
     padding: theme.spacing(1),
     border: 1,
+    // backgroundColor: 'rgba(230,229,230,.5)',
+    backgroundColor: theme.palette.primary.main,
   },
   MessageContainer: {
     display: 'flex',
     flexDirection: 'row',
-    padding: theme.spacing(0),
+    padding: theme.spacing(1),
     width: '100%',
     height: '78vh',
     // backgroundColor:theme.palette.text.secondary,
@@ -86,10 +92,22 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-start',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    maxWidth: '80%',
     backgroundColor: '#F1F0F3',
+    fontSize: '90%',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      left: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderRightColor: '#F1F0F3',
+    },
   },
   MyMessageBox: {
     display: 'flex',
@@ -98,11 +116,23 @@ const useStyles = makeStyles(theme => ({
     alignContent: 'left',
     alignSelf: 'flex-end',
     textAlign: 'justify',
+    position: 'relative',
     margin: theme.spacing(1),
     padding: theme.spacing(1),
-    width: '50%',
+    maxWidth: '80%',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
+    fontSize: '90%',
+    '&::after': {
+      content: `''`,
+      position: 'absolute',
+      right: '-16px',
+      top: '5px',
+      width: '0',
+      height: '0',
+      border: '8px solid transparent',
+      borderLeftColor: theme.palette.primary.main,
+    },
   },
   timebox: {
     display: 'flex',
@@ -135,12 +165,12 @@ function InputBox({ message, setMessage, sendMessage }) {
   };
 
   return (
-    <Container>
+    <Container style={{ padding: '0' }}>
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
         multiline
-        rows={1}
+        rowsMax={4}
         // defaultValue="Type a message..."
         value={message}
         onChange={handleMessageChange}
@@ -159,15 +189,15 @@ function TopBar({ DoctorName }) {
 
   return (
     <Container className={classes.topbar}>
-      <Grid container spacing={10}>
-        <Grid item>
+      <Grid container spacing={1}>
+        <Grid item xs={2}>
           <Button
           //  onClick={}
           >
-            <ArrowBackIosIcon />
+            <ArrowBackIosIcon style={{ color: 'white' }} />
           </Button>
         </Grid>
-        <Grid item xs={0} spacing={0}>
+        <Grid item xs={9}>
           <Paper className={classes.namepaper} variant="outlined" square>
             {DoctorName}
           </Paper>
@@ -188,10 +218,14 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
   return (
     <Container
       style={{
-        padding: 0,
+        padding: '0',
       }}
     >
-      <Container>
+      <Container
+        style={{
+          padding: '0',
+        }}
+      >
         <Typography
           variant="caption"
           className={classes.timetext}
@@ -205,6 +239,7 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
+          padding: '0',
         }}
       >
         <Paper
@@ -224,7 +259,7 @@ function Messages({ messages, CurrentUserID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
   const messagesA = messages.map(message => (
-    <Container key={message.time}>
+    <Container key={message.time} className={classes.MessagePaddingContainer}>
       <Message message={message} CurrentUserID={CurrentUserID} />
     </Container>
   ));
@@ -271,7 +306,6 @@ function ChatPatient() {
         Content: message,
         Time: moment().format('HH:mm'),
       };
-      console.log('json from msgFromClient:', json);
       if (!socket) {
         console.warn('Socket closed???');
         return;
@@ -297,19 +331,12 @@ function ChatPatient() {
     }
     socket.onopen = () => {
       console.log('Successfully Connected');
-      // hello('Doctor', CurrentUserID);
       const localMessages = JSON.parse(localStorage.getItem('messages'));
-      // const localPatients = JSON.parse(localStorage.getItem('Patients'));
-      console.log('localMessages:', localMessages);
     };
 
     socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
       const dataFromServer = JSON.parse(msg.data);
-      // const patientID = JSON.stringify(dataFromServer.PatientID);
-      // console.log('patientID:', patientID);
-      console.log(dataFromServer);
-      // console.log(dataFromServer.PatientID.toString());
       switch (dataFromServer.Type) {
         case 7:
           setMessages(msg1 => [
@@ -346,7 +373,6 @@ function ChatPatient() {
         default:
           break;
       }
-      console.log('Store messages:', messages);
       localStorage.setItem('messages', JSON.stringify(messages));
       // localStorage.setItem('Patients', JSON.stringify(Patients));
     };
@@ -361,19 +387,15 @@ function ChatPatient() {
   }, [socket]);
 
   return (
-    <Container className={classes.borderedContainer}>
-      <Grid container spacing={1}>
-        <Grid container item xs spacing={3}>
-          <TopBar DoctorName={DoctorName} />
-          <Messages messages={messages} CurrentUserID={CurrentUserID} />
-          <Divider flexItem />
-          <InputBox
-            message={message}
-            setMessage={setMessage}
-            sendMessage={sendMessage}
-          />
-        </Grid>
-      </Grid>
+    <Container style={{ alignItems: 'center' }}>
+      <TopBar DoctorName={DoctorName} />
+      <Messages messages={messages} CurrentUserID={CurrentUserID} />
+      <Divider flexItem />
+      <InputBox
+        message={message}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+      />
     </Container>
   );
 }
