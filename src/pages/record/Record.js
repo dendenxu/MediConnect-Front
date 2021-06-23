@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -96,7 +97,7 @@ let temprows = [];
 let initial = -2;
 let whetherpres = 0;
 
-export default function Home() {
+export default function Home(props) {
   const history = useHistory();
   const location = useLocation();
   const classes = useStyles();

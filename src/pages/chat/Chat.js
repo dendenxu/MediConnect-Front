@@ -73,6 +73,7 @@ const useStyles = makeStyles(theme => ({
   endButton: {
     border: 1,
     color: 'white',
+    borderRadius: 10,
     padding: theme.spacing(1),
     background: 'rgb(243,166,123)',
   },
@@ -115,10 +116,10 @@ const useStyles = makeStyles(theme => ({
   message: {
     width: '75%',
     margin: theme.spacing(1),
-    padding: theme.spacing(2),
-    border: 5,
-    borderRadius: 16,
-    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+    // padding: theme.spacing(2),
+    // border: 5,
+    // borderRadius: 16,
+    // boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   Messagediv: {
     display: 'flex',
@@ -394,6 +395,7 @@ function ToolBar({
   CurrentPatientID,
   CurrentUserID,
   Questions,
+  IsEmpty,
   setMessages,
   requireMedicalRecord,
   requirePrescription,
@@ -444,8 +446,8 @@ function ToolBar({
 
   return (
     <div className={classes.toolbar}>
-      <IconButton onClick={handlePopoverOpen}>
-        <QuestionsIcon className={classes.icon} />
+      <IconButton disabled={IsEmpty} onClick={handlePopoverOpen}>
+        <QuestionsIcon />
       </IconButton>
       <Popover
         id="mouse-over-popover"
@@ -468,11 +470,11 @@ function ToolBar({
       >
         <List>{QuestionsA}</List>
       </Popover>
-      <IconButton onClick={handleMedClick}>
-        <MedicineIcon className={classes.icon} />
+      <IconButton disabled={IsEmpty} onClick={handleMedClick}>
+        <MedicineIcon />
       </IconButton>
-      <IconButton onClick={handleRecClick}>
-        <RecordIcon className={classes.icon} />
+      <IconButton disabled={IsEmpty} onClick={handleRecClick}>
+        <RecordIcon />
       </IconButton>
     </div>
   );
@@ -833,6 +835,7 @@ function Chat(props) {
           CurrentPatientID={CurrentPatientID}
           CurrentUserID={CurrentUserID}
           Questions={Questions}
+          IsEmpty={IsEmpty}
           setMessages={setMessages}
           requireMedicalRecord={requireMedicalRecord}
           requirePrescription={requirePrescription}
