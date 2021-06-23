@@ -89,133 +89,149 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-let linecount = 1;
-let tempprescription = [];
-let temprows = [];
 let initial = -2;
 
 export default function Home() {
-  const history = useHistory();
   const location = useLocation();
   const classes = useStyles();
-  const [expandButton, SetExpand] = useState(false);
-  const columns = [
-    { field: 'name', headerName: '药品名', width: 320, editable: false },
-    {
-      field: 'size',
-      headerName: '数量',
-      width: 220,
-      editable: false,
-    },
-    {
-      field: 'qt',
-      headerName: '用法',
-      width: 220,
-      editable: false,
-    },
-  ];
+  const history = useHistory();
 
-  const defaultRows = [];
-
-  function CreatePrescriptionData(id, name, size, qt) {
-    return { id, name, size, qt };
-  }
-
-  const [chiefComplaint, setChiefComplaint] = useState(''); //   to fill
-  const [medicalHistory, setMedicalHistory] = useState(''); //   to fill
-  const [diagnosis, setDiagnosis] = useState(''); // to fill
-  const [opinions, setOpinions] = useState(''); //   to fill
-  const [patientName, setPatientName] = useState('张三');
-  const [patientGender, setPatientGender] = useState('女');
-  const [patientAge, setPatientAge] = useState(18);
-  const [allergicHistory, setAllergicHistory] = useState('无');
-
-  const CaseID = location.state.Case_id;
+  const [chiefComplaint, setChiefComplaint] = useState('');
+  const [medicalHistory, setMedicalHistory] = useState('');
+  const [tmpdiagnosis, setDiagnosis] = useState('');
+  const [opinions, setOpinions] = useState('');
+  // todo initialize these 4 IDs(maybe using get method),
+  // const tmpCaseID = location.state.Case_id;
   const tmpPatientID = location.state.Patient_id;
   const tmpDoctorID = location.state.Doctor_id;
-  console.log(CaseID);
-  console.log(tmpPatientID);
-  console.log(tmpDoctorID);
+  const patientGender = location.state.Patient_gender;
+  const patientAge = location.state.Patient_age;
+  const patientName = location.state.Patient_name;
+  const [helperText1, setHelper1] = useState('');
+  const [helperText2, setHelper2] = useState('');
+  const [helperText3, setHelper3] = useState('');
+  const [helperText4, setHelper4] = useState('');
+  const [InputError1, setInputError1] = useState(true);
+  const [InputError2, setInputError2] = useState(true);
+  const [InputError3, setInputError3] = useState(true);
+  const [InputError4, setInputError4] = useState(true);
   const tmpDepartment = location.state.Department;
-
-  const [editRowsModel, setEditRowsModel] = React.useState({});
-  const [rows, setRows] = React.useState(defaultRows);
 
   useEffect(async () => {
     if (initial <= 0) {
-      console.log(initial);
       initial += 1;
-      const tmpresponse = await fetch(
-        `/api/patient/${tmpPatientID}/cases/${CaseID}`,
-        {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      // console.log(tmpresponse);
-      const tmpmessage = await tmpresponse.json();
-      setPatientName(tmpmessage.data.PatientName);
-      setPatientGender(tmpmessage.data.Gender);
-      setDiagnosis(tmpmessage.data.Diagnosis);
-      setMedicalHistory(tmpmessage.data.History);
-      setChiefComplaint(tmpmessage.data.Complaint);
-      setOpinions(tmpmessage.data.Treatment);
-      console.log(tmpmessage.data.Prescriptions);
-      console.log(tmpmessage.data.Prescriptions.length);
-      if (tmpmessage.data.Prescriptions.length === 0) {
-        setRows(defaultRows);
-      } else {
-        SetExpand(true);
-        const tmpPres = tmpmessage.data.Prescriptions[0];
-        const tmpGL = tmpPres.Guidelines;
-        for (let i = 0; i < tmpGL.length; i += 1) {
-          temprows = temprows.concat([
-            CreatePrescriptionData(
-              i + 1,
-              tmpGL[i].Medicine.Name,
-              tmpGL[i].Quantity,
-              tmpGL[i].Dosage,
-            ),
-          ]);
-        }
-        console.log(temprows);
-        setRows(temprows);
-        tempprescription = [];
-        temprows = [];
-        linecount = tmpGL.length + 1;
-      }
+      setDiagnosis('');
+      setMedicalHistory('');
+      setChiefComplaint('');
+      setOpinions('');
     } else {
       initial = -2;
     }
-    console.log(rows);
   }, [initial]);
 
-  const guidelines = [];
-  for (let i = 0; i < guidelines.length; i += 1) {
-    const newrow = rows.concat([
-      CreatePrescriptionData(
-        linecount,
-        guidelines[i].MedicineName,
-        guidelines[i].Quantity,
-        guidelines[i].Dosage,
-      ),
-    ]);
-    linecount += 1;
-    setRows(newrow);
-    console.log(rows);
-  }
+  const handleComplaintInput = event => {
+    const text = event.target.value;
+    if (text === '') {
+      setHelper1('不能为空值');
+      setInputError1(true);
+    } else {
+      setHelper1('');
+      setInputError1(false);
+    }
+    setChiefComplaint(text);
+  };
+
+  const handleMedicalHistoryInput = event => {
+    const text = event.target.value;
+    if (text === '') {
+      setHelper2('不能为空值');
+      setInputError2(true);
+    } else {
+      setHelper2('');
+      setInputError2(false);
+    }
+    setMedicalHistory(text);
+  };
+
+  const handleDiagnosisInput = event => {
+    const text = event.target.value;
+    if (text === '') {
+      setHelper3('不能为空值');
+      setInputError3(true);
+    } else {
+      setHelper3('');
+      setInputError3(false);
+    }
+    setDiagnosis(text);
+  };
+
+  const handleOpinionsInput = event => {
+    const text = event.target.value;
+    if (text === '') {
+      setHelper4('不能为空值');
+      setInputError4(true);
+    } else {
+      setHelper4('');
+      setInputError4(false);
+    }
+    setOpinions(text);
+  };
+
+  const HandleSaveClick = async () => {
+    const response = await fetch(`/api/patient/${tmpPatientID}/case`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        complaint: chiefComplaint,
+        department: tmpDepartment,
+        diagnosis: tmpdiagnosis,
+        doctorID: tmpDoctorID,
+        history: medicalHistory,
+        patientID: tmpPatientID,
+        prescriptions: [],
+        treatment: opinions,
+      }),
+    });
+
+    console.log(response);
+    const message = await response.json();
+    if (response.ok) {
+      console.log(`The server says case creating is succcessful`);
+      console.log(message);
+    } else {
+      console.log(`Fail to create the case`);
+      console.log(message);
+    }
+
+    const tmpcaseID = message.data;
+
+    console.log(tmpcaseID);
+
+    history.push({
+      pathname: '/record',
+      state: {
+        Case_id: tmpcaseID,
+        // Patient_age: patientage,
+        // Patient_gender: patientgender,
+        // Patient_name: patientname,
+        Patient_id: tmpPatientID,
+        Department: tmpDepartment,
+        Doctor_id: tmpDoctorID,
+      },
+    });
+  };
 
   const HandleGoback = async () => {
     history.push({
-      pathname: '/browse_p',
+      pathname: '/browse',
     });
   };
 
   return (
     <Container component="main" className={classes.verticalContainer}>
-      {/* <CssBaseline /> */}
+      <CssBaseline />
       <Grid container direction="column" justify="center" alignItems="center">
         <Container className={classes.headerContainer}>
           <Button variant="outlined" color="primary" onClick={HandleGoback}>
@@ -258,7 +274,7 @@ export default function Home() {
                 <TextField
                   id="standard-read-only-input"
                   label="患者性别"
-                  defaultValue="Hello World"
+                  defaultValue="男"
                   value={patientGender}
                   InputProps={{
                     readOnly: true,
@@ -269,8 +285,7 @@ export default function Home() {
                 <TextField
                   id="standard-read-only-input"
                   label="患者年龄"
-                  defaultValue="Hello World"
-                  value={patientAge}
+                  defaultValue="18"
                   InputProps={{
                     readOnly: true,
                   }}
@@ -278,12 +293,9 @@ export default function Home() {
               </Grid>
               <Grid item xs>
                 <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  required
                   id="standard-required"
                   label="过敏史"
-                  value={allergicHistory}
                   defaultValue="无"
                 />
               </Grid>
@@ -291,75 +303,72 @@ export default function Home() {
             <Grid container spacing={3}>
               <Grid item xs>
                 <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  required
                   id="standard-multiline-static"
                   label="主诉"
                   multiline
                   fullWidth
                   rows={5}
                   value={chiefComplaint}
+                  helperText={helperText1}
+                  error={InputError1}
+                  onChange={handleComplaintInput}
                 />
               </Grid>
               <Grid item xs>
                 <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  required
                   id="standard-multiline-static"
                   label="既往病史"
                   multiline
                   fullWidth
                   rows={5}
                   value={medicalHistory}
+                  helperText={helperText2}
+                  error={InputError2}
+                  onChange={handleMedicalHistoryInput}
                 />
               </Grid>
             </Grid>
             <Grid container spacing={3}>
               <Grid item xs>
                 <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  required
                   id="standard-multiline-static"
                   label="诊断"
                   multiline
                   fullWidth
                   rows={5}
-                  value={diagnosis}
+                  value={tmpdiagnosis}
+                  helperText={helperText3}
+                  error={InputError3}
+                  onChange={handleDiagnosisInput}
                 />
               </Grid>
               <Grid item xs>
                 <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  required
                   id="standard-multiline-static"
                   label="处理意见"
                   multiline
                   fullWidth
                   rows={5}
                   value={opinions}
+                  error={InputError4}
+                  helperText={helperText4}
+                  onChange={handleOpinionsInput}
                 />
               </Grid>
             </Grid>
           </Box>
         </Container>
-        <Container spacing={1}>
-          <Button color="primary" variant="outlined">
-            <ContactsIcon Icon color="primary" size="small" />
+        <Container className={classes.save}>
+          <Button variant="outlined" color="primary" onClick={HandleSaveClick}>
+            <CheckIcon color="primary" size="small" />
             <Container className={classes.buttontext}>
-              <Typography component="h4">处方</Typography>
+              <Typography component="h4">创建</Typography>
             </Container>
           </Button>
-        </Container>
-        <Container className={classes.pageContainer}>
-          <Box className={classes.borderedContainer}>
-            <div style={{ height: 300, width: '100%' }}>
-              <DataGrid rows={rows} columns={columns} />
-            </div>
-          </Box>
         </Container>
       </Grid>
     </Container>

@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Search from '@material-ui/icons/Search';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import SearchBar from '../components/SearchBar';
 
@@ -36,12 +36,12 @@ function toDisplayItem(info, index) {
   const history = useHistory();
   const handlerecord = event => {
     history.push({
-      pathname: '/Record',
+      pathname: '/record',
       state: {
-        Case_id: info.case_id,
-        Patient_id: info.patient_id,
-        Doctor_id: info.doctor_id,
-        Department: info.department,
+        Case_id: info.ID,
+        Patient_id: info.PatientID,
+        Doctor_id: info.DoctorID,
+        Department: info.Department,
       },
     });
   };
@@ -52,23 +52,27 @@ function toDisplayItem(info, index) {
           <Grid item xs={6} container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" color="text">
-                {info.department}
+                {info.Department}
               </Typography>
             </Grid>
             <Grid item>
               <Typography variant="body2" color="textSecondary">
-                主诉：{info.complaint}
+                主诉：{info.Complaint}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                诊断：{info.diagnosis}
+                诊断：{info.Diagnosis}
               </Typography>
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Typography variant="subtitle1">主诊医生：{info.doctor}</Typography>
+            <Typography variant="subtitle1">
+              主诊医生：{info.DoctorName}
+            </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="subtitle1">{info.date}</Typography>
+            <Typography variant="subtitle1">
+              {info.Date.substr(0, 10)}
+            </Typography>
           </Grid>
         </Grid>
       </Grid>
@@ -78,80 +82,84 @@ function toDisplayItem(info, index) {
 
 const Wrapper = ({ children }) => children;
 
-const data = [
-  {
-    case_id: 3,
-    patient_id: 2,
-    doctor_id: 1,
-    doctor: 'foo1',
-    patient: 'bar1',
-    department: '太平间',
-    complaint: '感觉不好',
-    diagnosis: '现在好多了',
-    date: '2012-12-21',
-  },
-  {
-    case_id: 4,
-    patient_id: 2,
-    doctor_id: 1,
-    doctor: 'foo2',
-    patient: 'bar1',
-    department: '太平间',
-    complaint: '感觉不好',
-    diagnosis: '现在好多了',
-    date: '2012-12-25',
-  },
-];
-
+let Data = [];
 const tmpdoctorId = 1;
 const tmppatientId = 2;
 const tmpdepartment = '太平间';
-const tmpdate = '2021-06-06';
-let tmpcaseID = 999;
+const patientname = '肖 瑞轩';
+const doctorname = '于 成笑';
+const patientgender = '男';
+const patientage = 18;
+const tmpcaseID = 999;
 
 export default function Browse() {
   classes = useStyles();
-  const [display, setDisplay] = useState(data);
-  const displayItems = display.map(toDisplayItem);
+  const [display, setDisplay] = useState(Data);
   const history = useHistory();
 
-  const handlerecord = async () => {
-    const response = await fetch(`/api/patient/${tmppatientId}/case`, {
-      method: 'post',
+  useEffect(async () => {
+    const response = await fetch(`/api/patient/${tmppatientId}/cases`, {
+      method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        complaint: ' ',
-        department: tmpdepartment,
-        diagnosis: ' ',
-        doctorID: tmpdoctorId,
-        history: ' ',
-        patientID: tmppatientId,
-        date: tmpdate.replace,
-        prescriptions: [],
-        treatment: ' ',
-      }),
     });
-
     console.log(response);
     const message = await response.json();
+
     if (response.ok) {
-      console.log(`The server says case creating is succcessful`);
+      console.log(`The server says case initialization is succcessful`);
       console.log(message);
     } else {
-      console.log(`Fail to create the case`);
+      console.log(`Fail to display the case`);
       console.log(message);
     }
+    Data = message.data;
+    console.log(Data);
+    setDisplay(Data);
+  }, []);
 
-    tmpcaseID = message.data;
+  const displayItems = display.map(toDisplayItem);
 
-    console.log(tmpcaseID);
+  const handlerecord = async () => {
+    // const response = await fetch(`/api/patient/${tmppatientId}/case`, {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     complaint: ' ',
+    //     department: tmpdepartment,
+    //     diagnosis: ' ',
+    //     doctorID: tmpdoctorId,
+    //     history: ' ',
+    //     patientID: tmppatientId,
+    //     prescriptions: [],
+    //     treatment: ' ',
+    //   }),
+    // });
+
+    // console.log(response);
+    // const message = await response.json();
+    // if (response.ok) {
+    //   console.log(`The server says case creating is succcessful`);
+    //   console.log(message);
+    // } else {
+    //   console.log(`Fail to create the case`);
+    //   console.log(message);
+    // }
+
+    // tmpcaseID = message.data;
+
+    // console.log(tmpcaseID);
 
     history.push({
-      pathname: '/Record',
+      pathname: '/create_record',
       state: {
-        Case_id: tmpcaseID,
+        // Case_id: tmpcaseID,
+        Patient_age: patientage,
+        Patient_gender: patientgender,
+        Patient_name: patientname,
         Patient_id: tmppatientId,
         Department: tmpdepartment,
         Doctor_id: tmpdoctorId,
@@ -162,13 +170,13 @@ export default function Browse() {
   const searchChange = event => {
     const str = event.target.value;
     setDisplay(
-      data.filter(
+      Data.filter(
         c =>
-          c.doctor.includes(str) ||
-          c.patient.includes(str) ||
-          c.department.includes(str) ||
-          c.complaint.includes(str) ||
-          c.diagnosis.includes(str),
+          c.DoctorName.includes(str) ||
+          c.PatientName.includes(str) ||
+          c.Department.includes(str) ||
+          c.Complaint.includes(str) ||
+          c.Diagnosis.includes(str),
       ),
     );
   };
