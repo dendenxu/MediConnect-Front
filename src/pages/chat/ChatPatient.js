@@ -9,11 +9,21 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import Popover from '@material-ui/core/Popover';
+import Picker from 'emoji-picker-react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
+import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingContainer: {
     padding: theme.spacing(1, 2),
+  },
+  NoPaddingContainer: {
+    padding: theme.spacing(0, 0),
+  },
+  grid: {
+    alignItems: 'center',
   },
   borderedContainer: {
     display: 'flex',
@@ -68,7 +78,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
   },
   toolbar: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0),
     border: 1,
   },
   topbar: {
@@ -147,6 +157,13 @@ const useStyles = makeStyles(theme => ({
     // ! special operation for Josefin Sans
     transform: 'translate(0px,1.5px)',
   },
+  divider: {
+    // background: 'rgba(bd,bd,bd,.5)',
+    background: theme.palette.primary.main,
+    width: '95%',
+    // padding: theme.spacing(1),
+    // margin: theme.spacing(1),
+  },
 }));
 
 function InputBox({ message, setMessage, sendMessage }) {
@@ -208,6 +225,76 @@ function TopBar({ DoctorName }) {
   );
 }
 
+function ToolBar({ CurrentUserID, setMessages }) {
+  const classes = useStyles();
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [chosenEmoji, setChosenEmoji] = React.useState(null);
+
+  const handlePopoverOpen2 = event => {
+    setAnchorEl2(event.currentTarget);
+  };
+
+  const handlePopoverClose2 = () => {
+    setAnchorEl2(null);
+  };
+
+  const open2 = Boolean(anchorEl2);
+
+  const handlePicClick = event => {};
+
+  const onEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject);
+    setAnchorEl2(null);
+    setMessages(msgs => [
+      ...msgs,
+      {
+        sender: CurrentUserID,
+        content: emojiObject.emoji,
+        time: moment().format('HH:mm'),
+      },
+    ]);
+  };
+
+  return (
+    <Grid container className={classes.grid}>
+      <Grid item xs={6}>
+        <Button
+          onClick={handlePopoverOpen2}
+          className={classes.NoPaddingContainer}
+        >
+          <EmojiIcon />
+        </Button>
+        <Popover
+          id="mouse-over-popover"
+          className={classes.popover}
+          classes={{
+            paper: classes.paper,
+          }}
+          open={open2}
+          anchorEl={anchorEl2}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          onClose={handlePopoverClose2}
+          disableRestoreFocus
+        >
+          <Picker onEmojiClick={onEmojiClick} />
+        </Popover>
+      </Grid>
+      <Grid item xs={6}>
+        <Button onClick={handlePicClick} className={classes.NoPaddingContainer}>
+          <PicIcon />
+        </Button>
+      </Grid>
+    </Grid>
+  );
+}
+
 function Message({ message: { sender, content, time }, CurrentUserID }) {
   const classes = useStyles();
   let isSentByCurrentUser = false;
@@ -259,7 +346,10 @@ function Messages({ messages, CurrentUserID }) {
   const classes = useStyles();
   // let messagesA = Array.from(messages);
   const messagesA = messages.map(message => (
-    <Container key={message.time} className={classes.MessagePaddingContainer}>
+    <Container
+      key={messages.findIndex(obj => obj === message)}
+      className={classes.MessagePaddingContainer}
+    >
       <Message message={message} CurrentUserID={CurrentUserID} />
     </Container>
   ));
@@ -390,12 +480,19 @@ function ChatPatient() {
     <Container style={{ alignItems: 'center' }}>
       <TopBar DoctorName={DoctorName} />
       <Messages messages={messages} CurrentUserID={CurrentUserID} />
-      <Divider flexItem />
-      <InputBox
-        message={message}
-        setMessage={setMessage}
-        sendMessage={sendMessage}
-      />
+      {/* <Divider className={classes.divider} variant="middle" /> */}
+      <Grid container className={classes.grid}>
+        <Grid item xs={9}>
+          <InputBox
+            message={message}
+            setMessage={setMessage}
+            sendMessage={sendMessage}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <ToolBar CurrentUserID={CurrentUserID} setMessages={setMessages} />
+        </Grid>
+      </Grid>
     </Container>
   );
 }
