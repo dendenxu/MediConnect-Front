@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-// import { useHistory } from "react-router-dom";
-// import { createBrowserHistory } from "history";
-import Avatar from '@material-ui/core/Avatar';
+import { useHistory, useLocation } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -14,79 +11,107 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-// import { Radio } from '@material-ui/core';
-// import { render } from '@testing-library/react';
-// import { red } from '@material-ui/core/colors';
-import { useHistory } from 'react-router-dom';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Toolbar from '@material-ui/core/Toolbar';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 
 const useStyles = makeStyles(theme => ({
   page: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection:'column',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    maxWidth: '600px',
+    width: '100%',
   },
-  style: {
+  start: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    width: '100%',
+  },
+  center: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
   },
 }));
 
 export default function Doctor() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const history = useHistory();
+  const [name,setName]= useState('default value');
+  const [email, setEmail] = useState('default value');
+  const [introduction, setIntr] = useState('default value');
   const [inputContent, setInputContent] = useState('');
-  const handleTextOpen = () => {
-    const newVal = !open;
-    setOpen(newVal);
+  const getInfo = async() => {
+    const response = await fetch('/api/account/getinfo', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(),
+    });
+    console.log(response);
+    if (response.ok) {
+      const body = await response.json();
+      console.log(body);
+      setName(body.firstName + body.lastName);
+      setEmail(body.email);
+    }
+  }
+  const handleEditPWDButtonClick = event => {
+    history.push({
+      pathname: '/editpass',
+      state: {
+        afterEmailCheck: 'true',
+      }
+    });
+  };
+  const handleSaveInfoButtonClick = event => {
+    // （待完成）保存医生个人介绍到数据库
+    const text = event.target.value;
+    setIntr(text);
   };
   const handleInputChange = event => {
     const text = event.target.value;
     setInputContent(text);
+    console.log(`Getting new text: ${text}`);
   };
+
+  // （待完成）调取病人的病例并显示
   return (
     <Container component="main" className={classes.page}>
-      <Box className={classes.style} p={2} bgcolor="#87CEFA">
-        <Box>
-          <Icon />
-        </Box>
-        <Box>
-          <PersonOutlineIcon />
-        </Box>
-        <Box>
-          <Typography>个人资料</Typography>
-        </Box>
+      <CssBaseline />
+      <Box className={classes.start} bgcolor="#87CEFA" p={1}>
+        <Box><Icon /></Box>
+        <Box><PersonOutlineIcon /></Box>
+        <Box><Typography>个人资料</Typography></Box>
       </Box>
-      <Box borderBottom={5} width="100%" p={2} color="primary.main">
+      <Box className={classes.start}p={1} color="primary.main" borderBottom={5}>
         <Typography>基本信息</Typography>
       </Box>
-      <Box className={classes.style} p={2}>
-        <Box width="33%">姓名</Box>
-        <Box width="33%">邮箱</Box>
-        <Box width="33%">
-          <Link href="/">修改密码</Link>
+      <Box className={classes.center} p={1} borderBottom={5} borderColor="primary.main">
+        <Box display='flex' width='33%'>
+          <Typography>姓名：{name}</Typography>
+        </Box>
+        <Box display='flex' width='33%'>
+          <Typography>邮箱：{email}</Typography>
+        </Box>
+        <Box display='flex' width='33%'>
+        <Button variant="contained" color="primary" onClick={handleEditPWDButtonClick}>修改密码</Button>
         </Box>
       </Box>
-      <Box borderBottom={5} width="100%" p={2}>
-        <Box color="primary.main">
-          <Typography>个人介绍</Typography>
-        </Box>
-        <Box>
-          <TextField value={inputContent} onChange={handleInputChange} />
-        </Box>
+      <Box className={classes.start} p={1}>
+        <Box><Typography>个人介绍:</Typography></Box>
       </Box>
-      <Box borderBottom={5} width="100%" p={2} color="primary.main">
-        <Typography>病人病例</Typography>
+      <Box className={classes.start} p={1} borderColor="primary.main" borderBottom={5}>
+          <TextField value={introduction} onChange={handleInputChange} id="introduction"/>
+      </Box>
+      <Box className={classes.start} p={1} Color="primary.main" borderBottom={5}>
+        <Box><Typography>病人病历</Typography></Box>
       </Box>
     </Container>
-  );
+  )
 }
