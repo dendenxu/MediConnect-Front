@@ -17,6 +17,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import BottomBar from '../components/BottomBar';
 import Copyright from '../components/Copyright';
@@ -133,6 +138,18 @@ const useStyles = makeStyles(theme => {
       justifyContent: 'center',
       width: threeFraction,
       height: '100%',
+    },
+
+    dateInputBox: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: '65%',
+      height: '100%',
+      position: 'relative',
+      top: '-20%',
     },
 
     accountTypeInput: {
@@ -285,6 +302,10 @@ function Signup(props) {
   const accountTypeDisplay = ['患者', '医生'];
   const accountTypeStorage = ['patient', 'doctor'];
 
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const genderTypeDisplay = ['男', '女'];
+  const genderTypeStorage = ['male', 'female'];
+
   const [showPassword, setShowPassword] = useState(false);
   const [inputContent, setInputContent] = useState('');
   const [validFormEmail, setValidFormEmail] = useState('');
@@ -294,12 +315,17 @@ function Signup(props) {
   const [lastNameInvalid, setLastNameInvalid] = useState(false);
   const [firstNameInvalid, setFirstNameInvalid] = useState(false);
   const [accountTypeInvalid, setAccountTypeInvalid] = useState(false);
+  const [genderTypeInvalid, setGenderTypeInvalid] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [accountType, setAccountType] = useState(-1);
+  const [genderType, setGenderType] = useState(-1);
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [loadingData, setLoadingData] = useState(false);
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date('2000-06-24'),
+  );
 
   const textFieldSize = isWidthDown('xs', width) ? 'small' : 'medium';
   const textFieldClassProps = {
@@ -328,6 +354,7 @@ function Signup(props) {
   let lastNameHelperText = defaultHelperTextPlaceHolder;
   let firstNameHelperText = defaultHelperTextPlaceHolder;
   let accountTypeHelperText = defaultHelperTextPlaceHolder;
+  let genderTypeHelperText = defaultHelperTextPlaceHolder;
   let emailBoxHelperText = defaultHelperTextPlaceHolder; // some white spaces to take up the width
   let passwordHelperText = defaultHelperTextPlaceHolder;
   let passwordConfirmHelperText = defaultHelperTextPlaceHolder;
@@ -354,11 +381,19 @@ function Signup(props) {
   if (accountTypeInvalid) {
     accountTypeHelperText = '请选择类型';
   }
+  if (genderTypeInvalid) {
+    genderTypeHelperText = '请选择性别 ';
+  }
 
   let accountTypeDisplayed = accountTypeDisplay[accountType];
   console.log(`${accountTypeDisplayed}`);
   if (accountTypeDisplayed === undefined) {
     accountTypeDisplayed = '';
+  }
+  let genderTypeDisplayed = genderTypeDisplay[genderType];
+  console.log(`${genderTypeDisplayed}`);
+  if (genderTypeDisplayed === undefined) {
+    genderTypeDisplayed = '';
   }
 
   const handleNextClick = async () => {
@@ -408,7 +443,7 @@ function Signup(props) {
             email: validFormEmail,
             firstName,
             lastName,
-            type: accountTypeStorage[accountType],
+            type: accountTypeStorage[accountType], // TODO add gender and birth date
             password,
             registering: true,
           });
@@ -446,6 +481,10 @@ function Signup(props) {
         setAccountTypeInvalid(true);
         allchecked = false;
       }
+      if (!(genderType in [...genderTypeDisplay.keys()])) {
+        setGenderTypeInvalid(true);
+        allchecked = false;
+      }
       if (password.length < 8) {
         setPasswordInvalid(true);
         allchecked = false;
@@ -456,7 +495,7 @@ function Signup(props) {
           `Valid form email: ${validFormEmail}, input content: ${inputContent}`,
         );
 
-        activateUser();
+        await activateUser();
       } else {
         console.log('Something is wrong.');
       }
@@ -477,6 +516,22 @@ function Signup(props) {
     setAccountType(idx);
     setAccountTypeInvalid(false);
   };
+
+  const open2 = Boolean(anchorEl2);
+  const handleGenderTypeClick = event => {
+    setAnchorEl2(event.currentTarget);
+  };
+
+  const handleGenderMenuItemClick = idx => event => {
+    setAnchorEl2(null);
+    setGenderType(idx);
+    setGenderTypeInvalid(false);
+  };
+
+  const handleDateChange = date => {
+    setSelectedDate(date);
+  };
+
   const handleFirstNameInput = event => {
     const text = event.target.value;
     setFirstName(text);
@@ -632,6 +687,82 @@ function Signup(props) {
                   ),
                 }}
               />
+            </Container>
+          </Container>
+
+          <Container className={classes.emailInputContainer}>
+            <Container className={classes.accountTypeInputBox}>
+              <TextField
+                error={genderTypeInvalid} //
+                className={classes.accountTypeInput}
+                variant="outlined"
+                size={textFieldSize}
+                id="user_gender_type"
+                label={isWidthDown('xs', width) ? '性别' : '账户性别'}
+                helperText={genderTypeHelperText}
+                name="user_gender_typen"
+                autoFocus
+                value={genderTypeDisplayed}
+                InputLabelProps={textFieldClassProps.InputLabelProps}
+                InputProps={{
+                  ...textFieldClassProps.InputProps,
+                  readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        className={classes.accountType}
+                        aria-label="more"
+                        aria-controls="menu"
+                        aria-haspopup="true"
+                        onClick={handleGenderTypeClick}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl2}
+                        keepMounted
+                        open={open2}
+                        onClose={handleGenderMenuItemClick(0)}
+                        PaperProps={{
+                          style: {
+                            maxHeight: ITEM_HEIGHT * 2,
+                            width: '20ch',
+                          },
+                        }}
+                      >
+                        {[...genderTypeDisplay.keys()].map(key => (
+                          <MenuItem
+                            key={key}
+                            selected={key === 0}
+                            onClick={handleGenderMenuItemClick(key)}
+                          >
+                            {genderTypeDisplay[key]}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Container>
+
+            <Container className={classes.dateInputBox}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="yyyy/MM/dd"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="账户生日"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </MuiPickersUtilsProvider>
             </Container>
           </Container>
 
