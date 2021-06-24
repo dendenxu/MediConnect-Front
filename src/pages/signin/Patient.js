@@ -18,7 +18,7 @@ import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 const useStyles = makeStyles(theme => ({
   page: {
     display: 'flex',
-    flexDirection:'column',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
@@ -41,12 +41,12 @@ const useStyles = makeStyles(theme => ({
 export default function Patient() {
   const classes = useStyles();
   const history = useHistory();
-  const [name,setName]= useState('default value');
+  const [name, setName] = useState('default value');
   const [email, setEmail] = useState('default value');
   const [taboo, setTaboo] = useState('default value');
   const [allergies, setAllergies] = useState('default value');
   const [inputContent, setInputContent] = useState('');
-  const getInfo = async() => {
+  const getInfo = async () => {
     const response = await fetch('/api/account/getinfo', {
       method: 'get',
       headers: {
@@ -89,7 +89,7 @@ export default function Patient() {
         <Box><PersonOutlineIcon /></Box>
         <Box><Typography>个人资料</Typography></Box>
       </Box>
-      <Box className={classes.start}p={1} color="primary.main" borderBottom={5}>
+      <Box className={classes.start} p={1} color="primary.main" borderBottom={5}>
         <Typography>基本信息</Typography>
       </Box>
       <Box className={classes.center} p={1} borderBottom={5} borderColor="primary.main">
@@ -100,17 +100,17 @@ export default function Patient() {
           <Typography>邮箱：{email}</Typography>
         </Box>
         <Box display='flex' width='33%'>
-        <Button variant="contained" color="primary" onClick={handleEditPWDButtonClick}>修改密码</Button>
+          <Button variant="contained" color="primary" onClick={handleEditPWDButtonClick}>修改密码</Button>
         </Box>
       </Box>
       <Box className={classes.center} p={1}>
         <Box display='flex' width='33%'>
           <Typography>禁忌史：</Typography>
-          <TextField defaultValue={taboo} onChange={handleInputChange}/>
+          <TextField defaultValue={taboo} onChange={handleInputChange} />
         </Box>
         <Box display='flex' width='33%'>
           <Typography>过敏史：</Typography>
-          <TextField defaultValue={allergies} onChange={handleInputChange} id='taboo'/>
+          <TextField defaultValue={allergies} onChange={handleInputChange} id='taboo' />
         </Box>
         <Box display='flex' width='33%'>
           <Button variant="contained" color="primary" onClick={handleSaveInfoButtonClick} id='allergies'>保存</Button>
