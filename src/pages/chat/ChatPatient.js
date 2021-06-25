@@ -276,14 +276,14 @@ function Messages({ messages, CurrentUserID }) {
 function ChatPatient() {
   const classes = useStyles();
   const [socket, setSocket] = useState(null);
-  const [CurrentUserID, setCurrentUserID] = useState(1983);
+  const [CurrentUserID, setCurrentUserID] = useState(222);
   const [DoctorName, setDoctorName] = useState('内科王医生');
   const [CurrentDoctorID, setCurrentDoctorID] = useState(111);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
     { sender: 111, content: '医生发的第一条消息', time: '12:20' },
-    { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
-    { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+    { sender: 222, content: '张三发的第一条消息', time: '12:30' },
+    { sender: 222, content: '张三发的第二条消息', time: '12:33' },
     { sender: 111, content: '医生发的第二条消息', time: '12:34' },
     { sender: 111, content: '医生发的第三条消息', time: '12:35' },
   ]);
@@ -291,6 +291,17 @@ function ChatPatient() {
   useEffect(() => {
     setSocket(new WebSocket(`/api/patient/${CurrentUserID}/chat`));
   }, [CurrentUserID]);
+
+  useEffect(() => {
+    const localMessages = JSON.parse(localStorage.getItem('messages'));
+    if (localMessages) {
+      setMessages(msgs => localMessages);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('messages', JSON.stringify(messages));
+  });
 
   console.log(socket);
 
@@ -331,7 +342,6 @@ function ChatPatient() {
     }
     socket.onopen = () => {
       console.log('Successfully Connected');
-      const localMessages = JSON.parse(localStorage.getItem('messages'));
     };
 
     socket.onmessage = msg => {
@@ -373,7 +383,6 @@ function ChatPatient() {
         default:
           break;
       }
-      localStorage.setItem('messages', JSON.stringify(messages));
       // localStorage.setItem('Patients', JSON.stringify(Patients));
     };
 

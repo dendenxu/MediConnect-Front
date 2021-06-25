@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -96,7 +97,7 @@ let temprows = [];
 let initial = -2;
 let whetherpres = 0;
 
-export default function Home() {
+export default function Home(props) {
   const history = useHistory();
   const location = useLocation();
   const classes = useStyles();
@@ -120,11 +121,6 @@ export default function Home() {
   let defaultRows = [];
 
   let defaultPrescription = [];
-
-  // function createData(id,name,size,qt,course,type,price) {
-  //   return { id,name,size,qt,course,type,price };
-  // }
-  // // todo
 
   function CreatePrescriptionData(id, name, size, qt) {
     return { id, name, size, qt };
@@ -153,15 +149,21 @@ export default function Home() {
   }
 
   let allguidelines = [];
+
+  const {
+    Case_id: tmpCaseID,
+    Patient_id: tmpPatientID,
+    Doctor_id: tmpDoctorID,
+    Department: tmpDepartment,
+  } = props.record;
+
+  const { setRecord } = props;
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [opinions, setOpinions] = useState('');
   const [allprescriptions, setPrescriptions] = useState(defaultPrescription);
   // todo initialize these 4 IDs(maybe using get method),
-  const tmpCaseID = location.state.Case_id;
-  const tmpPatientID = location.state.Patient_id;
-  const tmpDoctorID = location.state.Doctor_id;
   const [patientName, setPatientName] = useState('张三');
   const [patientGender, setPatientGender] = useState('女');
   const [patientAge, setPatientAge] = useState(18);
@@ -176,7 +178,6 @@ export default function Home() {
   // // console.log(tmpCaseID);
   // // console.log(tmpPatientID);
   // // console.log(tmpDoctorID);
-  const tmpDepartment = location.state.Department;
 
   const [editRowsModel, setEditRowsModel] = useState({});
   const [rows, setRows] = useState(defaultRows);
@@ -525,9 +526,7 @@ export default function Home() {
   };
 
   const HandleGoback = async () => {
-    history.push({
-      pathname: '/browse',
-    });
+    setRecord(null);
   };
 
   return (

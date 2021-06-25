@@ -26,6 +26,7 @@ import Patient from './pages/signin/Patient';
 import Doctor from './pages/signin/Doctor';
 import RegList from './pages/process/RegList';
 import RegInfo from './pages/process/RegInfo';
+import Home from './pages/home/Home';
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/signup" component={Signup} />
         <Route path="/patient" component={Patient} />
         <Route path="/doctor" component={Doctor} />
+        <Route path="/home" component={Home} />
         <Route path="/activation" component={EditPass} />
         <Route path="/editpass" component={EditPass} />
         <Route path="/chat" component={Chat} />

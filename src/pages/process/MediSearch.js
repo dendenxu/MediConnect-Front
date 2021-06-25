@@ -34,6 +34,7 @@ export default function MediSearch() {
       <SearchBar
         style={{
           width: '95%',
+          marginTop: theme.spacing(2),
         }}
         label="智能导诊"
         placeholder="请输入您的病症"
