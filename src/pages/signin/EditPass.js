@@ -221,6 +221,7 @@ function EditPass(props) {
 
   const [afterEmailCheck, setAfterEmailCheck] = useState(modifying || false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const [passwordConfirmInvalid, setPasswordConfirmInvalid] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -232,14 +233,20 @@ function EditPass(props) {
   let passwordHelperText = defaultHelperTextPlaceHolder;
   let passwordConfirmHelperText = defaultHelperTextPlaceHolder;
 
+  const passwordConfirmed =
+    (password !== passwordConfirm && !modifying) ||
+    (modifying && passwordConfirmInvalid);
+
   if (identifyCodeInvalid) {
     identifyCodeHelperText = '验证码错误';
   }
   if (passwordInvalid) {
-    passwordHelperText = '密码应有至少8个字符';
+    passwordHelperText = modifying ? '密码错误' : '密码应有至少8个字符';
   }
-  if (password !== passwordConfirm) {
-    passwordConfirmHelperText = '两次输入密码不一致';
+  if (passwordConfirmed) {
+    passwordConfirmHelperText = modifying
+      ? '密码应有至少8个字符'
+      : '两次输入密码不一致';
   }
 
   const textFieldClassProps = {
@@ -275,11 +282,13 @@ function EditPass(props) {
     const text = event.target.value;
     setPassword(text);
     setPasswordInvalid(false);
+    setPasswordConfirmInvalid(false);
   };
   const handlePasswordConfirm = event => {
     const text = event.target.value;
     setPasswordConfirm(text);
     setPasswordInvalid(false);
+    setPasswordConfirmInvalid(false);
   };
   const handleCheckBoxChange = event => {
     const selected = event.target.checked;
@@ -365,6 +374,7 @@ function EditPass(props) {
         payload = {
           email,
           passwd: password,
+          newpasswd: passwordConfirm,
         };
         api = '/api/account/modifypasswd';
       } else {
@@ -397,13 +407,18 @@ function EditPass(props) {
 
     setLoadingData(true);
     try {
+      if (modifying && passwordConfirm.length < 8) {
+        setPasswordConfirmInvalid(true);
+      }
+
       if (password.length < 8) {
         setPasswordInvalid(true);
         console.log('Password is InValid.');
-      } else if (password !== passwordConfirm) {
+      } else if (passwordConfirmed) {
         console.log('两次输入密码不一致');
       } else {
         setPasswordInvalid(false);
+        setPasswordConfirmInvalid(false);
         console.log('All checked out.');
         await editPasswordWithServer(); // todo
       }
@@ -416,7 +431,6 @@ function EditPass(props) {
 
   return (
     <Container component="main" className={classes.verticalContainer}>
-      {/* <CssBaseline /> */}
       <Container className={classes.paper}>
         <Icon className={classes.icon} />
         <Box style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -450,7 +464,7 @@ function EditPass(props) {
             top={0}
           >
             <Typography component="h1" variant="h5" className={classes.welcome}>
-              忘记密码
+              {modifying ? '修改密码' : registering ? '验证账户' : '忘记密码'}
             </Typography>
             <AvatarBar
               email={email}
@@ -514,7 +528,7 @@ function EditPass(props) {
                           variant="outlined"
                           size={textFieldSize}
                           id="user_password"
-                          label="密码"
+                          label={modifying ? '旧密码' : '密码'}
                           helperText={passwordHelperText}
                           name="user_password"
                           autoFocus
@@ -526,12 +540,12 @@ function EditPass(props) {
                       </Container>
                       <Container className={classes.passwordConfirmInputBox}>
                         <TextField
-                          error={password !== passwordConfirm}
+                          error={passwordConfirmed}
                           className={classes.passwordConfirmInput}
                           variant="outlined"
                           size={textFieldSize}
                           id="user_password_confirm"
-                          label="确认密码"
+                          label={modifying ? '新密码' : '确认密码'}
                           helperText={passwordConfirmHelperText}
                           name="user_password_confirm"
                           autoFocus
