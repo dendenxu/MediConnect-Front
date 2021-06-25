@@ -212,13 +212,6 @@ function EditPass(props) {
     birthday,
     registering,
   } = props.location.state;
-  // todo delete these
-  console.log(type);
-  console.log(gender);
-  console.log(birthday);
-  console.log(birthday.getFullYear());
-  console.log(birthday.getMonth());
-  console.log(birthday.getDate());
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
