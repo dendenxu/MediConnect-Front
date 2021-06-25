@@ -319,7 +319,6 @@ function Signin(props) {
         email: validEmail,
       };
 
-      // todo
       const response = await fetch('/api/account/sendemail', {
         method: 'post',
         headers: {

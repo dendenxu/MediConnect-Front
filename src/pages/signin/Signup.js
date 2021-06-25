@@ -423,7 +423,6 @@ function Signup(props) {
           email: validFormEmail,
         };
 
-        // todo
         const response = await fetch('/api/account/sendemail', {
           method: 'post',
           headers: {
@@ -439,7 +438,9 @@ function Signup(props) {
             email: validFormEmail,
             firstName,
             lastName,
-            type: accountTypeStorage[accountType], // TODO add gender and birth date
+            type: accountTypeStorage[accountType],
+            gender: genderTypeStorage[genderType],
+            birthday: selectedDate,
             password,
             registering: true,
           });
@@ -498,7 +499,7 @@ function Signup(props) {
     } catch (err) {
       console.log(err);
     } finally {
-      setLoadingData(false);
+      setLoadingData(false); // 若跳转走了，则这个语句会报warning
     }
   };
 

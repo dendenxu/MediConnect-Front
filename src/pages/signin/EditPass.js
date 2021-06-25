@@ -208,8 +208,17 @@ function EditPass(props) {
     lastName: lastname,
     password: passwd,
     type,
+    gender,
+    birthday,
     registering,
   } = props.location.state;
+  // todo delete these
+  console.log(type);
+  console.log(gender);
+  console.log(birthday);
+  console.log(birthday.getFullYear());
+  console.log(birthday.getMonth());
+  console.log(birthday.getDate());
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
@@ -295,6 +304,7 @@ function EditPass(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        // todo gender, birthday
         email,
         firstname,
         lastname,
@@ -327,7 +337,7 @@ function EditPass(props) {
 
       if (response.ok) {
         if (registering) {
-          registerUser();
+          await registerUser();
         } else {
           setAfterEmailCheck(true);
           setIdentifyCodeInvalid(false);
@@ -563,7 +573,7 @@ function EditPass(props) {
               >
                 登录现有账号
               </Link>
-              {!passwdEdited && (
+              {!passwdEdited && !(afterEmailCheck && registering) && (
                 <Button
                   className={classes.nextButton}
                   type="jumpContainer"
