@@ -31,5 +31,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'no-irregular-whitespace': 'off',
     'react/destructuring-assignment': 'off',
+    'react/require-default-props': 'off',
+    'react/forbid-prop-types': 'warn',
   },
 };

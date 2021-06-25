@@ -15,6 +15,7 @@ import Browse from './pages/case/Browse';
 import RecordPatient from './pages/record/Record_Patient';
 import BrowsePatient from './pages/case/Browse_Patient';
 import CreateRecord from './pages/record/Create_Record';
+import myHelp from './pages/help/Help';
 // process-G4
 import RegResult from './pages/process/RegResult';
 import GuideResult from './pages/process/GuideResult';
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="/editpass" component={EditPass} />
         <Route path="/chat" component={Chat} />
         <Route exact path="/ChatPatient" component={ChatPatient} />
+        <Route path="/help" component={myHelp} />
         {/* process G4 */}
         <Route path="/search" component={MediSearch} />
         <Route path="/departments" component={DepartmentList} />
