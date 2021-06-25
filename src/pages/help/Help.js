@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from '@material-ui/core/Link';
@@ -6,8 +7,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 function TabPanel(props) {
+  const classes = useStyles();
+
   const { children, value, index, ...other } = props;
 
   return (
@@ -17,6 +21,7 @@ function TabPanel(props) {
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
+      className={classes.tabpanel}
     >
       {value === index && (
         <Box p={3}>
@@ -45,10 +50,21 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
-    height: 600,
+    minHeight: '100vh',
   },
+
+  tabbutton: {
+    // width: '100%',
+  },
+
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
+    // width: '50%',
+    minWidth: '100px',
+  },
+
+  tabpanel: {
+    // width: '70%',
   },
 
   help: {
@@ -75,6 +91,7 @@ export default function VerticalTabs() {
 
   return (
     <div className={classes.root}>
+      <CssBaseline />
       <Tabs
         orientation="vertical"
         variant="scrollable"
@@ -83,9 +100,9 @@ export default function VerticalTabs() {
         aria-label="Vertical tabs example"
         className={classes.tabs}
       >
-        <Tab label="帮助" {...a11yProps(0)} />
-        <Tab label="使用条款" {...a11yProps(1)} />
-        <Tab label="隐私协议" {...a11yProps(2)} />
+        <Tab className={classes.tabbutton} label="帮助" {...a11yProps(0)} />
+        <Tab className={classes.tabbutton} label="使用条款" {...a11yProps(1)} />
+        <Tab className={classes.tabbutton} label="隐私协议" {...a11yProps(2)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <div className={classes.help}>
