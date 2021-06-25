@@ -33,7 +33,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 export default function Patient() {
   const classes = useStyles();
   const history = useHistory();
@@ -42,11 +41,11 @@ export default function Patient() {
   const [taboo, setTaboo] = useState('default value');
   const [allergies, setAllergies] = useState('default value');
   const [inputContent, setInputContent] = useState('');
-   const getInfo = () => {
+  const getInfo = () => {
     setName('testname');
-    setEmail('123456@zju.edu.cn')
-  }; 
-  
+    setEmail('123456@zju.edu.cn');
+  };
+
   /* const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();

@@ -55,8 +55,8 @@ export default function Doctor() {
       pathname: '/editpass',
       state: {
         email: myEmail,
-        homepage:true
-      }
+        homepage: true,
+      },
     });
   };
   const handleSaveInfoButtonClick = event => {
