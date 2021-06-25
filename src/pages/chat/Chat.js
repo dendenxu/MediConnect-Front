@@ -15,12 +15,9 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
-import Picker from 'emoji-picker-react';
-// import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
+import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
-import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
-import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingContainer: {
@@ -360,47 +357,22 @@ function ToolBar({
   requirePrescription,
 }) {
   const classes = useStyles();
-  const [anchorEl1, setAnchorEl1] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
-  const [chosenEmoji, setChosenEmoji] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedIndex, setSelectedIndex] = useState();
 
-  const handlePopoverOpen1 = event => {
-    setAnchorEl1(event.currentTarget);
+  const handlePopoverOpen = event => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handlePopoverClose1 = () => {
-    setAnchorEl1(null);
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
   };
 
-  const handlePopoverOpen2 = event => {
-    setAnchorEl2(event.currentTarget);
+  const open = Boolean(anchorEl);
+
+  const handleMedClick = event => {
+    requirePrescription(CurrentPatientID, CurrentUserID);
   };
-
-  const handlePopoverClose2 = () => {
-    setAnchorEl2(null);
-  };
-
-  const open1 = Boolean(anchorEl1);
-
-  const open2 = Boolean(anchorEl2);
-
-  const handlePicClick = event => {};
-
-  const onEmojiClick = (event, emojiObject) => {
-    setChosenEmoji(emojiObject);
-    setAnchorEl2(null);
-    setMessages(msgs =>
-      msgs.update(CurrentPatientID.toString(), msg => [
-        ...msg,
-        {
-          sender: CurrentUserID,
-          content: emojiObject.emoji,
-          time: moment().format('HH:mm'),
-        },
-      ]),
-    );
-  };
-
   const handleRecClick = event => {
     requireMedicalRecord(CurrentPatientID, CurrentUserID);
   };
@@ -411,7 +383,7 @@ function ToolBar({
       key={Questions.findIndex(obj => obj === Question)}
       button
       onClick={event => {
-        setAnchorEl1(null);
+        setAnchorEl(null);
         setMessages(msgs =>
           msgs.update(CurrentPatientID.toString(), msg => [
             ...msg,
@@ -432,38 +404,7 @@ function ToolBar({
     <Container className={classes.toolbar}>
       <Grid container spacing={2}>
         <Grid item xs={1}>
-          <Button onClick={handlePopoverOpen2}>
-            <EmojiIcon className={classes.icon} />
-          </Button>
-          <Popover
-            id="mouse-over-popover"
-            className={classes.popover}
-            classes={{
-              paper: classes.paper,
-            }}
-            open={open2}
-            anchorEl={anchorEl2}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            onClose={handlePopoverClose2}
-            disableRestoreFocus
-          >
-            <Picker onEmojiClick={onEmojiClick} />
-          </Popover>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={handlePicClick}>
-            <PicIcon className={classes.icon} />
-          </Button>
-        </Grid>
-        <Grid item xs={1}>
-          <Button onClick={handlePopoverOpen1}>
+          <Button onClick={handlePopoverOpen}>
             <QuestionsIcon />
           </Button>
           <Popover
@@ -472,8 +413,8 @@ function ToolBar({
             classes={{
               paper: classes.paper,
             }}
-            open={open1}
-            anchorEl={anchorEl1}
+            open={open}
+            anchorEl={anchorEl}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'left',
@@ -482,20 +423,22 @@ function ToolBar({
               vertical: 'top',
               horizontal: 'left',
             }}
-            onClose={handlePopoverClose1}
+            onClose={handlePopoverClose}
             disableRestoreFocus
           >
             <List>{QuestionsA}</List>
           </Popover>
         </Grid>
         <Grid item xs={1}>
+          <Button onClick={handleMedClick}>
+            <MedicineIcon className={classes.icon} />
+          </Button>
+        </Grid>
+        <Grid item xs={1}>
           <Button onClick={handleRecClick}>
             <RecordIcon className={classes.icon} />
           </Button>
         </Grid>
-        {/* <Grid item xs={1}>
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple@6.0.1/img/apple/64/1f60a.png" alt="" />
-        </Grid> */}
       </Grid>
     </Container>
   );
