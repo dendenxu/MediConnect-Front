@@ -141,15 +141,11 @@ const useStyles = makeStyles(theme => {
     },
 
     dateInputBox: {
-      padding: theme.spacing(0),
-      margin: theme.spacing(0),
+      marginTop: '-7%',
       display: 'flex',
-      flexDirection: 'column',
       justifyContent: 'center',
-      width: '65%',
+      width: '64%',
       height: '100%',
-      position: 'relative',
-      top: '-20%',
     },
 
     accountTypeInput: {
