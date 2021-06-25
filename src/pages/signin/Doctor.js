@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -40,22 +40,33 @@ export default function Doctor() {
   const [myEmail, setEmail] = useState('default value');
   const [introduction, setIntr] = useState('default value');
   const [inputContent, setInputContent] = useState('');
+  // const getInfo = () => {
+  //   setName('testname');
+  //   setEmail('123456@zju.edu.cn');
+  // };
+
   const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();
     console.log(response);
+
     if (response.ok) {
       console.log(body);
-      setName(body.lastName + body.firstName);
-      setEmail(body.myEmail);
+      setName(`${body.data.lastname}${body.data.firstname}`);
+      setEmail(body.data.email);
     }
   };
+
+  useEffect(getInfo, []);
+
   const handleEditPWDButtonClick = event => {
+    // （待完成）跳过验证界面直接进入修改密码的界面
     history.push({
       pathname: '/editpass',
       state: {
         email: myEmail,
         homepage: true,
+        modifying: true,
       },
     });
   };

@@ -211,6 +211,7 @@ function EditPass(props) {
     gender,
     birthday,
     registering,
+    modifying,
   } = props.location.state;
 
   const [avatarClicked, setAvatarClicked] = useState(false);
@@ -218,7 +219,7 @@ function EditPass(props) {
   const [identifyCodeInvalid, setIdentifyCodeInvalid] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
 
-  const [afterEmailCheck, setAfterEmailCheck] = useState(false);
+  const [afterEmailCheck, setAfterEmailCheck] = useState(modifying || false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -356,16 +357,31 @@ function EditPass(props) {
 
   const handleEditPassClick = async () => {
     const editPasswordWithServer = async () => {
-      const response = await fetch('/api/account/resetpasswd', {
+      let payload = {};
+
+      let api = '/api/account/resetpasswd';
+
+      if (modifying) {
+        payload = {
+          email,
+          passwd: password,
+        };
+        api = '/api/account/modifypasswd';
+      } else {
+        payload = {
+          email,
+          authcode: identifyCode,
+          newpasswd: password,
+        };
+        api = '/api/account/resetpasswd';
+      }
+
+      const response = await fetch(api, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          authcode: identifyCode,
-          newpasswd: password,
-        }),
+        body: JSON.stringify(payload),
       });
 
       console.log({ email, authcode: identifyCode, passwd: password });
