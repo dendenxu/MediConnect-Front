@@ -266,12 +266,9 @@ function ToolBar({
   return (
     <Grid container className={classes.grid}>
       <Grid item xs={6}>
-        <Button
-          onClick={handlePopoverOpen2}
-          className={classes.NoPaddingContainer}
-        >
+        <IconButton onClick={handlePopoverOpen2}>
           <EmojiIcon />
-        </Button>
+        </IconButton>
         <Popover
           id="mouse-over-popover"
           className={classes.popover}
@@ -295,18 +292,15 @@ function ToolBar({
         </Popover>
       </Grid>
       <Grid item xs={6}>
-        {/* <Button onClick={handlePicClick} className={classes.NoPaddingContainer}>
-          <PicIcon />
-        </Button> */}
         <ReactFileReader
           fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
           base64
           multipleFiles={!1}
           handleFiles={handleFiles}
         >
-          <Button>
+          <IconButton>
             <PicIcon />
-          </Button>
+          </IconButton>
         </ReactFileReader>
       </Grid>
     </Grid>
