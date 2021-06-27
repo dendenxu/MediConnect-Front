@@ -15,6 +15,7 @@ import { Button, Input, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
+import ReactFileReader from 'react-file-reader';
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
@@ -469,6 +470,32 @@ function ToolBar({
     requireMedicalRecord(CurrentPatientID, CurrentUserID);
   };
 
+  const handleFiles = files => {
+    console.log('file: ', files.base64);
+    // setBase(files.base64);
+    // console.log(base64);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentPatientID,
+      Content: files.base64,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
+    setMessages(msgs =>
+      msgs.update(CurrentPatientID.toString(), msg => [
+        ...msg,
+        {
+          sender: CurrentUserID,
+          content: files.base64,
+          time: moment().format('HH:mm'),
+        },
+      ]),
+    );
+  };
+
   const QuestionsA = Questions.map(Question => (
     <ListItem
       // className={classes.listItem}
@@ -529,9 +556,19 @@ function ToolBar({
       >
         <Picker onEmojiClick={onEmojiClick} />
       </Popover>
-      <IconButton disabled={IsEmpty} onClick={handleRecClick}>
+      {/* <IconButton disabled={IsEmpty} onClick={handleRecClick}>
         <PicIcon />
-      </IconButton>
+      </IconButton> */}
+      <ReactFileReader
+        fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
+        base64
+        multipleFiles={!1}
+        handleFiles={handleFiles}
+      >
+        <Button>
+          <PicIcon />
+        </Button>
+      </ReactFileReader>
       <IconButton disabled={IsEmpty} onClick={handlePopoverOpen1}>
         <QuestionsIcon />
       </IconButton>
@@ -566,8 +603,42 @@ function ToolBar({
 function Message({ message: { sender, content, time }, CurrentUserID }) {
   const classes = useStyles();
   let isSentByCurrentUser = false;
+  const reg = /data./;
   if (sender === CurrentUserID) {
     isSentByCurrentUser = true;
+  }
+
+  if (reg.test(content)) {
+    return (
+      <div>
+        <div className={classes.NoSidePaddingdiv}>
+          <Typography
+            variant="caption"
+            className={classes.timetext}
+            color="textSecondary"
+          >
+            {time}
+          </Typography>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            padding: '0',
+          }}
+        >
+          <Paper
+            className={
+              isSentByCurrentUser ? classes.MyMessageBox : classes.HisMessageBox
+            }
+            elevation={2}
+          >
+            <img src={content} alt="src" width="100px" height="100px" />
+          </Paper>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -797,7 +868,7 @@ function Chat(props) {
 
     interval = setInterval(() => {
       socket.send('ping!');
-      console.log('ping!');
+      // console.log('ping!');
     }, 1000);
 
     socket.onmessage = msg => {

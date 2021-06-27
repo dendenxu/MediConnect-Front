@@ -12,6 +12,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ReactFileReader from 'react-file-reader';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
 
@@ -200,6 +201,7 @@ function ToolBar({
   const classes = useStyles();
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [chosenEmoji, setChosenEmoji] = React.useState(null);
+  // const [base64, setBase] = useState("");
 
   const handlePopoverOpen2 = event => {
     setAnchorEl2(event.currentTarget);
@@ -212,6 +214,30 @@ function ToolBar({
   const open2 = Boolean(anchorEl2);
 
   const handlePicClick = event => {};
+
+  const handleFiles = files => {
+    console.log('file: ', files.base64);
+    // setBase(files.base64);
+    // console.log(base64);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentDoctorID,
+      Content: files.base64,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
+    setMessages(msgs => [
+      ...msgs,
+      {
+        sender: CurrentUserID,
+        content: files.base64,
+        time: moment().format('HH:mm'),
+      },
+    ]);
+  };
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -269,9 +295,19 @@ function ToolBar({
         </Popover>
       </Grid>
       <Grid item xs={6}>
-        <Button onClick={handlePicClick} className={classes.NoPaddingContainer}>
+        {/* <Button onClick={handlePicClick} className={classes.NoPaddingContainer}>
           <PicIcon />
-        </Button>
+        </Button> */}
+        <ReactFileReader
+          fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
+          base64
+          multipleFiles={!1}
+          handleFiles={handleFiles}
+        >
+          <Button>
+            <PicIcon />
+          </Button>
+        </ReactFileReader>
       </Grid>
     </Grid>
   );
@@ -308,8 +344,51 @@ function TopBar({ DoctorName }) {
 function Message({ message: { sender, content, time }, CurrentUserID }) {
   const classes = useStyles();
   let isSentByCurrentUser = false;
+  const reg = /data./;
   if (sender === CurrentUserID) {
     isSentByCurrentUser = true;
+  }
+
+  if (reg.test(content)) {
+    return (
+      <Container
+        style={{
+          padding: '0',
+        }}
+      >
+        <Container
+          style={{
+            padding: '0',
+          }}
+        >
+          <Typography
+            variant="caption"
+            className={classes.timetext}
+            color="textSecondary"
+          >
+            {time}
+          </Typography>
+        </Container>
+        <Container
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            padding: '0',
+          }}
+        >
+          <Paper
+            className={
+              isSentByCurrentUser ? classes.MyMessageBox : classes.HisMessageBox
+            }
+            elevation={2}
+          >
+            <img src={content} alt="pic" width="100px" height="100px" />
+          </Paper>
+        </Container>
+      </Container>
+    );
+    // console.log("reg.test");
   }
 
   return (
@@ -450,7 +529,7 @@ function ChatPatient() {
 
     interval = setInterval(() => {
       socket.send('ping!');
-      console.log('ping!');
+      // console.log('ping!');
     }, 1000);
 
     socket.onmessage = msg => {
