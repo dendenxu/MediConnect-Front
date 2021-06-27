@@ -402,6 +402,7 @@ function ToolBar({
   setMessages,
   requireMedicalRecord,
   requirePrescription,
+  socket,
 }) {
   const classes = useStyles();
 
@@ -433,6 +434,16 @@ function ToolBar({
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
     setAnchorEl2(null);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentPatientID,
+      Content: emojiObject.emoji,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
     setMessages(msgs =>
       msgs.update(CurrentPatientID.toString(), msg => [
         ...msg,
@@ -456,6 +467,16 @@ function ToolBar({
       button
       onClick={event => {
         setAnchorEl1(null);
+        const json = {
+          Type: 1,
+          SenderID: CurrentUserID,
+          ReceiverID: CurrentPatientID,
+          Content: Question,
+          Time: moment().format('HH:mm'),
+        };
+        if (socket) {
+          socket.send(JSON.stringify(json));
+        }
         setMessages(msgs =>
           msgs.update(CurrentPatientID.toString(), msg => [
             ...msg,
@@ -605,6 +626,7 @@ function Chat(props) {
     { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
     { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
     { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
+    { PatientID: 222, PatientName: '222', NewMessageCount: 3 },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -647,6 +669,7 @@ function Chat(props) {
         },
       ],
       1987: [],
+      222: [],
     }),
   );
   const [Questions, setQuestions] = useState([
@@ -657,6 +680,7 @@ function Chat(props) {
   ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
+  let interval;
 
   const closeChat = patientID => {
     if (!socket) {
@@ -737,6 +761,8 @@ function Chat(props) {
       setPatients(pas => localPatients);
       console.log('Patients: ', Patients);
     }
+    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patients', JSON.stringify(Patients));
   }, []);
 
   useEffect(() => {
@@ -752,9 +778,14 @@ function Chat(props) {
       // hello('Doctor', CurrentUserID);
     };
 
+    interval = setInterval(() => {
+      socket.send('ping!');
+      console.log('ping!');
+    }, 1000);
+
     socket.onmessage = msg => {
       const dataFromServer = JSON.parse(msg.data);
-      console.log(dataFromServer);
+      console.log('dataFromServer: ', dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
           setPatients(pats => [
@@ -768,6 +799,7 @@ function Chat(props) {
           setMessages(msgs =>
             msgs.set(dataFromServer.PatientID.toString(), []),
           );
+          console.log('In setPatients: ', Patients);
           break;
 
         case 7:
@@ -900,6 +932,7 @@ function Chat(props) {
           setMessages={setMessages}
           requireMedicalRecord={requireMedicalRecord}
           requirePrescription={requirePrescription}
+          socket={socket}
         />
         <InputBox
           message={message}

@@ -190,7 +190,7 @@ function InputBox({ message, setMessage, sendMessage }) {
   );
 }
 
-function ToolBar({ CurrentUserID, setMessages }) {
+function ToolBar({ CurrentUserID, setMessages, socket, CurrentDoctorID }) {
   const classes = useStyles();
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [chosenEmoji, setChosenEmoji] = React.useState(null);
@@ -210,6 +210,16 @@ function ToolBar({ CurrentUserID, setMessages }) {
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
     setAnchorEl2(null);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentDoctorID,
+      Content: emojiObject.emoji,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
     setMessages(msgs => [
       ...msgs,
       {
@@ -370,6 +380,7 @@ function ChatPatient() {
     { sender: 111, content: '医生发的第二条消息', time: '12:34' },
     { sender: 111, content: '医生发的第三条消息', time: '12:35' },
   ]);
+  let interval;
 
   useEffect(() => {
     setSocket(new WebSocket(`/api/patient/${CurrentUserID}/chat`));
@@ -377,9 +388,11 @@ function ChatPatient() {
 
   useEffect(() => {
     const localMessages = JSON.parse(localStorage.getItem('messages'));
+    console.log(localMessages);
     if (localMessages) {
       setMessages(msgs => localMessages);
     }
+    localStorage.setItem('messages', JSON.stringify(messages));
   }, []);
 
   useEffect(() => {
@@ -426,6 +439,11 @@ function ChatPatient() {
     socket.onopen = () => {
       console.log('Successfully Connected');
     };
+
+    interval = setInterval(() => {
+      socket.send('ping!');
+      console.log('ping!');
+    }, 1000);
 
     socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
@@ -491,7 +509,12 @@ function ChatPatient() {
           />
         </Grid>
         <Grid item xs={3}>
-          <ToolBar CurrentUserID={CurrentUserID} setMessages={setMessages} />
+          <ToolBar
+            CurrentUserID={CurrentUserID}
+            setMessages={setMessages}
+            socket={socket}
+            CurrentDoctorID={CurrentDoctorID}
+          />
         </Grid>
       </Grid>
     </Container>
