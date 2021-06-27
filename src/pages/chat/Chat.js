@@ -339,20 +339,27 @@ function TopBar({
   setIsEmpty,
   setSelectedIndex,
   closeChat,
+  saveLocal,
+  setMessages,
+  messgaes,
 }) {
   const classes = useStyles();
 
   const handleEndClick = event => {
     closeChat(CurrentPatientID);
-
-    setIsEmpty(true);
+    console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
     setSelectedIndex();
+    setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+    console.log('In handleEndClick, messages: ', messgaes);
     setPatients(Pts =>
       Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
     );
-
+    console.log('In handleEndClick, Patients: ', Patients);
     setPatientName('');
     setCurrentPatientID('');
+    console.log('After closeChat, Patients: ', Patients);
+    saveLocal();
+    setIsEmpty(true);
   };
 
   return (
@@ -403,6 +410,7 @@ function ToolBar({
   requireMedicalRecord,
   requirePrescription,
   socket,
+  saveLocal,
 }) {
   const classes = useStyles();
 
@@ -454,6 +462,7 @@ function ToolBar({
         },
       ]),
     );
+    saveLocal();
   };
 
   const handleRecClick = event => {
@@ -487,6 +496,7 @@ function ToolBar({
             },
           ]),
         );
+        saveLocal();
       }}
     >
       <ListItemText primary={Question} />
@@ -682,6 +692,13 @@ function Chat(props) {
   const [selectedIndex, setSelectedIndex] = useState();
   let interval;
 
+  const saveLocal = () => {
+    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patients', JSON.stringify(Patients));
+    console.log('SaveLocal: ', messages);
+    console.log('SaveLocal: ', Patients);
+  };
+
   const closeChat = patientID => {
     if (!socket) {
       return;
@@ -745,6 +762,7 @@ function Chat(props) {
           },
         ]),
       );
+      saveLocal();
     }
   };
 
@@ -761,8 +779,7 @@ function Chat(props) {
       setPatients(pas => localPatients);
       console.log('Patients: ', Patients);
     }
-    localStorage.setItem('messages', JSON.stringify(messages));
-    localStorage.setItem('Patients', JSON.stringify(Patients));
+    saveLocal();
   }, []);
 
   useEffect(() => {
@@ -861,8 +878,7 @@ function Chat(props) {
           break;
       }
       console.log(Patients);
-      localStorage.setItem('messages', JSON.stringify(messages));
-      localStorage.setItem('Patients', JSON.stringify(Patients));
+      saveLocal();
     };
 
     socket.onclose = event => {
@@ -875,9 +891,7 @@ function Chat(props) {
   }, [socket, CurrentPatientID]);
 
   useEffect(() => {
-    localStorage.setItem('messages', JSON.stringify(messages));
-    localStorage.setItem('Patients', JSON.stringify(Patients));
-    console.log('In localStorage');
+    saveLocal();
   });
 
   return (
@@ -915,6 +929,9 @@ function Chat(props) {
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
           closeChat={closeChat}
+          saveLocal={saveLocal}
+          setMessages={setMessages}
+          messages={messages}
         />
         <Messages
           messages={messages}
@@ -933,6 +950,7 @@ function Chat(props) {
           requireMedicalRecord={requireMedicalRecord}
           requirePrescription={requirePrescription}
           socket={socket}
+          saveLocal={saveLocal}
         />
         <InputBox
           message={message}

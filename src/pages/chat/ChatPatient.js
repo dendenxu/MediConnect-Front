@@ -190,7 +190,13 @@ function InputBox({ message, setMessage, sendMessage }) {
   );
 }
 
-function ToolBar({ CurrentUserID, setMessages, socket, CurrentDoctorID }) {
+function ToolBar({
+  CurrentUserID,
+  setMessages,
+  socket,
+  CurrentDoctorID,
+  messages,
+}) {
   const classes = useStyles();
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [chosenEmoji, setChosenEmoji] = React.useState(null);
@@ -228,6 +234,7 @@ function ToolBar({ CurrentUserID, setMessages, socket, CurrentDoctorID }) {
         time: moment().format('HH:mm'),
       },
     ]);
+    localStorage.setItem('messages', JSON.stringify(messages));
   };
 
   return (
@@ -429,6 +436,7 @@ function ChatPatient() {
           time: moment().format('HH:mm'),
         },
       ]);
+      localStorage.setItem('messages', JSON.stringify(messages));
     }
   };
 
@@ -485,6 +493,7 @@ function ChatPatient() {
           break;
       }
       // localStorage.setItem('Patients', JSON.stringify(Patients));
+      localStorage.setItem('messages', JSON.stringify(messages));
     };
 
     socket.onclose = event => {
@@ -514,6 +523,7 @@ function ChatPatient() {
             setMessages={setMessages}
             socket={socket}
             CurrentDoctorID={CurrentDoctorID}
+            messages={messages}
           />
         </Grid>
       </Grid>
