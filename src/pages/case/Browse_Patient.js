@@ -35,15 +35,7 @@ let classes;
 function toDisplayItem(info, index) {
   const history = useHistory();
   const handlerecord = event => {
-    history.push({
-      pathname: '/record_p',
-      state: {
-        Case_id: info.ID,
-        Patient_id: info.PatientID,
-        Doctor_id: info.DoctorID,
-        Department: info.Department,
-      },
-    });
+    history.push(`/record_p/${info.PatientID}/${info.ID}`);
   };
   return (
     <Paper className={classes.paper} key={index} onClick={handlerecord}>

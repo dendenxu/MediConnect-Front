@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container';
 import { DataGrid } from '@material-ui/data-grid';
 import { Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ContactsIcon from '@material-ui/icons/Contacts';
@@ -96,7 +96,7 @@ let initial = -2;
 
 export default function Home() {
   const history = useHistory();
-  const location = useLocation();
+  const params = useParams();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
   const columns = [
@@ -130,13 +130,13 @@ export default function Home() {
   const [patientAge, setPatientAge] = useState(18);
   const [allergicHistory, setAllergicHistory] = useState('无');
 
-  const CaseID = location.state.Case_id;
-  const tmpPatientID = location.state.Patient_id;
-  const tmpDoctorID = location.state.Doctor_id;
+  const CaseID = params.caseID;
+  const tmpPatientID = params.patientID;
+  let tmpDoctorID = 0;
   console.log(CaseID);
   console.log(tmpPatientID);
   console.log(tmpDoctorID);
-  const tmpDepartment = location.state.Department;
+  let tmpDepartment = '';
 
   const [editRowsModel, setEditRowsModel] = React.useState({});
   const [rows, setRows] = React.useState(defaultRows);
@@ -156,6 +156,8 @@ export default function Home() {
       );
       // console.log(tmpresponse);
       const tmpmessage = await tmpresponse.json();
+      tmpDoctorID = tmpmessage.data.DoctorID;
+      tmpDepartment = tmpmessage.data.Department;
       setPatientName(tmpmessage.data.PatientName);
       setPatientGender(tmpmessage.data.Gender);
       setDiagnosis(tmpmessage.data.Diagnosis);
