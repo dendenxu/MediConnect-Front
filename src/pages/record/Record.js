@@ -16,6 +16,9 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -32,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
+  },
+  alert: {
+    width: '100%',
   },
   headerContainer: {
     margin: theme.spacing(3),
@@ -175,6 +181,8 @@ export default function Home(props) {
   const [InputError2, setInputError2] = useState(false);
   const [InputError3, setInputError3] = useState(false);
   const [InputError4, setInputError4] = useState(false);
+  const [DataGridError, setDataGridError] = useState('');
+  const [DataGridErrorOpen, setDataGridErrorOpen] = React.useState(false);
   // // console.log(tmpCaseID);
   // // console.log(tmpPatientID);
   // // console.log(tmpDoctorID);
@@ -266,14 +274,14 @@ export default function Home(props) {
       });
 
       const message = await response.json();
-      // console.log(message);
+      console.log(message);
       const mediId = message.data[0].ID;
       if (response.ok) {
-        // console.log(`succeed in finding the medicine`);
-        // console.log(message);
+        console.log(`succeed in finding the medicine`);
+        console.log(message);
       } else {
-        // console.log(`fail to find the medicine`);
-        // console.log(message);
+        console.log(`fail to find the medicine`);
+        console.log(message);
       }
 
       const updatedRows = rows.map(row => {
@@ -295,22 +303,31 @@ export default function Home(props) {
     }
     if (field === 'size') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
+      console.log(data.value);
       const newsize = Number(data.value);
-      const updatedRows = rows.map(row => {
-        if (row.id === id) {
-          return { ...row, size: newsize };
-        }
-        return row;
-      });
-      setRows(updatedRows);
+      console.log(Number.isNaN(newsize));
+      if (Number.isNaN(newsize)) {
+        setDataGridErrorOpen(true);
+        setDataGridError('请输入数字！');
+        console.log(DataGridError);
+      } else {
+        setDataGridErrorOpen(false);
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return { ...row, size: newsize };
+          }
+          return row;
+        });
+        setRows(updatedRows);
 
-      const updatedPres = allprescriptions.map(allprescription => {
-        if (allprescription.lineno === id) {
-          return { ...allprescription, quantity: newsize };
-        }
-        return allprescription;
-      });
-      setPrescriptions(updatedPres);
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.lineno === id) {
+            return { ...allprescription, quantity: newsize };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
     }
     if (field === 'qt') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
@@ -529,6 +546,32 @@ export default function Home(props) {
     setRecord(null);
   };
 
+  function TransitionAlerts() {
+    return (
+      <div className={classes.alert}>
+        <Collapse in={DataGridErrorOpen}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setDataGridErrorOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            {DataGridError}
+          </Alert>
+        </Collapse>
+      </div>
+    );
+  }
+
   return (
     <Container component="main" className={classes.verticalContainer}>
       <CssBaseline />
@@ -686,6 +729,7 @@ export default function Home(props) {
         {expandButton ? (
           <Container className={classes.pageContainer}>
             <Box className={classes.borderedContainer}>
+              <TransitionAlerts />
               <div style={{ height: 300, width: '100%' }}>
                 <DataGrid
                   rows={rows}
