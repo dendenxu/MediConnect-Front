@@ -37,19 +37,21 @@ const useStyles = makeStyles(theme => ({
 
 let classes;
 
-function toDisplayItem(info, index) {
+function toDisplayItem(props) {
+  const { info, index, record, setRecord } = props;
   const history = useHistory();
   const theme = useTheme();
   const handlerecord = event => {
-    history.push({
-      pathname: '/record',
-      state: {
-        Case_id: info.ID,
-        Patient_id: info.PatientID,
-        Doctor_id: info.DoctorID,
-        Department: info.Department,
-      },
-    });
+    const state = {
+      Case_id: info.ID,
+      Patient_age: info.Age,
+      Patient_name: info.PatientName,
+      Patient_id: info.PatientID,
+      Department: info.Department,
+      Doctor_id: info.DoctorID,
+    };
+
+    setRecord(state);
   };
   return (
     <Paper className={classes.paper} key={index} onClick={handlerecord}>
@@ -134,40 +136,11 @@ export default function Browse(props) {
     }
   }, []);
 
-  const displayItems = display.map(toDisplayItem);
+  const displayItems = display.map((info, index) =>
+    toDisplayItem({ info, index, record, setRecord }),
+  );
 
   const handlerecord = async () => {
-    // const response = await fetch(`/api/patient/${tmppatientId}/case`, {
-    //   method: 'post',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     complaint: ' ',
-    //     department: tmpdepartment,
-    //     diagnosis: ' ',
-    //     doctorID: tmpdoctorId,
-    //     history: ' ',
-    //     patientID: tmppatientId,
-    //     prescriptions: [],
-    //     treatment: ' ',
-    //   }),
-    // });
-
-    // console.log(response);
-    // const message = await response.json();
-    // if (response.ok) {
-    //   console.log(`The server says case creating is succcessful`);
-    //   console.log(message);
-    // } else {
-    //   console.log(`Fail to create the case`);
-    //   console.log(message);
-    // }
-
-    // tmpcaseID = message.data;
-
-    // console.log(tmpcaseID);
-
     const state = {
       // Case_id: tmpcaseID,
       Patient_age: patientage,
