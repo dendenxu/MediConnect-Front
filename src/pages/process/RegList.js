@@ -12,30 +12,6 @@ import Header from '../components/Header';
 import theme from '../../theme/theme';
 import RegistrationItem from '../components/RegistrationItem';
 
-const regs = [
-  {
-    id: 0,
-    dep: '感染内科',
-    date: '2012年10月1日',
-    status: 1,
-    path: '/',
-  },
-  {
-    id: 1,
-    dep: '呼吸科',
-    date: '2012年10月5日',
-    status: 2,
-    path: '/',
-  },
-  {
-    id: 2,
-    dep: '太平间',
-    date: '2012年10月1日',
-    status: 3,
-    path: '/',
-  },
-];
-
 let myRegs = [];
 
 class RegList extends React.Component {
@@ -69,9 +45,11 @@ class RegList extends React.Component {
           alignItems="center"
           justfy="center"
         >
-          <IconButton color="primary" size="medium">
-            <AddCircleOutlinedIcon fontSize="large" />
-          </IconButton>
+          <Link to="/departments">
+            <IconButton color="primary" size="medium" to="/departments">
+              <AddCircleOutlinedIcon fontSize="large" />
+            </IconButton>
+          </Link>
         </Grid>
       </ThemeProvider>
     );
