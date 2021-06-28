@@ -16,8 +16,9 @@ import React from 'react';
 const useStyles = makeStyles(theme => ({
   header: {
     backgroundColor: theme.palette.primary.main,
-    width: '100%',
+    // width: 'auto',
     borderRadius: '16px',
+    // margin: theme.spacing(0, 2),
   },
   buttonStyle: {
     margin: 0,
