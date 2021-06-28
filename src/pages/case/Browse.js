@@ -181,7 +181,11 @@ export default function Browse(props) {
       >
         <Grid item>
           <div className={classes.input}>
-            <SearchBar placeholder="搜索内容" onChange={searchChange} />
+            <SearchBar
+              placeholder="请按以下关键字方式搜索：如医生姓名/主诉/诊断/科室"
+              label="搜索内容"
+              onChange={searchChange}
+            />
           </div>
         </Grid>
         <Grid item>
