@@ -556,9 +556,7 @@ function ToolBar({
       >
         <Picker onEmojiClick={onEmojiClick} />
       </Popover>
-      {/* <IconButton disabled={IsEmpty} onClick={handleRecClick}>
-        <PicIcon />
-      </IconButton> */}
+
       <ReactFileReader
         disabled={IsEmpty}
         fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
@@ -566,9 +564,9 @@ function ToolBar({
         multipleFiles={!1}
         handleFiles={handleFiles}
       >
-        <Button disabled={IsEmpty}>
+        <IconButton disabled={IsEmpty}>
           <PicIcon />
-        </Button>
+        </IconButton>
       </ReactFileReader>
       <IconButton disabled={IsEmpty} onClick={handlePopoverOpen1}>
         <QuestionsIcon />
