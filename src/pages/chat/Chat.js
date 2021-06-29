@@ -560,12 +560,13 @@ function ToolBar({
         <PicIcon />
       </IconButton> */}
       <ReactFileReader
+        disabled={IsEmpty}
         fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
         base64
         multipleFiles={!1}
         handleFiles={handleFiles}
       >
-        <Button>
+        <Button disabled={IsEmpty}>
           <PicIcon />
         </Button>
       </ReactFileReader>
@@ -707,7 +708,7 @@ function Chat(props) {
     { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
     { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
     { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
-    { PatientID: 222, PatientName: '222', NewMessageCount: 3 },
+    { PatientID: 222, PatientName: '病人甲', NewMessageCount: 3 },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -738,16 +739,16 @@ function Chat(props) {
       1985: [
         { sender: 111, content: '医生发的第一条消息', time: '14:30' },
         { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
-        {
-          sender: 111,
-          content: '点击链接查看你的病历：https://www.baidu.com/',
-          time: '14:33',
-        },
-        {
-          sender: 111,
-          content: '点击链接查看你的处方：https://www.baidu.com/',
-          time: '14:33',
-        },
+        // {
+        //   sender: 111,
+        //   content: '点击链接查看你的病历：https://www.baidu.com/',
+        //   time: '14:33',
+        // },
+        // {
+        //   sender: 111,
+        //   content: '点击链接查看你的处方：https://www.baidu.com/',
+        //   time: '14:33',
+        // },
       ],
       1987: [],
       222: [],

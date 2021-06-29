@@ -13,6 +13,14 @@ import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ReactFileReader from 'react-file-reader';
+// import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
 
@@ -160,8 +168,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function InputBox({ message, setMessage, sendMessage }) {
+function AlertDialog({ open, setOpen }) {
+  const handleClose = () => {
+    setOpen(false);
+    console.log('open: ', open);
+  };
+
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">结束提示</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            温馨提示：医生已结束挂号，会话已结束，请返回上级页面。
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            确定
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
+function InputBox({ message, setMessage, sendMessage, closed }) {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
 
   const handleMessageChange = event => {
     const newMessage = event.target.value;
@@ -171,12 +210,48 @@ function InputBox({ message, setMessage, sendMessage }) {
 
   const handleMessageSend = event => {
     // const key = event.key;
+
     if (event.key === 'Enter') sendMessage(event);
+    if (closed) {
+      setOpen(true);
+    }
     console.log(`Sending a new message.`);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
     <Container style={{ padding: '0' }}>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="温馨提示：会话已结束，对方已无法接收消息"
+        action={
+          <fragment>
+            <Button color="secondary" size="small" onClick={handleClose}>
+              确定
+            </Button>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </fragment>
+        }
+      />
       <TextField
         className={classes.textarea}
         id="standard-multiline-flexible"
@@ -454,6 +529,8 @@ function Messages({ messages, CurrentUserID }) {
 
 function ChatPatient() {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [closed, setClosed] = useState(false);
   const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(222);
   const [DoctorName, setDoctorName] = useState('内科王医生');
@@ -467,6 +544,7 @@ function ChatPatient() {
     { sender: 111, content: '医生发的第三条消息', time: '12:35' },
   ]);
   let interval;
+  console.log('open:', open);
 
   useEffect(() => {
     setSocket(new WebSocket(`/api/patient/${CurrentUserID}/chat`));
@@ -535,6 +613,7 @@ function ChatPatient() {
     socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);
       const dataFromServer = JSON.parse(msg.data);
+      console.log('dataFromServer: ', dataFromServer);
       switch (dataFromServer.Type) {
         case 7:
           setMessages(msg1 => [
@@ -567,6 +646,8 @@ function ChatPatient() {
           ]);
           break;
         case 11:
+          setOpen(true);
+          setClosed(true);
           break;
         default:
           break;
@@ -594,6 +675,7 @@ function ChatPatient() {
             message={message}
             setMessage={setMessage}
             sendMessage={sendMessage}
+            closed={closed}
           />
         </Grid>
         <Grid item xs={3}>
@@ -605,6 +687,7 @@ function ChatPatient() {
             messages={messages}
           />
         </Grid>
+        <AlertDialog open={open} setOpen={setOpen} />
       </Grid>
     </Container>
   );
