@@ -100,7 +100,6 @@ let linecount = 1;
 let desID;
 let tempprescription = [];
 let temprows = [];
-let initial = -2;
 let whetherpres = 0;
 
 export default function Home(props) {
@@ -109,18 +108,30 @@ export default function Home(props) {
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
   const columns = [
-    { field: 'name', headerName: '药品名', width: 320, editable: true },
+    { field: 'name', headerName: '药品名', width: 200, editable: true },
     {
       field: 'size',
       headerName: '数量',
-      width: 220,
+      width: 140,
       editable: true,
     },
     {
       field: 'qt',
       headerName: '用法',
-      width: 220,
+      width: 140,
       editable: true,
+    },
+    {
+      field: 'price',
+      headerName: '价格',
+      width: 130,
+      editable: false,
+    },
+    {
+      field: 'contraindication',
+      headerName: '禁忌症',
+      width: 140,
+      editable: false,
     },
   ];
 
@@ -128,10 +139,9 @@ export default function Home(props) {
 
   let defaultPrescription = [];
 
-  function CreatePrescriptionData(id, name, size, qt) {
-    return { id, name, size, qt };
+  function CreatePrescriptionData(id, name, size, qt, price, contraindication) {
+    return { id, name, size, qt, price, contraindication };
   }
-
   function CreatePrescriptionDataBackEnd(
     lineno,
     id,
@@ -191,91 +201,87 @@ export default function Home(props) {
   const [rows, setRows] = useState(defaultRows);
 
   useEffect(async () => {
-    if (initial <= 0) {
-      // console.log(initial);
-      initial += 1;
-      const tmpresponse = await fetch(
-        `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
-        {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    // console.log(initial);
+    const tmpresponse = await fetch(
+      `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
-      // // console.log(tmpresponse);
-      const tmpmessage = await tmpresponse.json();
-      setPatientName(tmpmessage.data.PatientName);
-      setPatientGender(tmpmessage.data.Gender);
-      setDiagnosis(tmpmessage.data.Diagnosis);
-      setMedicalHistory(tmpmessage.data.History);
-      setChiefComplaint(tmpmessage.data.Complaint);
-      setOpinions(tmpmessage.data.Treatment);
-      // console.log(tmpmessage.data.Prescriptions);
-      // console.log(tmpmessage.data.Prescriptions.length);
-      if (tmpmessage.data.Prescriptions.length === 0) {
-        setRows(defaultRows);
-        linecount = 1;
-        whetherpres = 1;
-      } else {
-        whetherpres = 1;
-        SetExpand(true);
-        const tmpPres = tmpmessage.data.Prescriptions[0];
-        desID = tmpPres.ID;
-        const tmpGL = tmpPres.Guidelines;
-        for (let i = 0; i < tmpGL.length; i += 1) {
-          tempprescription = tempprescription.concat([
-            CreatePrescriptionDataBackEnd(
-              i + 1,
-              desID,
-              tmpGL[i].ID,
-              tmpCaseID,
-              tmpPres.Advice,
-              tmpGL[i].MedicineID,
-              tmpGL[i].Dosage,
-              tmpGL[i].Quantity,
-            ),
-          ]);
-          temprows = temprows.concat([
-            CreatePrescriptionData(
-              i + 1,
-              tmpGL[i].Medicine.Name,
-              tmpGL[i].Quantity,
-              tmpGL[i].Dosage,
-            ),
-          ]);
-        }
-        // console.log(tempprescription);
-        // console.log(temprows);
-        defaultRows = temprows;
-        defaultPrescription = tempprescription;
-        setPrescriptions(tempprescription);
-        setRows(temprows);
-        tempprescription = [];
-        temprows = [];
-        linecount = tmpGL.length + 1;
-      }
+      },
+    );
+    // // console.log(tmpresponse);
+    const tmpmessage = await tmpresponse.json();
+    setPatientName(tmpmessage.data.PatientName);
+    setPatientGender(tmpmessage.data.Gender);
+    setDiagnosis(tmpmessage.data.Diagnosis);
+    setMedicalHistory(tmpmessage.data.History);
+    setChiefComplaint(tmpmessage.data.Complaint);
+    setOpinions(tmpmessage.data.Treatment);
+    console.log(tmpmessage.data);
+    // console.log(tmpmessage.data.Prescriptions.length);
+    if (tmpmessage.data.Prescriptions === null) {
+      setRows(defaultRows);
+      linecount = 1;
+      whetherpres = 1;
     } else {
-      initial = -2;
+      whetherpres = 1;
+      SetExpand(true);
+      const tmpPres = tmpmessage.data.Prescriptions[0];
+      console.log(tmpPres);
+      desID = tmpPres.ID;
+      const tmpGL = tmpPres.Guidelines;
+      for (let i = 0; i < tmpGL.length; i += 1) {
+        tempprescription = tempprescription.concat([
+          CreatePrescriptionDataBackEnd(
+            i + 1,
+            desID,
+            tmpGL[i].ID,
+            tmpCaseID,
+            tmpPres.Advice,
+            tmpGL[i].MedicineID,
+            tmpGL[i].Dosage,
+            tmpGL[i].Quantity,
+          ),
+        ]);
+        temprows = temprows.concat([
+          CreatePrescriptionData(
+            i + 1,
+            tmpGL[i].Medicine.Name,
+            tmpGL[i].Quantity,
+            tmpGL[i].Dosage,
+            tmpGL[i].Medicine.Price,
+            tmpGL[i].Medicine.Contraindication,
+          ),
+        ]);
+      }
+      // console.log(tempprescription);
+      // console.log(temprows);
+      defaultRows = temprows;
+      defaultPrescription = tempprescription;
+      setPrescriptions(tempprescription);
+      setRows(temprows);
+      tempprescription = [];
+      temprows = [];
+      linecount = tmpGL.length + 1;
     }
+
     // console.log(rows);
     // console.log(allprescriptions);
-  }, [initial]);
+  }, []);
 
   const handleEditCellChangeCommitted = async ({ id, field, props }) => {
     if (field === 'name') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
-      const newname = data.value.toString();
+      let newname = data.value.toString();
       const response = await fetch(`/api/medicine?q=${newname}`, {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
       const message = await response.json();
-      console.log(message);
-      const mediId = message.data[0].ID;
       if (response.ok) {
         console.log(`succeed in finding the medicine`);
         console.log(message);
@@ -283,23 +289,41 @@ export default function Home(props) {
         console.log(`fail to find the medicine`);
         console.log(message);
       }
-
-      const updatedRows = rows.map(row => {
-        if (row.id === id) {
-          return { ...row, name: newname };
-        }
-        return row;
-      });
-      setRows(updatedRows);
-      // console.log(mediId);
-      const updatedPres = allprescriptions.map(allprescription => {
-        if (allprescription.lineno === id) {
-          // console.log(mediId);
-          return { ...allprescription, MedicineId: mediId };
-        }
-        return allprescription;
-      });
-      setPrescriptions(updatedPres);
+      if (message.data.length === 0) {
+        setDataGridErrorOpen(true);
+        setDataGridError('药品未找到,请重新输入');
+        console.log(DataGridError);
+      } else {
+        setDataGridErrorOpen(false);
+        newname = message.data[0].Name;
+        const mediId = message.data[0].ID;
+        const newprice = message.data[0].Price;
+        const newcontraindication = message.data[0].Contraindication;
+        console.log(newname);
+        console.log(newprice);
+        console.log(newcontraindication);
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return {
+              ...row,
+              name: newname,
+              price: newprice,
+              contraindication: newcontraindication,
+            };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+        // console.log(mediId);
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.lineno === id) {
+            // console.log(mediId);
+            return { ...allprescription, MedicineId: mediId };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
     }
     if (field === 'size') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
@@ -430,9 +454,15 @@ export default function Home(props) {
   };
 
   const HandleOnAddLine = async () => {
-    // console.log(linecount);
     const newrow = rows.concat([
-      CreatePrescriptionData(linecount, '输入药品名', '输入数量', '输入用法'),
+      CreatePrescriptionData(
+        linecount,
+        '输入药品名',
+        '输入数量',
+        '输入用法',
+        ' ',
+        ' ',
+      ),
     ]);
     const newdefaultdescription = allprescriptions.concat([
       CreatePrescriptionDataBackEnd(
@@ -449,6 +479,7 @@ export default function Home(props) {
     setPrescriptions(newdefaultdescription);
     linecount += 1;
     setRows(newrow);
+    console.log(linecount);
     // console.log(rows);
     // console.log(allprescriptions);
   };
