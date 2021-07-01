@@ -195,7 +195,7 @@ export default function Home(props) {
         doctorID: tmpDoctorID,
         history: medicalHistory,
         patientID: tmpPatientID,
-        prescriptions: [],
+        prescriptions: [{ Advice: '111' }],
         treatment: opinions,
       }),
     });

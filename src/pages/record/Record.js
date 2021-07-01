@@ -221,41 +221,35 @@ export default function Home(props) {
     setOpinions(tmpmessage.data.Treatment);
     console.log(tmpmessage.data);
     // console.log(tmpmessage.data.Prescriptions.length);
-    if (tmpmessage.data.Prescriptions === null) {
-      setRows(defaultRows);
-      linecount = 1;
-      whetherpres = 1;
-    } else {
-      whetherpres = 1;
-      SetExpand(true);
-      const tmpPres = tmpmessage.data.Prescriptions[0];
-      console.log(tmpPres);
-      desID = tmpPres.ID;
-      const tmpGL = tmpPres.Guidelines;
-      for (let i = 0; i < tmpGL.length; i += 1) {
-        tempprescription = tempprescription.concat([
-          CreatePrescriptionDataBackEnd(
-            i + 1,
-            desID,
-            tmpGL[i].ID,
-            tmpCaseID,
-            tmpPres.Advice,
-            tmpGL[i].MedicineID,
-            tmpGL[i].Dosage,
-            tmpGL[i].Quantity,
-          ),
-        ]);
-        temprows = temprows.concat([
-          CreatePrescriptionData(
-            i + 1,
-            tmpGL[i].Medicine.Name,
-            tmpGL[i].Quantity,
-            tmpGL[i].Dosage,
-            tmpGL[i].Medicine.Price,
-            tmpGL[i].Medicine.Contraindication,
-          ),
-        ]);
-      }
+    whetherpres = 1;
+    SetExpand(true);
+    const tmpPres = tmpmessage.data.Prescriptions[0];
+    console.log(tmpPres);
+    desID = tmpPres.ID;
+    const tmpGL = tmpPres.Guidelines;
+    for (let i = 0; i < tmpGL.length; i += 1) {
+      tempprescription = tempprescription.concat([
+        CreatePrescriptionDataBackEnd(
+          i + 1,
+          desID,
+          tmpGL[i].ID,
+          tmpCaseID,
+          tmpPres.Advice,
+          tmpGL[i].MedicineID,
+          tmpGL[i].Dosage,
+          tmpGL[i].Quantity,
+        ),
+      ]);
+      temprows = temprows.concat([
+        CreatePrescriptionData(
+          i + 1,
+          tmpGL[i].Medicine.Name,
+          tmpGL[i].Quantity,
+          tmpGL[i].Dosage,
+          tmpGL[i].Medicine.Price,
+          tmpGL[i].Medicine.Contraindication,
+        ),
+      ]);
       // console.log(tempprescription);
       // console.log(temprows);
       defaultRows = temprows;
