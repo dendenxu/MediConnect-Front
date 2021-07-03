@@ -14,9 +14,13 @@ import Typography from '@material-ui/core/Typography';
 import { Button, Input, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
-import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
+import Picker from 'emoji-picker-react';
+import ReactFileReader from 'react-file-reader';
+// import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
+import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
+import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingdiv: {
@@ -336,20 +340,27 @@ function TopBar({
   setIsEmpty,
   setSelectedIndex,
   closeChat,
+  saveLocal,
+  setMessages,
+  messgaes,
 }) {
   const classes = useStyles();
 
   const handleEndClick = event => {
     closeChat(CurrentPatientID);
-
-    setIsEmpty(true);
+    console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
     setSelectedIndex();
+    setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+    console.log('In handleEndClick, messages: ', messgaes);
     setPatients(Pts =>
       Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
     );
-
+    console.log('In handleEndClick, Patients: ', Patients);
     setPatientName('');
     setCurrentPatientID('');
+    console.log('After closeChat, Patients: ', Patients);
+    saveLocal();
+    setIsEmpty(true);
   };
 
   return (
@@ -399,26 +410,90 @@ function ToolBar({
   setMessages,
   requireMedicalRecord,
   requirePrescription,
+  socket,
+  saveLocal,
 }) {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = useState();
 
-  const handlePopoverOpen = event => {
-    setAnchorEl(event.currentTarget);
+  const [anchorEl1, setAnchorEl1] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [chosenEmoji, setChosenEmoji] = React.useState(null);
+
+  const handlePopoverOpen1 = event => {
+    setAnchorEl1(event.currentTarget);
   };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
+  const handlePopoverClose1 = () => {
+    setAnchorEl1(null);
   };
 
-  const open = Boolean(anchorEl);
-
-  const handleMedClick = event => {
-    requirePrescription(CurrentPatientID, CurrentUserID);
+  const handlePopoverOpen2 = event => {
+    setAnchorEl2(event.currentTarget);
   };
+
+  const handlePopoverClose2 = () => {
+    setAnchorEl2(null);
+  };
+
+  const open1 = Boolean(anchorEl1);
+  const open2 = Boolean(anchorEl2);
+
+  const handlePicClick = event => {};
+
+  const onEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject);
+    setAnchorEl2(null);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentPatientID,
+      Content: emojiObject.emoji,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
+    setMessages(msgs =>
+      msgs.update(CurrentPatientID.toString(), msg => [
+        ...msg,
+        {
+          sender: CurrentUserID,
+          content: emojiObject.emoji,
+          time: moment().format('HH:mm'),
+        },
+      ]),
+    );
+    saveLocal();
+  };
+
   const handleRecClick = event => {
     requireMedicalRecord(CurrentPatientID, CurrentUserID);
+  };
+
+  const handleFiles = files => {
+    console.log('file: ', files.base64);
+    // setBase(files.base64);
+    // console.log(base64);
+    const json = {
+      Type: 1,
+      SenderID: CurrentUserID,
+      ReceiverID: CurrentPatientID,
+      Content: files.base64,
+      Time: moment().format('HH:mm'),
+    };
+    if (socket) {
+      socket.send(JSON.stringify(json));
+    }
+    setMessages(msgs =>
+      msgs.update(CurrentPatientID.toString(), msg => [
+        ...msg,
+        {
+          sender: CurrentUserID,
+          content: files.base64,
+          time: moment().format('HH:mm'),
+        },
+      ]),
+    );
   };
 
   const QuestionsA = Questions.map(Question => (
@@ -427,7 +502,17 @@ function ToolBar({
       key={Questions.findIndex(obj => obj === Question)}
       button
       onClick={event => {
-        setAnchorEl(null);
+        setAnchorEl1(null);
+        const json = {
+          Type: 1,
+          SenderID: CurrentUserID,
+          ReceiverID: CurrentPatientID,
+          Content: Question,
+          Time: moment().format('HH:mm'),
+        };
+        if (socket) {
+          socket.send(JSON.stringify(json));
+        }
         setMessages(msgs =>
           msgs.update(CurrentPatientID.toString(), msg => [
             ...msg,
@@ -438,6 +523,7 @@ function ToolBar({
             },
           ]),
         );
+        saveLocal();
       }}
     >
       <ListItemText primary={Question} />
@@ -446,8 +532,8 @@ function ToolBar({
 
   return (
     <div className={classes.toolbar}>
-      <IconButton disabled={IsEmpty} onClick={handlePopoverOpen}>
-        <QuestionsIcon />
+      <IconButton disabled={IsEmpty} onClick={handlePopoverOpen2}>
+        <EmojiIcon />
       </IconButton>
       <Popover
         id="mouse-over-popover"
@@ -455,8 +541,8 @@ function ToolBar({
         classes={{
           paper: classes.paper,
         }}
-        open={open}
-        anchorEl={anchorEl}
+        open={open2}
+        anchorEl={anchorEl2}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -465,14 +551,47 @@ function ToolBar({
           vertical: 'top',
           horizontal: 'left',
         }}
-        onClose={handlePopoverClose}
+        onClose={handlePopoverClose2}
+        disableRestoreFocus
+      >
+        <Picker onEmojiClick={onEmojiClick} />
+      </Popover>
+
+      <ReactFileReader
+        disabled={IsEmpty}
+        fileTypes={['.png', '.jpg', '.gif', 'jpeg']}
+        base64
+        multipleFiles={!1}
+        handleFiles={handleFiles}
+      >
+        <IconButton disabled={IsEmpty}>
+          <PicIcon />
+        </IconButton>
+      </ReactFileReader>
+      <IconButton disabled={IsEmpty} onClick={handlePopoverOpen1}>
+        <QuestionsIcon />
+      </IconButton>
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open1}
+        anchorEl={anchorEl1}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handlePopoverClose1}
         disableRestoreFocus
       >
         <List>{QuestionsA}</List>
       </Popover>
-      <IconButton disabled={IsEmpty} onClick={handleMedClick}>
-        <MedicineIcon />
-      </IconButton>
       <IconButton disabled={IsEmpty} onClick={handleRecClick}>
         <RecordIcon />
       </IconButton>
@@ -483,8 +602,42 @@ function ToolBar({
 function Message({ message: { sender, content, time }, CurrentUserID }) {
   const classes = useStyles();
   let isSentByCurrentUser = false;
+  const reg = /data./;
   if (sender === CurrentUserID) {
     isSentByCurrentUser = true;
+  }
+
+  if (reg.test(content)) {
+    return (
+      <div>
+        <div className={classes.NoSidePaddingdiv}>
+          <Typography
+            variant="caption"
+            className={classes.timetext}
+            color="textSecondary"
+          >
+            {time}
+          </Typography>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            padding: '0',
+          }}
+        >
+          <Paper
+            className={
+              isSentByCurrentUser ? classes.MyMessageBox : classes.HisMessageBox
+            }
+            elevation={2}
+          >
+            <img src={content} alt="src" width="100px" height="100px" />
+          </Paper>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -553,6 +706,7 @@ function Chat(props) {
     { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
     { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
     { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
+    { PatientID: 222, PatientName: '病人甲', NewMessageCount: 3 },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -583,18 +737,19 @@ function Chat(props) {
       1985: [
         { sender: 111, content: '医生发的第一条消息', time: '14:30' },
         { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
-        {
-          sender: 111,
-          content: '点击链接查看你的病历：https://www.baidu.com/',
-          time: '14:33',
-        },
-        {
-          sender: 111,
-          content: '点击链接查看你的处方：https://www.baidu.com/',
-          time: '14:33',
-        },
+        // {
+        //   sender: 111,
+        //   content: '点击链接查看你的病历：https://www.baidu.com/',
+        //   time: '14:33',
+        // },
+        // {
+        //   sender: 111,
+        //   content: '点击链接查看你的处方：https://www.baidu.com/',
+        //   time: '14:33',
+        // },
       ],
       1987: [],
+      222: [],
     }),
   );
   const [Questions, setQuestions] = useState([
@@ -605,6 +760,14 @@ function Chat(props) {
   ]);
   const [IsEmpty, setIsEmpty] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState();
+  let interval;
+
+  const saveLocal = () => {
+    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patients', JSON.stringify(Patients));
+    console.log('SaveLocal: ', messages);
+    console.log('SaveLocal: ', Patients);
+  };
 
   const closeChat = patientID => {
     if (!socket) {
@@ -669,6 +832,7 @@ function Chat(props) {
           },
         ]),
       );
+      saveLocal();
     }
   };
 
@@ -685,6 +849,7 @@ function Chat(props) {
       setPatients(pas => localPatients);
       console.log('Patients: ', Patients);
     }
+    saveLocal();
   }, []);
 
   useEffect(() => {
@@ -700,9 +865,14 @@ function Chat(props) {
       // hello('Doctor', CurrentUserID);
     };
 
+    interval = setInterval(() => {
+      socket.send('ping!');
+      // console.log('ping!');
+    }, 1000);
+
     socket.onmessage = msg => {
       const dataFromServer = JSON.parse(msg.data);
-      console.log(dataFromServer);
+      console.log('dataFromServer: ', dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
           setPatients(pats => [
@@ -716,6 +886,7 @@ function Chat(props) {
           setMessages(msgs =>
             msgs.set(dataFromServer.PatientID.toString(), []),
           );
+          console.log('In setPatients: ', Patients);
           break;
 
         case 7:
@@ -777,8 +948,7 @@ function Chat(props) {
           break;
       }
       console.log(Patients);
-      localStorage.setItem('messages', JSON.stringify(messages));
-      localStorage.setItem('Patients', JSON.stringify(Patients));
+      saveLocal();
     };
 
     socket.onclose = event => {
@@ -791,9 +961,7 @@ function Chat(props) {
   }, [socket, CurrentPatientID]);
 
   useEffect(() => {
-    localStorage.setItem('messages', JSON.stringify(messages));
-    localStorage.setItem('Patients', JSON.stringify(Patients));
-    console.log('In localStorage');
+    saveLocal();
   });
 
   return (
@@ -831,6 +999,9 @@ function Chat(props) {
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
           closeChat={closeChat}
+          saveLocal={saveLocal}
+          setMessages={setMessages}
+          messages={messages}
         />
         <Messages
           messages={messages}
@@ -848,6 +1019,8 @@ function Chat(props) {
           setMessages={setMessages}
           requireMedicalRecord={requireMedicalRecord}
           requirePrescription={requirePrescription}
+          socket={socket}
+          saveLocal={saveLocal}
         />
         <InputBox
           message={message}
