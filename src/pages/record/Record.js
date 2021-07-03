@@ -40,18 +40,18 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
   },
   headerContainer: {
-    margin: theme.spacing(3),
-    height: '60 px',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    margin: theme.spacing(1),
+    padding: theme.spacing(2, 3),
+    width: '100%',
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   headertext: {
     display: 'flex',
     color: 'rgba(0, 0, 0, 0.6)',
   },
   pageContainer: {
-    marginTop: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     border: 5,
-    borderRadius: 0,
+    borderRadius: 30,
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
     width: '90%',
@@ -93,6 +93,10 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row-reverse',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
+  },
+  button: {
+    borderRadius: 10,
+    padding: theme.spacing(0.5, 1),
   },
 }));
 
@@ -173,7 +177,7 @@ export default function Home(props) {
     Department: tmpDepartment,
   } = props.record;
 
-  const { setRecord } = props;
+  const { setRecord, className } = props;
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
@@ -598,12 +602,26 @@ export default function Home(props) {
   }
 
   return (
-    <Container component="main" className={classes.verticalContainer}>
-      <CssBaseline />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Container className={classes.headerContainer}>
-          <Button variant="outlined" color="primary" onClick={HandleGoback}>
-            <ArrowBackIosIcon color="primary" size="small" />
+    <Container
+      component="main"
+      className={`${classes.verticalContainer} ${className}`}
+    >
+      <Grid container>
+        <Grid
+          item
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.headerContainer}
+        >
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={HandleGoback}
+            className={classes.button}
+          >
+            <ArrowBackIosIcon color="primary" fontSize="small" />
             <Container className={classes.buttontext}>
               <Typography component="h4">返回</Typography>
             </Container>
@@ -618,7 +636,7 @@ export default function Home(props) {
           <Typography component="h5" className={classes.headertext}>
             {tmpDepartment}
           </Typography>
-        </Container>
+        </Grid>
         <Container className={classes.pageContainer}>
           <Grid container direction="row" justify="right">
             <Typography component="h2" className={classes.titletext}>
@@ -730,10 +748,14 @@ export default function Home(props) {
             </Grid>
           </Box>
         </Container>
-        <Container spacing={1} expandButton>
+        <Container spacing={1} expandButton style={{}}>
           {expandButton ? (
-            <Button color="primary" variant="outlined">
-              <ContactsIcon Icon color="primary" size="small" />
+            <Button
+              color="primary"
+              variant="outlined"
+              className={classes.button}
+            >
+              <ContactsIcon Icon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
                 <Typography component="h4">处方</Typography>
               </Container>
@@ -743,8 +765,9 @@ export default function Home(props) {
               color="primary"
               variant="outlined"
               onClick={HandleOnAddPrescrption}
+              className={classes.button}
             >
-              <AddIcon color="primary" size="small" />
+              <AddIcon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
                 <Typography component="h4">处方</Typography>
               </Container>
@@ -773,8 +796,13 @@ export default function Home(props) {
           <div />
         )}
         <Container className={classes.save}>
-          <Button variant="outlined" color="primary" onClick={HandleSaveClick}>
-            <CheckIcon color="primary" size="small" />
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={HandleSaveClick}
+            className={classes.button}
+          >
+            <CheckIcon color="primary" fontSize="small" />
             <Container className={classes.buttontext}>
               <Typography component="h4">保存</Typography>
             </Container>

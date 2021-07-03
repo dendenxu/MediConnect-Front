@@ -75,8 +75,8 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
   },
   endButton: {
-    border: 1,
     color: 'white',
+    border: 1,
     borderRadius: 10,
     padding: theme.spacing(1),
     background: 'rgb(243,166,123)',

@@ -217,8 +217,7 @@ export default function Home() {
 
   return (
     <Container component="main" className={classes.verticalContainer}>
-      {/* <CssBaseline /> */}
-      <Grid container direction="column" justify="center" alignItems="center">
+      <Grid container>
         <Container className={classes.headerContainer}>
           <Button variant="outlined" color="primary" onClick={HandleGoback}>
             <ArrowBackIosIcon color="primary" size="small" />
