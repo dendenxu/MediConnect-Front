@@ -72,7 +72,6 @@ export default function DepartmentItem(props) {
             state: did,
           });
         }}
-        // to={data.path}
       >
         <ListItemText
           primary={

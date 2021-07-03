@@ -16,6 +16,9 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -33,19 +36,22 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  alert: {
+    width: '100%',
+  },
   headerContainer: {
-    margin: theme.spacing(3),
-    height: '60 px',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    margin: theme.spacing(1),
+    padding: theme.spacing(2, 3),
+    width: '100%',
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   headertext: {
     display: 'flex',
     color: 'rgba(0, 0, 0, 0.6)',
   },
   pageContainer: {
-    marginTop: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -64,7 +70,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     border: 5,
-    borderRadius: 0,
+    borderRadius: 30,
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
     width: '90%',
@@ -88,13 +94,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
   },
+  button: {
+    borderRadius: 10,
+    padding: theme.spacing(0.5, 1),
+  },
 }));
 
 let linecount = 1;
 let desID;
 let tempprescription = [];
 let temprows = [];
-let initial = -2;
 let whetherpres = 0;
 
 export default function Home(props) {
@@ -103,18 +112,30 @@ export default function Home(props) {
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
   const columns = [
-    { field: 'name', headerName: '药品名', width: 320, editable: true },
+    { field: 'name', headerName: '药品名', width: 200, editable: true },
     {
       field: 'size',
       headerName: '数量',
-      width: 220,
+      width: 140,
       editable: true,
     },
     {
       field: 'qt',
       headerName: '用法',
-      width: 220,
+      width: 140,
       editable: true,
+    },
+    {
+      field: 'price',
+      headerName: '价格',
+      width: 130,
+      editable: false,
+    },
+    {
+      field: 'contraindication',
+      headerName: '禁忌症',
+      width: 140,
+      editable: false,
     },
   ];
 
@@ -122,10 +143,9 @@ export default function Home(props) {
 
   let defaultPrescription = [];
 
-  function CreatePrescriptionData(id, name, size, qt) {
-    return { id, name, size, qt };
+  function CreatePrescriptionData(id, name, size, qt, price, contraindication) {
+    return { id, name, size, qt, price, contraindication };
   }
-
   function CreatePrescriptionDataBackEnd(
     lineno,
     id,
@@ -157,7 +177,7 @@ export default function Home(props) {
     Department: tmpDepartment,
   } = props.record;
 
-  const { setRecord } = props;
+  const { setRecord, className } = props;
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
@@ -175,6 +195,8 @@ export default function Home(props) {
   const [InputError2, setInputError2] = useState(false);
   const [InputError3, setInputError3] = useState(false);
   const [InputError4, setInputError4] = useState(false);
+  const [DataGridError, setDataGridError] = useState('');
+  const [DataGridErrorOpen, setDataGridErrorOpen] = React.useState(false);
   // // console.log(tmpCaseID);
   // // console.log(tmpPatientID);
   // // console.log(tmpDoctorID);
@@ -183,134 +205,151 @@ export default function Home(props) {
   const [rows, setRows] = useState(defaultRows);
 
   useEffect(async () => {
-    if (initial <= 0) {
-      // console.log(initial);
-      initial += 1;
-      const tmpresponse = await fetch(
-        `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
-        {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    // console.log(initial);
+    const tmpresponse = await fetch(
+      `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
-      // // console.log(tmpresponse);
-      const tmpmessage = await tmpresponse.json();
-      setPatientName(tmpmessage.data.PatientName);
-      setPatientGender(tmpmessage.data.Gender);
-      setDiagnosis(tmpmessage.data.Diagnosis);
-      setMedicalHistory(tmpmessage.data.History);
-      setChiefComplaint(tmpmessage.data.Complaint);
-      setOpinions(tmpmessage.data.Treatment);
-      // console.log(tmpmessage.data.Prescriptions);
-      // console.log(tmpmessage.data.Prescriptions.length);
-      if (tmpmessage.data.Prescriptions.length === 0) {
-        setRows(defaultRows);
-        linecount = 1;
-        whetherpres = 1;
-      } else {
-        whetherpres = 1;
-        SetExpand(true);
-        const tmpPres = tmpmessage.data.Prescriptions[0];
-        desID = tmpPres.ID;
-        const tmpGL = tmpPres.Guidelines;
-        for (let i = 0; i < tmpGL.length; i += 1) {
-          tempprescription = tempprescription.concat([
-            CreatePrescriptionDataBackEnd(
-              i + 1,
-              desID,
-              tmpGL[i].ID,
-              tmpCaseID,
-              tmpPres.Advice,
-              tmpGL[i].MedicineID,
-              tmpGL[i].Dosage,
-              tmpGL[i].Quantity,
-            ),
-          ]);
-          temprows = temprows.concat([
-            CreatePrescriptionData(
-              i + 1,
-              tmpGL[i].Medicine.Name,
-              tmpGL[i].Quantity,
-              tmpGL[i].Dosage,
-            ),
-          ]);
-        }
-        // console.log(tempprescription);
-        // console.log(temprows);
-        defaultRows = temprows;
-        defaultPrescription = tempprescription;
-        setPrescriptions(tempprescription);
-        setRows(temprows);
-        tempprescription = [];
-        temprows = [];
-        linecount = tmpGL.length + 1;
-      }
-    } else {
-      initial = -2;
+      },
+    );
+    // // console.log(tmpresponse);
+    const tmpmessage = await tmpresponse.json();
+    setPatientName(tmpmessage.data.PatientName);
+    setPatientGender(tmpmessage.data.Gender);
+    setDiagnosis(tmpmessage.data.Diagnosis);
+    setMedicalHistory(tmpmessage.data.History);
+    setChiefComplaint(tmpmessage.data.Complaint);
+    setOpinions(tmpmessage.data.Treatment);
+    console.log(tmpmessage.data);
+    // console.log(tmpmessage.data.Prescriptions.length);
+    whetherpres = 1;
+    SetExpand(true);
+    const tmpPres = tmpmessage.data.Prescriptions[0];
+    console.log(tmpPres);
+    desID = tmpPres.ID;
+    const tmpGL = tmpPres.Guidelines;
+    for (let i = 0; i < tmpGL.length; i += 1) {
+      tempprescription = tempprescription.concat([
+        CreatePrescriptionDataBackEnd(
+          i + 1,
+          desID,
+          tmpGL[i].ID,
+          tmpCaseID,
+          tmpPres.Advice,
+          tmpGL[i].MedicineID,
+          tmpGL[i].Dosage,
+          tmpGL[i].Quantity,
+        ),
+      ]);
+      temprows = temprows.concat([
+        CreatePrescriptionData(
+          i + 1,
+          tmpGL[i].Medicine.Name,
+          tmpGL[i].Quantity,
+          tmpGL[i].Dosage,
+          tmpGL[i].Medicine.Price,
+          tmpGL[i].Medicine.Contraindication,
+        ),
+      ]);
+      // console.log(tempprescription);
+      // console.log(temprows);
+      defaultRows = temprows;
+      defaultPrescription = tempprescription;
+      setPrescriptions(tempprescription);
+      setRows(temprows);
+      tempprescription = [];
+      temprows = [];
+      linecount = tmpGL.length + 1;
     }
+
     // console.log(rows);
     // console.log(allprescriptions);
-  }, [initial]);
+  }, []);
 
   const handleEditCellChangeCommitted = async ({ id, field, props }) => {
     if (field === 'name') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
-      const newname = data.value.toString();
+      let newname = data.value.toString();
       const response = await fetch(`/api/medicine?q=${newname}`, {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
       const message = await response.json();
-      // console.log(message);
-      const mediId = message.data[0].ID;
       if (response.ok) {
-        // console.log(`succeed in finding the medicine`);
-        // console.log(message);
+        console.log(`succeed in finding the medicine`);
+        console.log(message);
       } else {
-        // console.log(`fail to find the medicine`);
-        // console.log(message);
+        console.log(`fail to find the medicine`);
+        console.log(message);
       }
-
-      const updatedRows = rows.map(row => {
-        if (row.id === id) {
-          return { ...row, name: newname };
-        }
-        return row;
-      });
-      setRows(updatedRows);
-      // console.log(mediId);
-      const updatedPres = allprescriptions.map(allprescription => {
-        if (allprescription.lineno === id) {
-          // console.log(mediId);
-          return { ...allprescription, MedicineId: mediId };
-        }
-        return allprescription;
-      });
-      setPrescriptions(updatedPres);
+      if (message.data.length === 0) {
+        setDataGridErrorOpen(true);
+        setDataGridError('药品未找到,请重新输入');
+        console.log(DataGridError);
+      } else {
+        setDataGridErrorOpen(false);
+        newname = message.data[0].Name;
+        const mediId = message.data[0].ID;
+        const newprice = message.data[0].Price;
+        const newcontraindication = message.data[0].Contraindication;
+        console.log(newname);
+        console.log(newprice);
+        console.log(newcontraindication);
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return {
+              ...row,
+              name: newname,
+              price: newprice,
+              contraindication: newcontraindication,
+            };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+        // console.log(mediId);
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.lineno === id) {
+            // console.log(mediId);
+            return { ...allprescription, MedicineId: mediId };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
     }
     if (field === 'size') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
+      console.log(data.value);
       const newsize = Number(data.value);
-      const updatedRows = rows.map(row => {
-        if (row.id === id) {
-          return { ...row, size: newsize };
-        }
-        return row;
-      });
-      setRows(updatedRows);
+      console.log(Number.isNaN(newsize));
+      if (Number.isNaN(newsize)) {
+        setDataGridErrorOpen(true);
+        setDataGridError('请输入数字！');
+        console.log(DataGridError);
+      } else {
+        setDataGridErrorOpen(false);
+        const updatedRows = rows.map(row => {
+          if (row.id === id) {
+            return { ...row, size: newsize };
+          }
+          return row;
+        });
+        setRows(updatedRows);
 
-      const updatedPres = allprescriptions.map(allprescription => {
-        if (allprescription.lineno === id) {
-          return { ...allprescription, quantity: newsize };
-        }
-        return allprescription;
-      });
-      setPrescriptions(updatedPres);
+        const updatedPres = allprescriptions.map(allprescription => {
+          if (allprescription.lineno === id) {
+            return { ...allprescription, quantity: newsize };
+          }
+          return allprescription;
+        });
+        setPrescriptions(updatedPres);
+      }
     }
     if (field === 'qt') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
@@ -413,9 +452,15 @@ export default function Home(props) {
   };
 
   const HandleOnAddLine = async () => {
-    // console.log(linecount);
     const newrow = rows.concat([
-      CreatePrescriptionData(linecount, '输入药品名', '输入数量', '输入用法'),
+      CreatePrescriptionData(
+        linecount,
+        '输入药品名',
+        '输入数量',
+        '输入用法',
+        ' ',
+        ' ',
+      ),
     ]);
     const newdefaultdescription = allprescriptions.concat([
       CreatePrescriptionDataBackEnd(
@@ -432,6 +477,7 @@ export default function Home(props) {
     setPrescriptions(newdefaultdescription);
     linecount += 1;
     setRows(newrow);
+    console.log(linecount);
     // console.log(rows);
     // console.log(allprescriptions);
   };
@@ -529,13 +575,53 @@ export default function Home(props) {
     setRecord(null);
   };
 
+  function TransitionAlerts() {
+    return (
+      <div className={classes.alert}>
+        <Collapse in={DataGridErrorOpen}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setDataGridErrorOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            {DataGridError}
+          </Alert>
+        </Collapse>
+      </div>
+    );
+  }
+
   return (
-    <Container component="main" className={classes.verticalContainer}>
-      <CssBaseline />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Container className={classes.headerContainer}>
-          <Button variant="outlined" color="primary" onClick={HandleGoback}>
-            <ArrowBackIosIcon color="primary" size="small" />
+    <Container
+      component="main"
+      className={`${classes.verticalContainer} ${className}`}
+    >
+      <Grid container>
+        <Grid
+          item
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.headerContainer}
+        >
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={HandleGoback}
+            className={classes.button}
+          >
+            <ArrowBackIosIcon color="primary" fontSize="small" />
             <Container className={classes.buttontext}>
               <Typography component="h4">返回</Typography>
             </Container>
@@ -550,7 +636,7 @@ export default function Home(props) {
           <Typography component="h5" className={classes.headertext}>
             {tmpDepartment}
           </Typography>
-        </Container>
+        </Grid>
         <Container className={classes.pageContainer}>
           <Grid container direction="row" justify="right">
             <Typography component="h2" className={classes.titletext}>
@@ -662,10 +748,14 @@ export default function Home(props) {
             </Grid>
           </Box>
         </Container>
-        <Container spacing={1} expandButton>
+        <Container spacing={1} expandButton style={{}}>
           {expandButton ? (
-            <Button color="primary" variant="outlined">
-              <ContactsIcon Icon color="primary" size="small" />
+            <Button
+              color="primary"
+              variant="outlined"
+              className={classes.button}
+            >
+              <ContactsIcon Icon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
                 <Typography component="h4">处方</Typography>
               </Container>
@@ -675,8 +765,9 @@ export default function Home(props) {
               color="primary"
               variant="outlined"
               onClick={HandleOnAddPrescrption}
+              className={classes.button}
             >
-              <AddIcon color="primary" size="small" />
+              <AddIcon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
                 <Typography component="h4">处方</Typography>
               </Container>
@@ -686,6 +777,7 @@ export default function Home(props) {
         {expandButton ? (
           <Container className={classes.pageContainer}>
             <Box className={classes.borderedContainer}>
+              <TransitionAlerts />
               <div style={{ height: 300, width: '100%' }}>
                 <DataGrid
                   rows={rows}
@@ -704,8 +796,13 @@ export default function Home(props) {
           <div />
         )}
         <Container className={classes.save}>
-          <Button variant="outlined" color="primary" onClick={HandleSaveClick}>
-            <CheckIcon color="primary" size="small" />
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={HandleSaveClick}
+            className={classes.button}
+          >
+            <CheckIcon color="primary" fontSize="small" />
             <Container className={classes.buttontext}>
               <Typography component="h4">保存</Typography>
             </Container>

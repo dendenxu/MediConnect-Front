@@ -44,18 +44,7 @@ const useStyles = makeStyles(() => ({
 export default function RegInfo() {
   const classes = useStyles();
   const location = useLocation();
-  const [regData, setRegData] = useState({
-    day: 22,
-    department: '太平间',
-    doctor: '孙笑川',
-    halfday: 'morning',
-    id: 1,
-    month: 6,
-    patient: 'XuZhen',
-    status: 'committed',
-    terminated_cause: '',
-    year: 2021,
-  });
+  const [regData, setRegData] = useState({});
 
   useEffect(async () => {
     await fetch(`/api/registration/${location.state}`, {
