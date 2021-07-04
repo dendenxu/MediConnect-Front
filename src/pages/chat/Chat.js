@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
     border: 1,
     borderRadius: 10,
     padding: theme.spacing(1),
-    background: 'rgb(243,166,123)',
+    // background: 'rgb(243,166,123)',
   },
   namepaper: {
     // border: 1,
@@ -383,6 +383,28 @@ function TopBar({
     setIsEmpty(true);
   };
 
+  function renderButtonText() {
+    switch (Status) {
+      case 'committed':
+        return '开始挂号';
+      case 'accepted':
+        return '结束挂号';
+      default:
+        return '...';
+    }
+  }
+
+  function renderButtonColor() {
+    switch (Status) {
+      case 'committed':
+        return 'rgb(243,166,123)';
+      case 'accepted':
+        return 'red';
+      default:
+        return '';
+    }
+  }
+
   return (
     <div className={classes.topbar}>
       {!IsEmpty && (
@@ -414,15 +436,19 @@ function TopBar({
           flexGrow: 1,
         }}
       />
+
       <Button
         disabled={IsEmpty}
         className={classes.endButton}
         variant="contained"
         color="primary"
+        style={{
+          backgroundColor: renderButtonColor(),
+        }}
         size="small"
         onClick={handleEndClick}
       >
-        结束挂号
+        {renderButtonText()}
       </Button>
     </div>
   );
