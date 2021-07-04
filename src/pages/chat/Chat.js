@@ -56,6 +56,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     width: '25%',
+    minWidth: 100,
     margin: theme.spacing(1),
     padding: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
@@ -265,6 +266,7 @@ function PatientList({
   Patients,
   setCurrentPatientID,
   setPatientName,
+  setStatus,
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
@@ -272,11 +274,18 @@ function PatientList({
 }) {
   const classes = useStyles();
 
-  const handleListItemClick = (event, index, PatientID, PatientName) => {
+  const handleListItemClick = (
+    event,
+    index,
+    PatientID,
+    PatientName,
+    Status,
+  ) => {
     setIsEmpty(false);
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
+    setStatus(Status);
     setPatients(pats =>
       pats.map(p => {
         if (p.PatientID === PatientID)
@@ -308,6 +317,7 @@ function PatientList({
           Patients.findIndex(obj => obj.PatientID === Patient.PatientID),
           Patient.PatientID,
           Patient.PatientName,
+          Patient.Status,
         )
       }
     >
@@ -316,7 +326,9 @@ function PatientList({
         classes={{ badge: classes.badge }}
         max={99}
       >
-        {Patient.Status === 'committed' && <FilterTiltShiftOutlined />}
+        {Patient.Status === 'committed' && (
+          <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+        )}
         {Patient.Status === 'accepted' && (
           <AdjustOutlined style={{ fill: 'limegreen' }} />
         )}
@@ -342,6 +354,8 @@ function TopBar({
   setCurrentPatientID,
   setPatientName,
   PatientName,
+  Status,
+  setStatus,
   IsEmpty,
   setIsEmpty,
   setSelectedIndex,
@@ -374,6 +388,12 @@ function TopBar({
       {!IsEmpty && (
         <>
           {/* <Paper className={classes.namepaper} variant="outlined" square> */}
+          {Status === 'committed' && (
+            <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+          )}
+          {Status === 'accepted' && (
+            <AdjustOutlined style={{ fill: 'limegreen' }} />
+          )}
           <Typography
             style={{
               color: 'white',
@@ -708,6 +728,7 @@ function Chat(props) {
   const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
+  const [Status, setStatus] = useState('');
   const [Patients, setPatients] = useState([
     {
       PatientID: 1983,
@@ -1004,6 +1025,7 @@ function Chat(props) {
         Patients={Patients}
         setCurrentPatientID={setCurrentPatientID}
         setPatientName={setPatientName}
+        setStatus={setStatus}
         setSelectedIndex={setSelectedIndex}
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
@@ -1021,6 +1043,8 @@ function Chat(props) {
           setCurrentPatientID={setCurrentPatientID}
           setPatientName={setPatientName}
           PatientName={PatientName}
+          Status={Status}
+          setStatus={setStatus}
           IsEmpty={IsEmpty}
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
