@@ -218,8 +218,7 @@ function EditPass(props) {
   if (birthDate.getMonth() + 1 < 10)
     birthdayMonth = '0'.toString() + birthdayMonth;
   let birthdayDate = birthDate.getDate().toString();
-  if (birthDate.getDate() + 1 < 10)
-    birthdayDate = '0'.toString() + birthdayDate;
+  if (birthDate.getDate() < 10) birthdayDate = '0'.toString() + birthdayDate;
   const birthday =
     birthdayYear +
     '-'.toString() +
