@@ -22,6 +22,7 @@ import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.s
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
+import MileStone from '../components/MileStone';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingdiv: {
@@ -55,10 +56,10 @@ const useStyles = makeStyles(theme => ({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    width: '25%',
-    minWidth: 100,
+    width: '30%',
+    minWidth: 200,
     margin: theme.spacing(1),
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.5),
     backgroundColor: theme.palette.primary.main,
     // backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
@@ -337,10 +338,19 @@ function PatientList({
     </ListItem>
   ));
 
+  const [mileStones, setMileStones] = useState([
+    { checked: true, activity: 'FUCK' },
+    { checked: false, activity: 'jjjjajajjajaj' },
+  ]);
+
   return (
     <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
         {patientsA}
+      </List>
+      <Divider style={{ background: 'whitesmoke' }} />
+      <List>
+        {mileStones && mileStones.map(data => <MileStone data={data} />)}
       </List>
     </div>
   );
