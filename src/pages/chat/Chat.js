@@ -17,6 +17,7 @@ import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ReactFileReader from 'react-file-reader';
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
+import { AdjustOutlined, FilterTiltShiftOutlined } from '@material-ui/icons';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
@@ -283,6 +284,7 @@ function PatientList({
             PatientID: p.PatientID,
             PatientName: p.PatientName,
             NewMessageCount: 0,
+            Status: p.Status,
           };
         return p;
       }),
@@ -314,6 +316,10 @@ function PatientList({
         classes={{ badge: classes.badge }}
         max={99}
       >
+        {Patient.Status === 'committed' && <FilterTiltShiftOutlined />}
+        {Patient.Status === 'accepted' && (
+          <AdjustOutlined style={{ fill: 'limegreen' }} />
+        )}
         <ListItemText primary={Patient.PatientName} />
       </Badge>
     </ListItem>
@@ -703,10 +709,30 @@ function Chat(props) {
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
-    { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
-    { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
-    { PatientID: 222, PatientName: '病人甲', NewMessageCount: 3 },
+    {
+      PatientID: 1983,
+      PatientName: '张三',
+      NewMessageCount: 1,
+      Status: 'committed',
+    },
+    {
+      PatientID: 1985,
+      PatientName: '李四',
+      NewMessageCount: 2,
+      Status: 'accepted',
+    },
+    {
+      PatientID: 1987,
+      PatientName: '王五',
+      NewMessageCount: 3,
+      Status: 'committed',
+    },
+    {
+      PatientID: 222,
+      PatientName: '病人甲',
+      NewMessageCount: 3,
+      Status: 'committed',
+    },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
