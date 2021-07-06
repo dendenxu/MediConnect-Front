@@ -373,6 +373,7 @@ function TopBar({
   saveLocal,
   setMessages,
   messgaes,
+  updatePatients,
 }) {
   const classes = useStyles();
 
@@ -382,9 +383,10 @@ function TopBar({
     setSelectedIndex();
     setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
     console.log('In handleEndClick, messages: ', messgaes);
-    setPatients(Pts =>
-      Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
-    );
+    // setPatients(Pts =>
+    //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
+    // );
+    updatePatients();
     console.log('In handleEndClick, Patients: ', Patients);
     setPatientName('');
     setCurrentPatientID('');
@@ -762,79 +764,81 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
 function Chat(props) {
   const classes = useStyles();
   const [socket, setSocket] = useState(null);
-  const [CurrentUserID, setCurrentUserID] = useState(111);
+  const [CurrentUserID, setCurrentUserID] = useState(1);
   const [PatientName, setPatientName] = useState('');
   const [Status, setStatus] = useState('');
-  const [Patients, setPatients] = useState([
-    {
-      PatientID: 1983,
-      PatientName: '张三',
-      NewMessageCount: 1,
-      Status: 'committed',
-    },
-    {
-      PatientID: 1985,
-      PatientName: '李四',
-      NewMessageCount: 2,
-      Status: 'accepted',
-    },
-    {
-      PatientID: 1987,
-      PatientName: '王五',
-      NewMessageCount: 3,
-      Status: 'committed',
-    },
-    {
-      PatientID: 222,
-      PatientName: '病人甲',
-      NewMessageCount: 3,
-      Status: 'committed',
-    },
-  ]);
+  // const [Patients, setPatients] = useState([
+  //   {
+  //     PatientID: 1983,
+  //     PatientName: '张三',
+  //     NewMessageCount: 1,
+  //     Status: 'committed',
+  //   },
+  //   {
+  //     PatientID: 1985,
+  //     PatientName: '李四',
+  //     NewMessageCount: 2,
+  //     Status: 'accepted',
+  //   },
+  //   {
+  //     PatientID: 1987,
+  //     PatientName: '王五',
+  //     NewMessageCount: 3,
+  //     Status: 'committed',
+  //   },
+  //   {
+  //     PatientID: 222,
+  //     PatientName: '病人甲',
+  //     NewMessageCount: 3,
+  //     Status: 'committed',
+  //   },
+  // ]);
+  const [Patients, setPatients] = useState([]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState(
-    Map({
-      1983: [
-        { sender: 111, content: '医生发的第一条消息', time: '12:20' },
-        { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
-        { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
-        { sender: 111, content: '医生发的第二条消息', time: '12:34' },
-        { sender: 111, content: '医生发的第三条消息', time: '12:35' },
-        { sender: 111, content: '医生发的第四条消息', time: '12:36' },
-        { sender: 111, content: '医生发的第五条消息', time: '12：37' },
-        { sender: 111, content: '医生发的第六条消息', time: '12：38' },
-        { sender: 111, content: '医生发的第七条消息', time: '12：39' },
-        { sender: 111, content: '医生发的第八条消息', time: '12：40' },
-        { sender: 111, content: '医生发的第九条消息', time: '12：41' },
-        { sender: 111, content: '医生发的第十条消息', time: '12：42' },
-        { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
-        { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
-        { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
-        { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
-        { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
-        { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
-        { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
-        { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
-      ],
-      1985: [
-        { sender: 111, content: '医生发的第一条消息', time: '14:30' },
-        { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
-        // {
-        //   sender: 111,
-        //   content: '点击链接查看你的病历：https://www.baidu.com/',
-        //   time: '14:33',
-        // },
-        // {
-        //   sender: 111,
-        //   content: '点击链接查看你的处方：https://www.baidu.com/',
-        //   time: '14:33',
-        // },
-      ],
-      1987: [],
-      222: [],
-    }),
-  );
+  // const [messages, setMessages] = useState(
+  //   Map({
+  //     1983: [
+  //       { sender: 111, content: '医生发的第一条消息', time: '12:20' },
+  //       { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
+  //       { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+  //       { sender: 111, content: '医生发的第二条消息', time: '12:34' },
+  //       { sender: 111, content: '医生发的第三条消息', time: '12:35' },
+  //       { sender: 111, content: '医生发的第四条消息', time: '12:36' },
+  //       { sender: 111, content: '医生发的第五条消息', time: '12：37' },
+  //       { sender: 111, content: '医生发的第六条消息', time: '12：38' },
+  //       { sender: 111, content: '医生发的第七条消息', time: '12：39' },
+  //       { sender: 111, content: '医生发的第八条消息', time: '12：40' },
+  //       { sender: 111, content: '医生发的第九条消息', time: '12：41' },
+  //       { sender: 111, content: '医生发的第十条消息', time: '12：42' },
+  //       { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
+  //       { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
+  //       { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
+  //       { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
+  //       { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
+  //       { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
+  //       { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
+  //       { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
+  //     ],
+  //     1985: [
+  //       { sender: 111, content: '医生发的第一条消息', time: '14:30' },
+  //       { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
+  //       // {
+  //       //   sender: 111,
+  //       //   content: '点击链接查看你的病历：https://www.baidu.com/',
+  //       //   time: '14:33',
+  //       // },
+  //       // {
+  //       //   sender: 111,
+  //       //   content: '点击链接查看你的处方：https://www.baidu.com/',
+  //       //   time: '14:33',
+  //       // },
+  //     ],
+  //     1987: [],
+  //     222: [],
+  //   }),
+  // );
+  const [messages, setMessages] = useState(Map({}));
   const [Questions, setQuestions] = useState([
     '能详细描述一下你的病症吗？',
     '请问您有任何药物或食物过敏吗',
@@ -847,9 +851,48 @@ function Chat(props) {
 
   const saveLocal = () => {
     localStorage.setItem('messages', JSON.stringify(messages));
-    localStorage.setItem('Patients', JSON.stringify(Patients));
+    // localStorage.setItem('Patients', JSON.stringify(Patients));
     console.log('SaveLocal: ', messages);
-    console.log('SaveLocal: ', Patients);
+    console.log(
+      'SaveLocal, saved? : ',
+      JSON.parse(localStorage.getItem('messages')),
+    );
+    // console.log('SaveLocal: ', Patients);
+  };
+
+  const updatePatients = () => {
+    fetch(`/api/registrations`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        // console.log("In updatePatients, data.data: ", data.data);
+        // setPatients(pas => data.data);
+        setPatients([]);
+        data.data.map(p => {
+          // console.log("In updatePatients, p: ",p);
+          setPatients(pas => [
+            ...pas,
+            {
+              PatientID: p.patient_id,
+              PatientName: p.patient,
+              NewMessageCount: p.NewMessageCount ? p.NewMessageCount : 0,
+              Status: p.status,
+            },
+          ]);
+          if (!messages.has(p.patient_id.toString())) {
+            setMessages(msgs => msgs.set(p.patient_id.toString(), []));
+            console.log('In updatePatients, Add one messages');
+          }
+
+          return p;
+        });
+        console.log('In updatePatients, Patients: ', Patients);
+        console.log('In updatePatients, message: ', message);
+      });
   };
 
   const closeChat = patientID => {
@@ -921,17 +964,12 @@ function Chat(props) {
 
   useEffect(() => {
     const localMessages = JSON.parse(localStorage.getItem('messages'));
-    const localPatients = JSON.parse(localStorage.getItem('Patients'));
-    console.log('localMessages: ', localMessages);
-    console.log('localPatients: ', localPatients);
+    console.log('Initial localMessages: ', localMessages);
     if (localMessages) {
       setMessages(msgs => Map(localMessages));
-      console.log('Messages: ', messages);
+      console.log('Initial Messages: ', messages);
     }
-    if (localPatients) {
-      setPatients(pas => localPatients);
-      console.log('Patients: ', Patients);
-    }
+    updatePatients();
     saveLocal();
   }, []);
 
@@ -958,14 +996,7 @@ function Chat(props) {
       console.log('dataFromServer: ', dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
-          setPatients(pats => [
-            ...pats,
-            {
-              PatientID: dataFromServer.PatientID,
-              PatientName: dataFromServer.PatientName,
-              NewMessageCount: 0,
-            },
-          ]);
+          updatePatients();
           setMessages(msgs =>
             msgs.set(dataFromServer.PatientID.toString(), []),
           );
@@ -1088,6 +1119,7 @@ function Chat(props) {
           saveLocal={saveLocal}
           setMessages={setMessages}
           messages={messages}
+          updatePatients={updatePatients}
         />
         <Messages
           messages={messages}
