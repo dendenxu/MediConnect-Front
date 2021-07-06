@@ -426,19 +426,21 @@ function TopBar({
               CurrentPatientID,
             );
             setSelectedIndex();
-            setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+
             console.log('In handleEndClick, messages: ', messgaes);
             // setPatients(Pts =>
             //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
             // );
             updatePatients();
             console.log('In handleEndClick, Patients: ', Patients);
+            setIsEmpty(true);
+            setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
             setPatientName('');
             setCurrentPatientID('');
             console.log('After closeChat, Patients: ', Patients);
             saveLocal();
-            setIsEmpty(true);
             updatePatients();
+            // setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
           }
         });
     }
@@ -788,6 +790,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
   console.log('In Messages: ', messages);
+  console.log('In Messages, CurrentPatientID: ', CurrentPatientID);
+  console.log('In Messages, IsEmpty: ', IsEmpty);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
         <div
