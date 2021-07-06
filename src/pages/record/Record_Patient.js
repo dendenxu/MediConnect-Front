@@ -32,19 +32,22 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  alert: {
+    width: '100%',
+  },
   headerContainer: {
-    margin: theme.spacing(3),
-    height: '60 px',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    margin: theme.spacing(1),
+    padding: theme.spacing(2, 3),
+    width: '100%',
+    borderRadius: 16,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
   headertext: {
     display: 'flex',
     color: 'rgba(0, 0, 0, 0.6)',
   },
   pageContainer: {
-    marginTop: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -63,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     border: 5,
-    borderRadius: 0,
+    borderRadius: 30,
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
     padding: theme.spacing(3),
     width: '90%',
@@ -87,6 +90,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
   },
+  button: {
+    borderRadius: 10,
+    padding: theme.spacing(0.5, 1),
+  },
 }));
 
 let linecount = 1;
@@ -100,25 +107,37 @@ export default function Home() {
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
   const columns = [
-    { field: 'name', headerName: '药品名', width: 320, editable: false },
+    { field: 'name', headerName: '药品名', width: 200, editable: true },
     {
       field: 'size',
       headerName: '数量',
-      width: 220,
-      editable: false,
+      width: 140,
+      editable: true,
     },
     {
       field: 'qt',
       headerName: '用法',
-      width: 220,
+      width: 140,
+      editable: true,
+    },
+    {
+      field: 'price',
+      headerName: '价格',
+      width: 130,
+      editable: false,
+    },
+    {
+      field: 'contraindication',
+      headerName: '禁忌症',
+      width: 140,
       editable: false,
     },
   ];
 
   const defaultRows = [];
 
-  function CreatePrescriptionData(id, name, size, qt) {
-    return { id, name, size, qt };
+  function CreatePrescriptionData(id, name, size, qt, price, contraindication) {
+    return { id, name, size, qt, price, contraindication };
   }
 
   const [chiefComplaint, setChiefComplaint] = useState(''); //   to fill
@@ -145,7 +164,7 @@ export default function Home() {
     if (initial <= 0) {
       console.log(initial);
       initial += 1;
-      const tmpresponse = await fetch(
+      let tmpresponse = await fetch(
         `/api/patient/${tmpPatientID}/cases/${CaseID}`,
         {
           method: 'get',
@@ -155,11 +174,12 @@ export default function Home() {
         },
       );
       // console.log(tmpresponse);
-      const tmpmessage = await tmpresponse.json();
+      let tmpmessage = await tmpresponse.json();
+      console.log(tmpmessage);
       tmpDoctorID = tmpmessage.data.DoctorID;
       tmpDepartment = tmpmessage.data.Department;
-      setPatientName(tmpmessage.data.PatientName);
-      setPatientGender(tmpmessage.data.Gender);
+      // setPatientName(tmpmessage.data.PatientName);
+      // setPatientGender(tmpmessage.data.Gender);
       setDiagnosis(tmpmessage.data.Diagnosis);
       setMedicalHistory(tmpmessage.data.History);
       setChiefComplaint(tmpmessage.data.Complaint);
@@ -179,6 +199,8 @@ export default function Home() {
               tmpGL[i].Medicine.Name,
               tmpGL[i].Quantity,
               tmpGL[i].Dosage,
+              tmpGL[i].Medicine.Price,
+              tmpGL[i].Medicine.Contraindication,
             ),
           ]);
         }
@@ -188,26 +210,25 @@ export default function Home() {
         temprows = [];
         linecount = tmpGL.length + 1;
       }
+      tmpresponse = await fetch(`api/account/getinfobypatid/${tmpPatientID}`, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      tmpmessage = await tmpresponse.json();
+      const actualAge =
+        Number(tmpmessage.data.Birthday.substr(0, 4)) -
+        Number(Date().getFullYear());
+      setPatientAge(actualAge);
+      setPatientGender(tmpmessage.data.Gender);
+      setPatientName(tmpmessage.data.LastName + tmpmessage.data.FirstName);
+      setAllergicHistory(tmpmessage.data.Allergy);
     } else {
       initial = -2;
     }
     console.log(rows);
   }, [initial]);
-
-  const guidelines = [];
-  for (let i = 0; i < guidelines.length; i += 1) {
-    const newrow = rows.concat([
-      CreatePrescriptionData(
-        linecount,
-        guidelines[i].MedicineName,
-        guidelines[i].Quantity,
-        guidelines[i].Dosage,
-      ),
-    ]);
-    linecount += 1;
-    setRows(newrow);
-    console.log(rows);
-  }
 
   const HandleGoback = async () => {
     history.push({
@@ -218,7 +239,14 @@ export default function Home() {
   return (
     <Container component="main" className={classes.verticalContainer}>
       <Grid container>
-        <Container className={classes.headerContainer}>
+        <Grid
+          item
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.headerContainer}
+        >
           <Button variant="outlined" color="primary" onClick={HandleGoback}>
             <ArrowBackIosIcon color="primary" size="small" />
             <Container className={classes.buttontext}>
@@ -235,7 +263,7 @@ export default function Home() {
           <Typography component="h5" className={classes.headertext}>
             {tmpDepartment}
           </Typography>
-        </Container>
+        </Grid>
         <Container className={classes.pageContainer}>
           <Grid container direction="row" justify="right">
             <Typography component="h2" className={classes.titletext}>
@@ -348,7 +376,7 @@ export default function Home() {
           </Box>
         </Container>
         <Container spacing={1}>
-          <Button color="primary" variant="outlined">
+          <Button color="primary" variant="outlined" disabled>
             <ContactsIcon Icon color="primary" size="small" />
             <Container className={classes.buttontext}>
               <Typography component="h4">处方</Typography>

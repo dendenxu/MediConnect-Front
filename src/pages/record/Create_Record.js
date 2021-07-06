@@ -106,6 +106,7 @@ export default function Home(props) {
   const [medicalHistory, setMedicalHistory] = useState('');
   const [tmpdiagnosis, setDiagnosis] = useState('');
   const [opinions, setOpinions] = useState('');
+
   // todo initialize these 4 IDs(maybe using get method),
   // const tmpCaseID = location.state.Case_id;
   const {
@@ -392,6 +393,7 @@ export default function Home(props) {
             color="primary"
             onClick={HandleSaveClick}
             className={classes.button}
+            disabled={InputError4 || InputError3 || InputError2 || InputError1}
           >
             <CheckIcon color="primary" fontSize="small" />
             <Container className={classes.buttontext}>

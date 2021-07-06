@@ -187,14 +187,15 @@ export default function Home(props) {
   const [patientName, setPatientName] = useState('张三');
   const [patientGender, setPatientGender] = useState('女');
   const [patientAge, setPatientAge] = useState(18);
+  const [allergicHistory, setAllergicHistory] = useState('无');
   const [helperText1, setHelper1] = useState('');
   const [helperText2, setHelper2] = useState('');
   const [helperText3, setHelper3] = useState('');
   const [helperText4, setHelper4] = useState('');
-  const [InputError1, setInputError1] = useState(false);
-  const [InputError2, setInputError2] = useState(false);
-  const [InputError3, setInputError3] = useState(false);
-  const [InputError4, setInputError4] = useState(false);
+  const [InputError1, setInputError1] = useState(true);
+  const [InputError2, setInputError2] = useState(true);
+  const [InputError3, setInputError3] = useState(true);
+  const [InputError4, setInputError4] = useState(true);
   const [DataGridError, setDataGridError] = useState('');
   const [DataGridErrorOpen, setDataGridErrorOpen] = React.useState(false);
   // // console.log(tmpCaseID);
@@ -206,7 +207,7 @@ export default function Home(props) {
 
   useEffect(async () => {
     // console.log(initial);
-    const tmpresponse = await fetch(
+    let tmpresponse = await fetch(
       `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
       {
         method: 'get',
@@ -216,7 +217,11 @@ export default function Home(props) {
       },
     );
     // // console.log(tmpresponse);
-    const tmpmessage = await tmpresponse.json();
+    setInputError1(false);
+    setInputError2(false);
+    setInputError3(false);
+    setInputError4(false);
+    let tmpmessage = await tmpresponse.json();
     setPatientName(tmpmessage.data.PatientName);
     setPatientGender(tmpmessage.data.Gender);
     setDiagnosis(tmpmessage.data.Diagnosis);
@@ -264,7 +269,20 @@ export default function Home(props) {
       temprows = [];
       linecount = tmpGL.length + 1;
     }
-
+    tmpresponse = await fetch(`api/account/getinfobypatid/${tmpPatientID}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    tmpmessage = await tmpresponse.json();
+    const actualAge =
+      Number(tmpmessage.data.Birthday.substr(0, 4)) -
+      Number(Date().getFullYear());
+    setPatientAge(actualAge);
+    setPatientGender(tmpmessage.data.Gender);
+    setPatientName(tmpmessage.data.LastName + tmpmessage.data.FirstName);
+    setAllergicHistory(tmpmessage.data.Allergy);
     // console.log(rows);
     // console.log(allprescriptions);
   }, []);
@@ -273,54 +291,85 @@ export default function Home(props) {
     if (field === 'name') {
       const data = props; // Fix eslint value is missing in prop-types for JS files
       let newname = data.value.toString();
-      const response = await fetch(`/api/medicine?q=${newname}`, {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const message = await response.json();
-      if (response.ok) {
-        console.log(`succeed in finding the medicine`);
-        console.log(message);
-      } else {
-        console.log(`fail to find the medicine`);
-        console.log(message);
-      }
-      if (message.data.length === 0) {
+      if (newname === '') {
         setDataGridErrorOpen(true);
-        setDataGridError('药品未找到,请重新输入');
+        setDataGridError('药品名不能为空');
         console.log(DataGridError);
-      } else {
-        setDataGridErrorOpen(false);
-        newname = message.data[0].Name;
-        const mediId = message.data[0].ID;
-        const newprice = message.data[0].Price;
-        const newcontraindication = message.data[0].Contraindication;
-        console.log(newname);
-        console.log(newprice);
-        console.log(newcontraindication);
         const updatedRows = rows.map(row => {
           if (row.id === id) {
             return {
               ...row,
-              name: newname,
-              price: newprice,
-              contraindication: newcontraindication,
+              name: '',
+              price: '',
+              contraindication: '',
             };
           }
           return row;
         });
         setRows(updatedRows);
-        // console.log(mediId);
-        const updatedPres = allprescriptions.map(allprescription => {
-          if (allprescription.lineno === id) {
-            // console.log(mediId);
-            return { ...allprescription, MedicineId: mediId };
-          }
-          return allprescription;
+      } else {
+        setDataGridErrorOpen(false);
+        const response = await fetch(`/api/medicine?q=${newname}`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-        setPrescriptions(updatedPres);
+        const message = await response.json();
+        if (response.ok) {
+          console.log(`succeed in finding the medicine`);
+          console.log(message);
+        } else {
+          console.log(`fail to find the medicine`);
+          console.log(message);
+        }
+        if (message.data.length === 0) {
+          setDataGridErrorOpen(true);
+          setDataGridError(`药品'${newname}'未找到,请重新输入`);
+          console.log(DataGridError);
+          const updatedRows = rows.map(row => {
+            if (row.id === id) {
+              return {
+                ...row,
+                name: '',
+                price: '',
+                contraindication: '',
+              };
+            }
+            return row;
+          });
+          setRows(updatedRows);
+        } else {
+          setDataGridErrorOpen(false);
+          newname = message.data[0].Name;
+          const mediId = message.data[0].ID;
+          const newprice = message.data[0].Price;
+          const newcontraindication = message.data[0].Contraindication;
+          console.log(newname);
+          console.log(newprice);
+          console.log(newcontraindication);
+          const updatedRows = rows.map(row => {
+            if (row.id === id) {
+              return {
+                ...row,
+                name: newname,
+                price: newprice,
+                contraindication: newcontraindication,
+              };
+            }
+            return row;
+          });
+          setRows(updatedRows);
+          // console.log(mediId);
+          const updatedPres = allprescriptions.map(allprescription => {
+            if (allprescription.lineno === id) {
+              // console.log(mediId);
+              return { ...allprescription, MedicineId: mediId };
+            }
+            return allprescription;
+          });
+          setPrescriptions(updatedPres);
+        }
       }
     }
     if (field === 'size') {
@@ -672,6 +721,7 @@ export default function Home(props) {
                   id="standard-read-only-input"
                   label="患者年龄"
                   defaultValue="18"
+                  value={patientAge}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -683,6 +733,7 @@ export default function Home(props) {
                   id="standard-required"
                   label="过敏史"
                   defaultValue="无"
+                  value={allergicHistory}
                 />
               </Grid>
             </Grid>
@@ -766,6 +817,7 @@ export default function Home(props) {
               variant="outlined"
               onClick={HandleOnAddPrescrption}
               className={classes.button}
+              disabled
             >
               <AddIcon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
