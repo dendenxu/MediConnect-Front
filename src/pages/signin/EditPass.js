@@ -208,7 +208,7 @@ function EditPass(props) {
     lastName: lastname,
     password: passwd,
     type,
-    gender: genderstr,
+    gender,
     birthday: birthDate,
     registering,
     modifying,
@@ -225,10 +225,6 @@ function EditPass(props) {
     birthdayMonth +
     '-'.toString() +
     birthdayDate;
-
-  let gender = false;
-  if (genderstr === 'male') gender = true;
-  else if (genderstr === 'female') gender = false;
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
@@ -326,7 +322,6 @@ function EditPass(props) {
       gender,
       birthday,
     };
-    console.log(content);
     const response = await fetch('/api/account/create', {
       method: 'post',
       headers: {
