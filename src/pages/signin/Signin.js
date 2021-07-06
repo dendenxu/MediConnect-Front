@@ -353,7 +353,6 @@ function Signin(props) {
 
   return (
     <Container component="main" className={classes.verticalContainer}>
-      {/* <CssBaseline /> */}
       <Container className={classes.paper}>
         <IconHead className={classes.icon} />
 

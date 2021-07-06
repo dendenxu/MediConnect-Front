@@ -57,7 +57,7 @@ export default function App() {
         <Route path="/reglist" component={RegList} />
         <Route path="/reginfo" component={RegInfo} />
         <Route path="/browse_p" component={BrowsePatient} />
-        <Route path="/record_p" component={RecordPatient} />
+        <Route path="/record_p/:patientID/:caseID" component={RecordPatient} />
         <Route path="/create_record" component={CreateRecord} />
         <Route>
           <NoMatch />

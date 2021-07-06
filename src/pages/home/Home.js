@@ -67,6 +67,7 @@ export default function Home(props) {
             setRecord={setRecord}
             creation={creation}
             setCreation={setCreation}
+            className={classes.full}
           />
         )}
         {creation && (
@@ -75,6 +76,7 @@ export default function Home(props) {
             setRecord={setRecord}
             creation={creation}
             setCreation={setCreation}
+            className={classes.full}
           />
         )}
         {!record && !creation && (
