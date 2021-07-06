@@ -3,15 +3,14 @@ import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Badge from '@material-ui/core/Badge';
 import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Button, Input, IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
@@ -393,8 +392,7 @@ function TopBar({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          status: 'terminated',
-          terminatedCause: 'cancel',
+          status: 'accepted',
         }),
       })
         .then(res => res.json())
@@ -402,27 +400,47 @@ function TopBar({
           console.log(rdata);
           if (rdata.status === 'ok') {
             setStatus('accepted');
+            updatePatients();
           }
         });
-
-      updatePatients();
     } else {
       console.log('End Registration!');
-      closeChat(CurrentPatientID);
-      console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
-      setSelectedIndex();
-      setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
-      console.log('In handleEndClick, messages: ', messgaes);
-      // setPatients(Pts =>
-      //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
-      // );
-      updatePatients();
-      console.log('In handleEndClick, Patients: ', Patients);
-      setPatientName('');
-      setCurrentPatientID('');
-      console.log('After closeChat, Patients: ', Patients);
-      saveLocal();
-      setIsEmpty(true);
+      const url = `/api/registration/${regID}`;
+      fetch(url, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'terminated',
+          terminatedCause: '结束挂号',
+        }),
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          console.log(rdata);
+          if (rdata.status === 'ok') {
+            closeChat(CurrentPatientID);
+            console.log(
+              'After closeChat, CurrentPatientID: ',
+              CurrentPatientID,
+            );
+            setSelectedIndex();
+            setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+            console.log('In handleEndClick, messages: ', messgaes);
+            // setPatients(Pts =>
+            //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
+            // );
+            updatePatients();
+            console.log('In handleEndClick, Patients: ', Patients);
+            setPatientName('');
+            setCurrentPatientID('');
+            console.log('After closeChat, Patients: ', Patients);
+            saveLocal();
+            setIsEmpty(true);
+            updatePatients();
+          }
+        });
     }
   };
 
