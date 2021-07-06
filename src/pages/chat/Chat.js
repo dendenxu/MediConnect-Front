@@ -268,6 +268,7 @@ function PatientList({
   setCurrentPatientID,
   setPatientName,
   setStatus,
+  setRegID,
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
@@ -281,12 +282,14 @@ function PatientList({
     PatientID,
     PatientName,
     Status,
+    regID,
   ) => {
     setIsEmpty(false);
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
     setStatus(Status);
+    setRegID(regID);
     setPatients(pats =>
       pats.map(p => {
         if (p.PatientID === PatientID)
@@ -295,6 +298,7 @@ function PatientList({
             PatientName: p.PatientName,
             NewMessageCount: 0,
             Status: p.Status,
+            regID: p.regID,
           };
         return p;
       }),
@@ -319,6 +323,7 @@ function PatientList({
           Patient.PatientID,
           Patient.PatientName,
           Patient.Status,
+          Patient.regID,
         )
       }
     >
@@ -364,6 +369,7 @@ function TopBar({
   setCurrentPatientID,
   setPatientName,
   PatientName,
+  regID,
   Status,
   setStatus,
   IsEmpty,
@@ -377,22 +383,47 @@ function TopBar({
 }) {
   const classes = useStyles();
 
-  const handleEndClick = event => {
-    closeChat(CurrentPatientID);
-    console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
-    setSelectedIndex();
-    setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
-    console.log('In handleEndClick, messages: ', messgaes);
-    // setPatients(Pts =>
-    //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
-    // );
-    updatePatients();
-    console.log('In handleEndClick, Patients: ', Patients);
-    setPatientName('');
-    setCurrentPatientID('');
-    console.log('After closeChat, Patients: ', Patients);
-    saveLocal();
-    setIsEmpty(true);
+  const handleClick = () => {
+    if (Status === 'committed') {
+      console.log('Start Registration!');
+      const url = `/api/registration/${regID}`;
+      fetch(url, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'terminated',
+          terminatedCause: 'cancel',
+        }),
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          console.log(rdata);
+          if (rdata.status === 'ok') {
+            setStatus('accepted');
+          }
+        });
+
+      updatePatients();
+    } else {
+      console.log('End Registration!');
+      closeChat(CurrentPatientID);
+      console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
+      setSelectedIndex();
+      setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+      console.log('In handleEndClick, messages: ', messgaes);
+      // setPatients(Pts =>
+      //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
+      // );
+      updatePatients();
+      console.log('In handleEndClick, Patients: ', Patients);
+      setPatientName('');
+      setCurrentPatientID('');
+      console.log('After closeChat, Patients: ', Patients);
+      saveLocal();
+      setIsEmpty(true);
+    }
   };
 
   function renderButtonText() {
@@ -458,7 +489,7 @@ function TopBar({
           backgroundColor: renderButtonColor(),
         }}
         size="small"
-        onClick={handleEndClick}
+        onClick={handleClick}
       >
         {renderButtonText()}
       </Button>
@@ -767,35 +798,10 @@ function Chat(props) {
   const [CurrentUserID, setCurrentUserID] = useState(1);
   const [PatientName, setPatientName] = useState('');
   const [Status, setStatus] = useState('');
-  // const [Patients, setPatients] = useState([
-  //   {
-  //     PatientID: 1983,
-  //     PatientName: '张三',
-  //     NewMessageCount: 1,
-  //     Status: 'committed',
-  //   },
-  //   {
-  //     PatientID: 1985,
-  //     PatientName: '李四',
-  //     NewMessageCount: 2,
-  //     Status: 'accepted',
-  //   },
-  //   {
-  //     PatientID: 1987,
-  //     PatientName: '王五',
-  //     NewMessageCount: 3,
-  //     Status: 'committed',
-  //   },
-  //   {
-  //     PatientID: 222,
-  //     PatientName: '病人甲',
-  //     NewMessageCount: 3,
-  //     Status: 'committed',
-  //   },
-  // ]);
   const [Patients, setPatients] = useState([]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
+  const [regID, setRegID] = useState();
   // const [messages, setMessages] = useState(
   //   Map({
   //     1983: [
@@ -869,11 +875,9 @@ function Chat(props) {
     })
       .then(res => res.json())
       .then(data => {
-        // console.log("In updatePatients, data.data: ", data.data);
         // setPatients(pas => data.data);
         setPatients([]);
         data.data.map(p => {
-          // console.log("In updatePatients, p: ",p);
           setPatients(pas => [
             ...pas,
             {
@@ -881,17 +885,15 @@ function Chat(props) {
               PatientName: p.patient,
               NewMessageCount: p.NewMessageCount ? p.NewMessageCount : 0,
               Status: p.status,
+              regID: p.id,
             },
           ]);
           if (!messages.has(p.patient_id.toString())) {
             setMessages(msgs => msgs.set(p.patient_id.toString(), []));
-            console.log('In updatePatients, Add one messages');
           }
 
           return p;
         });
-        console.log('In updatePatients, Patients: ', Patients);
-        console.log('In updatePatients, message: ', message);
       });
   };
 
@@ -1093,6 +1095,7 @@ function Chat(props) {
         setCurrentPatientID={setCurrentPatientID}
         setPatientName={setPatientName}
         setStatus={setStatus}
+        setRegID={setRegID}
         setSelectedIndex={setSelectedIndex}
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
@@ -1112,6 +1115,7 @@ function Chat(props) {
           PatientName={PatientName}
           Status={Status}
           setStatus={setStatus}
+          regID={regID}
           IsEmpty={IsEmpty}
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
