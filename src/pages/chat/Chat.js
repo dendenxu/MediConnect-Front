@@ -1082,6 +1082,9 @@ function Chat(props) {
         case 10:
           setQuestions(ques => [...ques, dataFromServer.Questions]);
           break;
+        case 12:
+          updatePatients();
+          break;
         default:
           break;
       }
