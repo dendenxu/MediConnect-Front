@@ -208,11 +208,27 @@ function EditPass(props) {
     lastName: lastname,
     password: passwd,
     type,
-    gender,
-    birthday,
+    gender: genderstr,
+    birthday: birthDate,
     registering,
     modifying,
   } = props.location.state;
+  const birthdayYear = birthDate.getFullYear().toString();
+  let birthdayMonth = (birthDate.getMonth() + 1).toString();
+  if (birthDate.getMonth() + 1 < 10)
+    birthdayMonth = '0'.toString() + birthdayMonth;
+  let birthdayDate = birthDate.getDate().toString();
+  if (birthDate.getDate() < 10) birthdayDate = '0'.toString() + birthdayDate;
+  const birthday =
+    birthdayYear +
+    '-'.toString() +
+    birthdayMonth +
+    '-'.toString() +
+    birthdayDate;
+
+  let gender = false;
+  if (genderstr === 'male') gender = true;
+  else if (genderstr === 'female') gender = false;
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
@@ -301,19 +317,22 @@ function EditPass(props) {
   };
 
   const registerUser = async () => {
+    const content = {
+      email,
+      type,
+      firstname,
+      lastname,
+      passwd,
+      gender,
+      birthday,
+    };
+    console.log(content);
     const response = await fetch('/api/account/create', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        // todo gender, birthday
-        email,
-        firstname,
-        lastname,
-        passwd,
-        type,
-      }),
+      body: JSON.stringify(content),
     });
 
     console.log(response);
