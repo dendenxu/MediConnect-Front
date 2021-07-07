@@ -12,7 +12,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { FixedSizeList } from 'react-window';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/Inbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
@@ -167,8 +166,8 @@ export default function Doctor() {
         </Box>
         <Box>
           <ListItem button className={classes.list} key={index}>
-            <ListItemText primary='patienName:'/>
-            <ListItemText primary='allergy'/>
+            <ListItemText primary="patienName:" />
+            <ListItemText primary="allergy" />
           </ListItem>
         </Box>
       </Box>
