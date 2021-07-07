@@ -38,14 +38,8 @@ export default function Patient() {
   const history = useHistory();
   const [myName, setName] = useState('default value');
   const [myEmail, setEmail] = useState('default value');
-  const [taboo, setTaboo] = useState('default value');
   const [allergies, setAllergies] = useState('default value');
   const [inputContent, setInputContent] = useState('');
-  // const getInfo = () => {
-  //   setName('testname');
-  //   setEmail('123456@zju.edu.cn');
-  // };
-
   const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();
@@ -55,13 +49,11 @@ export default function Patient() {
       console.log(body);
       setName(`${body.data.lastname}${body.data.firstname}`);
       setEmail(body.data.email);
+      setAllergies(body.data.allergy)
     }
   };
-
   useEffect(getInfo, []);
-
   const handleEditPWDButtonClick = event => {
-    // （待完成）跳过验证界面直接进入修改密码的界面
     history.push({
       pathname: '/editpass',
       state: {
@@ -72,11 +64,8 @@ export default function Patient() {
     });
   };
   const handleSaveInfoButtonClick = event => {
-    // （待完成）保存禁忌史和过敏史的数据
-    const text1 = event.taboo.value;
-    setTaboo(text1);
-    const text2 = event.allergies.value;
-    setAllergies(text2);
+    const info = document.getElementById('allergy');
+    localStorage.setItem('allergy', info);
   };
   const handleInputChange = event => {
     const text = event.target.value;
@@ -128,16 +117,13 @@ export default function Patient() {
         </Box>
       </Box>
       <Box className={classes.center} p={1}>
-        <Box display="flex" width="33%">
-          <Typography>禁忌史：</Typography>
-          <TextField defaultValue={taboo} onChange={handleInputChange} />
-        </Box>
-        <Box display="flex" width="33%">
-          <Typography>过敏史：</Typography>
+        <Box display="flex" width="66%">
+          <Typography>禁忌史和过敏史：</Typography>
           <TextField
             defaultValue={allergies}
             onChange={handleInputChange}
-            id="taboo"
+            name="allergy"
+            id='allergy'
           />
         </Box>
         <Box display="flex" width="33%">
@@ -145,7 +131,6 @@ export default function Patient() {
             variant="contained"
             color="primary"
             onClick={handleSaveInfoButtonClick}
-            id="allergies"
           >
             保存
           </Button>
