@@ -275,6 +275,8 @@ function PatientList({
 }) {
   const classes = useStyles();
 
+  const [mileStones, setMileStones] = useState([]);
+
   const handleListItemClick = (
     event,
     index,
@@ -289,6 +291,23 @@ function PatientList({
     setPatientName(PatientName);
     setStatus(Status);
     setRegID(regID);
+
+    const url = `/api/registration/${regID}`;
+    fetch(url, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'ok') {
+          setMileStones(rdata.data.milestone);
+          console.log(rdata.data.milestone);
+        }
+      });
+
     setPatients(pats =>
       pats.map(p => {
         if (p.PatientID === PatientID)
@@ -342,11 +361,6 @@ function PatientList({
     </ListItem>
   ));
 
-  const [mileStones, setMileStones] = useState([
-    { checked: true, activity: 'FUCK' },
-    { checked: false, activity: 'jjjjajajjajaj' },
-  ]);
-
   return (
     <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
@@ -384,7 +398,6 @@ function TopBar({
 
   const handleClick = () => {
     if (Status === 'committed') {
-      console.log('Start Registration!');
       const url = `/api/registration/${regID}`;
       fetch(url, {
         method: 'put',
@@ -397,14 +410,12 @@ function TopBar({
       })
         .then(res => res.json())
         .then(rdata => {
-          console.log(rdata);
           if (rdata.status === 'ok') {
             setStatus('accepted');
             updatePatients();
           }
         });
     } else {
-      console.log('End Registration!');
       const url = `/api/registration/${regID}`;
       fetch(url, {
         method: 'put',
@@ -418,29 +429,17 @@ function TopBar({
       })
         .then(res => res.json())
         .then(rdata => {
-          console.log(rdata);
           if (rdata.status === 'ok') {
             closeChat(CurrentPatientID);
-            console.log(
-              'After closeChat, CurrentPatientID: ',
-              CurrentPatientID,
-            );
             setSelectedIndex();
 
-            console.log('In handleEndClick, messages: ', messgaes);
-            // setPatients(Pts =>
-            //   Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
-            // );
             updatePatients();
-            console.log('In handleEndClick, Patients: ', Patients);
             setIsEmpty(true);
             setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
             setPatientName('');
             setCurrentPatientID('');
-            console.log('After closeChat, Patients: ', Patients);
             saveLocal();
             updatePatients();
-            // setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
           }
         });
     }
@@ -587,8 +586,6 @@ function ToolBar({
 
   const handleFiles = files => {
     console.log('file: ', files.base64);
-    // setBase(files.base64);
-    // console.log(base64);
     const json = {
       Type: 1,
       SenderID: CurrentUserID,
