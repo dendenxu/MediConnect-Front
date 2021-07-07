@@ -3,6 +3,7 @@ import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
+import Input from '@material-ui/core/Input';
 import { Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -17,6 +18,7 @@ import Picker from 'emoji-picker-react';
 import ReactFileReader from 'react-file-reader';
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
 import { AdjustOutlined, FilterTiltShiftOutlined } from '@material-ui/icons';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
@@ -361,6 +363,28 @@ function PatientList({
     </ListItem>
   ));
 
+  const [newTodo, setNewTodo] = useState(['']);
+
+  const handleInputTodo = e => {
+    setNewTodo(e.target.value);
+  };
+  const handleAddTodo = () => {
+    if (newTodo !== '') {
+      console.log(newTodo);
+      const url = `/api/milestones`;
+      fetch(url, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          registration_id: '10086',
+          activity: newTodo,
+        }),
+      });
+    }
+  };
+
   return (
     <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
@@ -370,6 +394,29 @@ function PatientList({
       <List>
         {mileStones && mileStones.map(data => <MileStone data={data} />)}
       </List>
+      <form
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderRadius: '10px',
+          paddingLeft: '10px',
+        }}
+      >
+        <Input
+          color="secondary"
+          placeholder="添加一项任务"
+          size="small"
+          onChange={handleInputTodo}
+        />
+        <IconButton
+          color="secondary"
+          onClick={handleAddTodo}
+          aria-label="add a milestone"
+        >
+          <AddBoxIcon />
+        </IconButton>
+      </form>
     </div>
   );
 }
