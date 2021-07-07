@@ -38,8 +38,9 @@ export default function Patient() {
   const history = useHistory();
   const [myName, setName] = useState('default value');
   const [myEmail, setEmail] = useState('default value');
-  const [allergies, setAllergies] = useState('default value');
+  const [allergies, setAllergies] = useState('');
   const [inputContent, setInputContent] = useState('');
+
   const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();
@@ -49,10 +50,12 @@ export default function Patient() {
       console.log(body);
       setName(`${body.data.lastname}${body.data.firstname}`);
       setEmail(body.data.email);
-      setAllergies(body.data.allergy)
+      setAllergies(body.data.allergy);
+      console.log(allergies);
     }
   };
   useEffect(getInfo, []);
+
   const handleEditPWDButtonClick = event => {
     history.push({
       pathname: '/editpass',
@@ -63,13 +66,36 @@ export default function Patient() {
       },
     });
   };
-  const handleSaveInfoButtonClick = event => {
-    const info = document.getElementById('allergy');
-    localStorage.setItem('allergy', info);
+  const handleSaveInfoButtonClick = async () => {
+    const UpdateAllergy = async () => {
+      const data = document.getElementById('allergy').value;
+      const response = await fetch('/api/account/setpatient', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          allergy: data,
+        }),
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log(`Update your allergy history successfully:`);
+        setAllergies(data);
+      } else {
+        console.log('invalid allergy history!');
+      }
+    };
+    try {
+      await UpdateAllergy();
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   const handleInputChange = event => {
     const text = event.target.value;
-    setInputContent(text);
+    setAllergies(text);
     console.log(`Getting new text: ${text}`);
   };
   return (
@@ -120,10 +146,10 @@ export default function Patient() {
         <Box display="flex" width="66%">
           <Typography>禁忌史和过敏史：</Typography>
           <TextField
-            defaultValue={allergies}
             onChange={handleInputChange}
             name="allergy"
-            id='allergy'
+            id="allergy"
+            value={allergies}
           />
         </Box>
         <Box display="flex" width="33%">
