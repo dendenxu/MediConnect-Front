@@ -8,7 +8,16 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import { FixedSizeList } from 'react-window';
+import Divider from '@material-ui/core/Divider';
+import InboxIcon from '@material-ui/icons/Inbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
+import Patient from './Patient';
 
 const useStyles = makeStyles(theme => ({
   page: {
@@ -31,6 +40,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     width: '100%',
   },
+  list: {
+    width: '100%',
+    maxheigh: '30vh',
+  },
 }));
 
 export default function Doctor() {
@@ -39,7 +52,8 @@ export default function Doctor() {
   const [myName, setName] = useState('default value');
   const [myEmail, setEmail] = useState('default value');
   const [introduction, setIntr] = useState('default value');
-  const [inputContent, setInputContent] = useState('');
+  const [inputContent, setInputContent] = useState('1');
+  const [index, setIndex] = useState();
   // const getInfo = () => {
   //   setName('testname');
   //   setEmail('123456@zju.edu.cn');
@@ -54,13 +68,13 @@ export default function Doctor() {
       console.log(body);
       setName(`${body.data.lastname}${body.data.firstname}`);
       setEmail(body.data.email);
+      setIntr(body.data.department);
     }
   };
 
   useEffect(getInfo, []);
 
   const handleEditPWDButtonClick = event => {
-    // （待完成）跳过验证界面直接进入修改密码的界面
     history.push({
       pathname: '/editpass',
       state: {
@@ -71,7 +85,6 @@ export default function Doctor() {
     });
   };
   const handleSaveInfoButtonClick = event => {
-    // （待完成）保存医生个人介绍到数据库
     const text = event.target.value;
     setIntr(text);
   };
@@ -81,7 +94,6 @@ export default function Doctor() {
     console.log(`Getting new text: ${text}`);
   };
 
-  // （待完成）调取病人的病例并显示
   return (
     <Container component="main" className={classes.page} onClick={getInfo}>
       <CssBaseline />
@@ -150,8 +162,14 @@ export default function Doctor() {
         Color="primary.main"
         borderBottom={5}
       >
-        <Box>
+        <Box width="33%">
           <Typography>病人病历</Typography>
+        </Box>
+        <Box>
+          <ListItem button className={classes.list} key={index}>
+            <ListItemText primary='patienName:'/>
+            <ListItemText primary='allergy'/>
+          </ListItem>
         </Box>
       </Box>
     </Container>
