@@ -69,7 +69,6 @@ export default function RegInfo() {
   else status = '';
 
   const handleClick = () => {
-    console.log('a');
     const url = `/api/registration/${regData.id}`;
     fetch(url, {
       method: 'put',

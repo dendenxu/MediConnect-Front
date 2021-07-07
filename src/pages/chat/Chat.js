@@ -3,24 +3,25 @@ import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
-import { fromJS, Map } from 'immutable';
+import { Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Badge from '@material-ui/core/Badge';
 import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Button, Input, IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ReactFileReader from 'react-file-reader';
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
+import { AdjustOutlined, FilterTiltShiftOutlined } from '@material-ui/icons';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
+import MileStone from '../components/MileStone';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingdiv: {
@@ -54,9 +55,10 @@ const useStyles = makeStyles(theme => ({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    width: '25%',
+    width: '30%',
+    minWidth: 200,
     margin: theme.spacing(1),
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.5),
     backgroundColor: theme.palette.primary.main,
     // backgroundColor: 'rgba(230,229,230,.5)',
     selected: '#F1F0F3',
@@ -79,7 +81,7 @@ const useStyles = makeStyles(theme => ({
     border: 1,
     borderRadius: 10,
     padding: theme.spacing(1),
-    background: 'rgb(243,166,123)',
+    // background: 'rgb(243,166,123)',
   },
   namepaper: {
     // border: 1,
@@ -264,6 +266,8 @@ function PatientList({
   Patients,
   setCurrentPatientID,
   setPatientName,
+  setStatus,
+  setRegID,
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
@@ -271,11 +275,39 @@ function PatientList({
 }) {
   const classes = useStyles();
 
-  const handleListItemClick = (event, index, PatientID, PatientName) => {
+  const [mileStones, setMileStones] = useState([]);
+
+  const handleListItemClick = (
+    event,
+    index,
+    PatientID,
+    PatientName,
+    Status,
+    regID,
+  ) => {
     setIsEmpty(false);
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
+    setStatus(Status);
+    setRegID(regID);
+
+    const url = `/api/registration/${regID}`;
+    fetch(url, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'ok') {
+          setMileStones(rdata.data.milestone);
+          console.log(rdata.data.milestone);
+        }
+      });
+
     setPatients(pats =>
       pats.map(p => {
         if (p.PatientID === PatientID)
@@ -283,6 +315,8 @@ function PatientList({
             PatientID: p.PatientID,
             PatientName: p.PatientName,
             NewMessageCount: 0,
+            Status: p.Status,
+            regID: p.regID,
           };
         return p;
       }),
@@ -306,6 +340,8 @@ function PatientList({
           Patients.findIndex(obj => obj.PatientID === Patient.PatientID),
           Patient.PatientID,
           Patient.PatientName,
+          Patient.Status,
+          Patient.regID,
         )
       }
     >
@@ -314,6 +350,12 @@ function PatientList({
         classes={{ badge: classes.badge }}
         max={99}
       >
+        {Patient.Status === 'committed' && (
+          <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+        )}
+        {Patient.Status === 'accepted' && (
+          <AdjustOutlined style={{ fill: 'limegreen' }} />
+        )}
         <ListItemText primary={Patient.PatientName} />
       </Badge>
     </ListItem>
@@ -323,6 +365,10 @@ function PatientList({
     <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
         {patientsA}
+      </List>
+      <Divider style={{ background: 'whitesmoke' }} />
+      <List>
+        {mileStones && mileStones.map(data => <MileStone data={data} />)}
       </List>
     </div>
   );
@@ -336,6 +382,9 @@ function TopBar({
   setCurrentPatientID,
   setPatientName,
   PatientName,
+  regID,
+  Status,
+  setStatus,
   IsEmpty,
   setIsEmpty,
   setSelectedIndex,
@@ -343,31 +392,92 @@ function TopBar({
   saveLocal,
   setMessages,
   messgaes,
+  updatePatients,
 }) {
   const classes = useStyles();
 
-  const handleEndClick = event => {
-    closeChat(CurrentPatientID);
-    console.log('After closeChat, CurrentPatientID: ', CurrentPatientID);
-    setSelectedIndex();
-    setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
-    console.log('In handleEndClick, messages: ', messgaes);
-    setPatients(Pts =>
-      Pts.filter(Patient => Patient.PatientID !== CurrentPatientID),
-    );
-    console.log('In handleEndClick, Patients: ', Patients);
-    setPatientName('');
-    setCurrentPatientID('');
-    console.log('After closeChat, Patients: ', Patients);
-    saveLocal();
-    setIsEmpty(true);
+  const handleClick = () => {
+    if (Status === 'committed') {
+      const url = `/api/registration/${regID}`;
+      fetch(url, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'accepted',
+        }),
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          if (rdata.status === 'ok') {
+            setStatus('accepted');
+            updatePatients();
+          }
+        });
+    } else {
+      const url = `/api/registration/${regID}`;
+      fetch(url, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'terminated',
+          terminatedCause: '结束挂号',
+        }),
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          if (rdata.status === 'ok') {
+            closeChat(CurrentPatientID);
+            setSelectedIndex();
+
+            updatePatients();
+            setIsEmpty(true);
+            setMessages(msgs => msgs.delete(CurrentPatientID.toString()));
+            setPatientName('');
+            setCurrentPatientID('');
+            saveLocal();
+            updatePatients();
+          }
+        });
+    }
   };
+
+  function renderButtonText() {
+    switch (Status) {
+      case 'committed':
+        return '开始挂号';
+      case 'accepted':
+        return '结束挂号';
+      default:
+        return '...';
+    }
+  }
+
+  function renderButtonColor() {
+    switch (Status) {
+      case 'committed':
+        return 'rgb(243,166,123)';
+      case 'accepted':
+        return 'red';
+      default:
+        return '';
+    }
+  }
 
   return (
     <div className={classes.topbar}>
       {!IsEmpty && (
         <>
           {/* <Paper className={classes.namepaper} variant="outlined" square> */}
+          {Status === 'committed' && (
+            <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+          )}
+          {Status === 'accepted' && (
+            <AdjustOutlined style={{ fill: 'limegreen' }} />
+          )}
           <Typography
             style={{
               color: 'white',
@@ -388,15 +498,19 @@ function TopBar({
           flexGrow: 1,
         }}
       />
+
       <Button
         disabled={IsEmpty}
         className={classes.endButton}
         variant="contained"
         color="primary"
+        style={{
+          backgroundColor: renderButtonColor(),
+        }}
         size="small"
-        onClick={handleEndClick}
+        onClick={handleClick}
       >
-        结束挂号
+        {renderButtonText()}
       </Button>
     </div>
   );
@@ -472,8 +586,6 @@ function ToolBar({
 
   const handleFiles = files => {
     console.log('file: ', files.base64);
-    // setBase(files.base64);
-    // console.log(base64);
     const json = {
       Type: 1,
       SenderID: CurrentUserID,
@@ -675,6 +787,8 @@ function Message({ message: { sender, content, time }, CurrentUserID }) {
 function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
   const classes = useStyles();
   console.log('In Messages: ', messages);
+  console.log('In Messages, CurrentPatientID: ', CurrentPatientID);
+  console.log('In Messages, IsEmpty: ', IsEmpty);
   const messagesA = !IsEmpty
     ? messages.get(CurrentPatientID.toString()).map(message => (
         <div
@@ -700,58 +814,56 @@ function Messages({ messages, CurrentUserID, IsEmpty, CurrentPatientID }) {
 function Chat(props) {
   const classes = useStyles();
   const [socket, setSocket] = useState(null);
-  const [CurrentUserID, setCurrentUserID] = useState(111);
+  const [CurrentUserID, setCurrentUserID] = useState(1);
   const [PatientName, setPatientName] = useState('');
-  const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
-    { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
-    { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
-    { PatientID: 222, PatientName: '病人甲', NewMessageCount: 3 },
-  ]);
+  const [Status, setStatus] = useState('');
+  const [Patients, setPatients] = useState([]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState(
-    Map({
-      1983: [
-        { sender: 111, content: '医生发的第一条消息', time: '12:20' },
-        { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
-        { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
-        { sender: 111, content: '医生发的第二条消息', time: '12:34' },
-        { sender: 111, content: '医生发的第三条消息', time: '12:35' },
-        { sender: 111, content: '医生发的第四条消息', time: '12:36' },
-        { sender: 111, content: '医生发的第五条消息', time: '12：37' },
-        { sender: 111, content: '医生发的第六条消息', time: '12：38' },
-        { sender: 111, content: '医生发的第七条消息', time: '12：39' },
-        { sender: 111, content: '医生发的第八条消息', time: '12：40' },
-        { sender: 111, content: '医生发的第九条消息', time: '12：41' },
-        { sender: 111, content: '医生发的第十条消息', time: '12：42' },
-        { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
-        { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
-        { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
-        { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
-        { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
-        { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
-        { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
-        { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
-      ],
-      1985: [
-        { sender: 111, content: '医生发的第一条消息', time: '14:30' },
-        { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
-        // {
-        //   sender: 111,
-        //   content: '点击链接查看你的病历：https://www.baidu.com/',
-        //   time: '14:33',
-        // },
-        // {
-        //   sender: 111,
-        //   content: '点击链接查看你的处方：https://www.baidu.com/',
-        //   time: '14:33',
-        // },
-      ],
-      1987: [],
-      222: [],
-    }),
-  );
+  const [regID, setRegID] = useState();
+  // const [messages, setMessages] = useState(
+  //   Map({
+  //     1983: [
+  //       { sender: 111, content: '医生发的第一条消息', time: '12:20' },
+  //       { sender: 1983, content: '张三发的第一条消息', time: '12:30' },
+  //       { sender: 1983, content: '张三发的第二条消息', time: '12:33' },
+  //       { sender: 111, content: '医生发的第二条消息', time: '12:34' },
+  //       { sender: 111, content: '医生发的第三条消息', time: '12:35' },
+  //       { sender: 111, content: '医生发的第四条消息', time: '12:36' },
+  //       { sender: 111, content: '医生发的第五条消息', time: '12：37' },
+  //       { sender: 111, content: '医生发的第六条消息', time: '12：38' },
+  //       { sender: 111, content: '医生发的第七条消息', time: '12：39' },
+  //       { sender: 111, content: '医生发的第八条消息', time: '12：40' },
+  //       { sender: 111, content: '医生发的第九条消息', time: '12：41' },
+  //       { sender: 111, content: '医生发的第十条消息', time: '12：42' },
+  //       { sender: 1983, content: '张三发的第三条消息', time: '12：43' },
+  //       { sender: 1983, content: '张三发的第四条消息', time: '12：44' },
+  //       { sender: 1983, content: '张三发的第五条消息', time: '12：45' },
+  //       { sender: 1983, content: '张三发的第六条消息', time: '12：46' },
+  //       { sender: 1983, content: '张三发的第七条消息', time: '12：47' },
+  //       { sender: 1983, content: '张三发的第八条消息', time: '12：48' },
+  //       { sender: 1983, content: '张三发的第九条消息', time: '12：49' },
+  //       { sender: 1983, content: '张三发的第十条消息', time: '12：50' },
+  //     ],
+  //     1985: [
+  //       { sender: 111, content: '医生发的第一条消息', time: '14:30' },
+  //       { sender: 1985, content: '李四发的第二条消息', time: '14:33' },
+  //       // {
+  //       //   sender: 111,
+  //       //   content: '点击链接查看你的病历：https://www.baidu.com/',
+  //       //   time: '14:33',
+  //       // },
+  //       // {
+  //       //   sender: 111,
+  //       //   content: '点击链接查看你的处方：https://www.baidu.com/',
+  //       //   time: '14:33',
+  //       // },
+  //     ],
+  //     1987: [],
+  //     222: [],
+  //   }),
+  // );
+  const [messages, setMessages] = useState(Map({}));
   const [Questions, setQuestions] = useState([
     '能详细描述一下你的病症吗？',
     '请问您有任何药物或食物过敏吗',
@@ -764,9 +876,44 @@ function Chat(props) {
 
   const saveLocal = () => {
     localStorage.setItem('messages', JSON.stringify(messages));
-    localStorage.setItem('Patients', JSON.stringify(Patients));
+    // localStorage.setItem('Patients', JSON.stringify(Patients));
     console.log('SaveLocal: ', messages);
-    console.log('SaveLocal: ', Patients);
+    console.log(
+      'SaveLocal, saved? : ',
+      JSON.parse(localStorage.getItem('messages')),
+    );
+    // console.log('SaveLocal: ', Patients);
+  };
+
+  const updatePatients = () => {
+    fetch(`/api/registrations`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        // setPatients(pas => data.data);
+        setPatients([]);
+        data.data.map(p => {
+          setPatients(pas => [
+            ...pas,
+            {
+              PatientID: p.patient_id,
+              PatientName: p.patient,
+              NewMessageCount: p.NewMessageCount ? p.NewMessageCount : 0,
+              Status: p.status,
+              regID: p.id,
+            },
+          ]);
+          if (!messages.has(p.patient_id.toString())) {
+            setMessages(msgs => msgs.set(p.patient_id.toString(), []));
+          }
+
+          return p;
+        });
+      });
   };
 
   const closeChat = patientID => {
@@ -838,17 +985,12 @@ function Chat(props) {
 
   useEffect(() => {
     const localMessages = JSON.parse(localStorage.getItem('messages'));
-    const localPatients = JSON.parse(localStorage.getItem('Patients'));
-    console.log('localMessages: ', localMessages);
-    console.log('localPatients: ', localPatients);
+    console.log('Initial localMessages: ', localMessages);
     if (localMessages) {
       setMessages(msgs => Map(localMessages));
-      console.log('Messages: ', messages);
+      console.log('Initial Messages: ', messages);
     }
-    if (localPatients) {
-      setPatients(pas => localPatients);
-      console.log('Patients: ', Patients);
-    }
+    updatePatients();
     saveLocal();
   }, []);
 
@@ -875,14 +1017,7 @@ function Chat(props) {
       console.log('dataFromServer: ', dataFromServer);
       switch (dataFromServer.Type) {
         case 6:
-          setPatients(pats => [
-            ...pats,
-            {
-              PatientID: dataFromServer.PatientID,
-              PatientName: dataFromServer.PatientName,
-              NewMessageCount: 0,
-            },
-          ]);
+          updatePatients();
           setMessages(msgs =>
             msgs.set(dataFromServer.PatientID.toString(), []),
           );
@@ -944,6 +1079,9 @@ function Chat(props) {
         case 10:
           setQuestions(ques => [...ques, dataFromServer.Questions]);
           break;
+        case 12:
+          updatePatients();
+          break;
         default:
           break;
       }
@@ -978,6 +1116,8 @@ function Chat(props) {
         Patients={Patients}
         setCurrentPatientID={setCurrentPatientID}
         setPatientName={setPatientName}
+        setStatus={setStatus}
+        setRegID={setRegID}
         setSelectedIndex={setSelectedIndex}
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
@@ -995,6 +1135,9 @@ function Chat(props) {
           setCurrentPatientID={setCurrentPatientID}
           setPatientName={setPatientName}
           PatientName={PatientName}
+          Status={Status}
+          setStatus={setStatus}
+          regID={regID}
           IsEmpty={IsEmpty}
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
@@ -1002,6 +1145,7 @@ function Chat(props) {
           saveLocal={saveLocal}
           setMessages={setMessages}
           messages={messages}
+          updatePatients={updatePatients}
         />
         <Messages
           messages={messages}
