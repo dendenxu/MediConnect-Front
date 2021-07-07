@@ -8,13 +8,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
 import { ReactComponent as Icon } from '../../assets/images/icon.svg';
 import Patient from './Patient';
 
@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     maxheigh: '30vh',
   },
+  formControl: {
+    minWidth: 100,
+  },
 }));
 
 export default function Doctor() {
@@ -53,11 +56,7 @@ export default function Doctor() {
   const [introduction, setIntr] = useState('default value');
   const [inputContent, setInputContent] = useState('1');
   const [index, setIndex] = useState();
-  // const getInfo = () => {
-  //   setName('testname');
-  //   setEmail('123456@zju.edu.cn');
-  // };
-
+  const [department, setDepartment] = useState(0);
   const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();
@@ -67,7 +66,7 @@ export default function Doctor() {
       console.log(body);
       setName(`${body.data.lastname}${body.data.firstname}`);
       setEmail(body.data.email);
-      setIntr(body.data.department);
+      setDepartment(body.data.department);
     }
   };
 
@@ -83,18 +82,45 @@ export default function Doctor() {
       },
     });
   };
-  const handleSaveInfoButtonClick = event => {
-    const text = event.target.value;
-    setIntr(text);
+
+  const handleSaveInfoButtonClick = async () => {
+    const UpdateDeparment = async () => {
+      const response = await fetch('/api/account/setdoctor', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          departmentid: department,
+        }),
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log(`Update your department successfully:`);
+        setDepartment(department);
+      } else {
+        console.log('invalid department!');
+      }
+    };
+    try {
+      await UpdateDeparment();
+    } catch (err) {
+      console.log(err);
+    }
   };
   const handleInputChange = event => {
     const text = event.target.value;
-    setInputContent(text);
+    setIntr(text);
     console.log(`Getting new text: ${text}`);
+  };
+  const handleDepartmentChange = event => {
+    const dp = event.target.value;
+    console.log(dp);
+    setDepartment(dp);
   };
 
   return (
-    <Container component="main" className={classes.page} onClick={getInfo}>
+    <Container component="main" className={classes.page}>
       <CssBaseline />
       <Box className={classes.start} bgcolor="#87CEFA" p={1}>
         <Box>
@@ -120,7 +146,6 @@ export default function Doctor() {
         p={1}
         borderBottom={5}
         borderColor="primary.main"
-        onLoad={getInfo}
       >
         <Box display="flex" width="33%">
           <Typography>姓名：{myName}</Typography>
@@ -139,8 +164,11 @@ export default function Doctor() {
         </Box>
       </Box>
       <Box className={classes.start} p={1}>
-        <Box>
+        <Box display="flex" width="33.5%">
           <Typography>个人介绍:</Typography>
+        </Box>
+        <Box display="flex" width="33%">
+          <Typography>科室选择</Typography>
         </Box>
       </Box>
       <Box
@@ -149,11 +177,41 @@ export default function Doctor() {
         borderColor="primary.main"
         borderBottom={5}
       >
-        <TextField
-          value={introduction}
-          onChange={handleInputChange}
-          id="introduction"
-        />
+        <Box display="flex" width="33.5%">
+          <TextField
+            value={introduction}
+            onChange={handleInputChange}
+            id="introduction"
+          />
+        </Box>
+        <Box display="flex" width="33%">
+          <FormControl className={classes.formControl}>
+            <Select
+              value={department}
+              onChange={handleDepartmentChange}
+              id="DepartmentSelect"
+              name="DepartmentSelect"
+            >
+              <MenuItem value={0}>眼科</MenuItem>
+              <MenuItem value={1}>骨科</MenuItem>
+              <MenuItem value={2}>呼吸内科</MenuItem>
+              <MenuItem value={3}>妇产科</MenuItem>
+              <MenuItem value={4}>肿瘤内科</MenuItem>
+              <MenuItem value={5}>心胸外科</MenuItem>
+              <MenuItem value={6}>耳鼻喉科</MenuItem>
+              <MenuItem value={7}>急诊科</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box display="flex" width="33%">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveInfoButtonClick}
+          >
+            保存
+          </Button>
+        </Box>
       </Box>
       <Box
         className={classes.start}

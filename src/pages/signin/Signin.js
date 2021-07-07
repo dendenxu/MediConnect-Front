@@ -249,11 +249,20 @@ function Signin(props) {
 
         const body = await response.json();
         console.log(body);
-        const { token } = body.data; // trusting the server
+        const { token, account } = body.data; // trusting the server
+
+        localStorage.setItem('account', account);
         localStorage.setItem('token', token);
 
+        // doctors will be redirected to /home
+        // here we'll update this localStorage
+        // I know this is bad and nasty but at least localStorage will make a return visit cool enough
+
+        // ! what is with these APIs? can we at least all use the same naming style? like camel case maybe?
+        const url = account.Type === 'doctor' ? '/home' : '/search';
+
         history.push({
-          pathname: '/search',
+          pathname: url,
           state: { email: validEmail },
         });
         return true;
