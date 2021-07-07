@@ -17,6 +17,7 @@ import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ReactFileReader from 'react-file-reader';
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
+import { AdjustOutlined, FilterTiltShiftOutlined } from '@material-ui/icons';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
@@ -55,6 +56,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     width: '25%',
+    minWidth: 100,
     margin: theme.spacing(1),
     padding: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
@@ -79,7 +81,7 @@ const useStyles = makeStyles(theme => ({
     border: 1,
     borderRadius: 10,
     padding: theme.spacing(1),
-    background: 'rgb(243,166,123)',
+    // background: 'rgb(243,166,123)',
   },
   namepaper: {
     // border: 1,
@@ -264,6 +266,7 @@ function PatientList({
   Patients,
   setCurrentPatientID,
   setPatientName,
+  setStatus,
   setSelectedIndex,
   selectedIndex,
   setIsEmpty,
@@ -271,11 +274,18 @@ function PatientList({
 }) {
   const classes = useStyles();
 
-  const handleListItemClick = (event, index, PatientID, PatientName) => {
+  const handleListItemClick = (
+    event,
+    index,
+    PatientID,
+    PatientName,
+    Status,
+  ) => {
     setIsEmpty(false);
     setSelectedIndex(index);
     setCurrentPatientID(PatientID);
     setPatientName(PatientName);
+    setStatus(Status);
     setPatients(pats =>
       pats.map(p => {
         if (p.PatientID === PatientID)
@@ -283,6 +293,7 @@ function PatientList({
             PatientID: p.PatientID,
             PatientName: p.PatientName,
             NewMessageCount: 0,
+            Status: p.Status,
           };
         return p;
       }),
@@ -306,6 +317,7 @@ function PatientList({
           Patients.findIndex(obj => obj.PatientID === Patient.PatientID),
           Patient.PatientID,
           Patient.PatientName,
+          Patient.Status,
         )
       }
     >
@@ -314,6 +326,12 @@ function PatientList({
         classes={{ badge: classes.badge }}
         max={99}
       >
+        {Patient.Status === 'committed' && (
+          <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+        )}
+        {Patient.Status === 'accepted' && (
+          <AdjustOutlined style={{ fill: 'limegreen' }} />
+        )}
         <ListItemText primary={Patient.PatientName} />
       </Badge>
     </ListItem>
@@ -336,6 +354,8 @@ function TopBar({
   setCurrentPatientID,
   setPatientName,
   PatientName,
+  Status,
+  setStatus,
   IsEmpty,
   setIsEmpty,
   setSelectedIndex,
@@ -363,11 +383,39 @@ function TopBar({
     setIsEmpty(true);
   };
 
+  function renderButtonText() {
+    switch (Status) {
+      case 'committed':
+        return '开始挂号';
+      case 'accepted':
+        return '结束挂号';
+      default:
+        return '...';
+    }
+  }
+
+  function renderButtonColor() {
+    switch (Status) {
+      case 'committed':
+        return 'rgb(243,166,123)';
+      case 'accepted':
+        return 'red';
+      default:
+        return '';
+    }
+  }
+
   return (
     <div className={classes.topbar}>
       {!IsEmpty && (
         <>
           {/* <Paper className={classes.namepaper} variant="outlined" square> */}
+          {Status === 'committed' && (
+            <FilterTiltShiftOutlined style={{ fill: 'white' }} />
+          )}
+          {Status === 'accepted' && (
+            <AdjustOutlined style={{ fill: 'limegreen' }} />
+          )}
           <Typography
             style={{
               color: 'white',
@@ -388,15 +436,19 @@ function TopBar({
           flexGrow: 1,
         }}
       />
+
       <Button
         disabled={IsEmpty}
         className={classes.endButton}
         variant="contained"
         color="primary"
+        style={{
+          backgroundColor: renderButtonColor(),
+        }}
         size="small"
         onClick={handleEndClick}
       >
-        结束挂号
+        {renderButtonText()}
       </Button>
     </div>
   );
@@ -702,11 +754,32 @@ function Chat(props) {
   const [socket, setSocket] = useState(null);
   const [CurrentUserID, setCurrentUserID] = useState(111);
   const [PatientName, setPatientName] = useState('');
+  const [Status, setStatus] = useState('');
   const [Patients, setPatients] = useState([
-    { PatientID: 1983, PatientName: '张三', NewMessageCount: 1 },
-    { PatientID: 1985, PatientName: '李四', NewMessageCount: 2 },
-    { PatientID: 1987, PatientName: '王五', NewMessageCount: 3 },
-    { PatientID: 222, PatientName: '病人甲', NewMessageCount: 3 },
+    {
+      PatientID: 1983,
+      PatientName: '张三',
+      NewMessageCount: 1,
+      Status: 'committed',
+    },
+    {
+      PatientID: 1985,
+      PatientName: '李四',
+      NewMessageCount: 2,
+      Status: 'accepted',
+    },
+    {
+      PatientID: 1987,
+      PatientName: '王五',
+      NewMessageCount: 3,
+      Status: 'committed',
+    },
+    {
+      PatientID: 222,
+      PatientName: '病人甲',
+      NewMessageCount: 3,
+      Status: 'committed',
+    },
   ]);
   const [CurrentPatientID, setCurrentPatientID] = useState('');
   const [message, setMessage] = useState('');
@@ -978,6 +1051,7 @@ function Chat(props) {
         Patients={Patients}
         setCurrentPatientID={setCurrentPatientID}
         setPatientName={setPatientName}
+        setStatus={setStatus}
         setSelectedIndex={setSelectedIndex}
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
@@ -995,6 +1069,8 @@ function Chat(props) {
           setCurrentPatientID={setCurrentPatientID}
           setPatientName={setPatientName}
           PatientName={PatientName}
+          Status={Status}
+          setStatus={setStatus}
           IsEmpty={IsEmpty}
           setIsEmpty={setIsEmpty}
           setSelectedIndex={setSelectedIndex}
