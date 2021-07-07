@@ -335,7 +335,7 @@ function ToolBar({
         time: moment().format('HH:mm'),
       },
     ]);
-    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patientmessages', JSON.stringify(messages));
   };
 
   return (
@@ -526,17 +526,11 @@ function ChatPatient() {
   const [open, setOpen] = useState(false);
   const [closed, setClosed] = useState(false);
   const [socket, setSocket] = useState(null);
-  const [CurrentUserID, setCurrentUserID] = useState(222);
+  const [CurrentUserID, setCurrentUserID] = useState(9);
   const [DoctorName, setDoctorName] = useState('内科王医生');
-  const [CurrentDoctorID, setCurrentDoctorID] = useState(111);
+  const [CurrentDoctorID, setCurrentDoctorID] = useState(1);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { sender: 111, content: '医生发的第一条消息', time: '12:20' },
-    { sender: 222, content: '张三发的第一条消息', time: '12:30' },
-    { sender: 222, content: '张三发的第二条消息', time: '12:33' },
-    { sender: 111, content: '医生发的第二条消息', time: '12:34' },
-    { sender: 111, content: '医生发的第三条消息', time: '12:35' },
-  ]);
+  const [messages, setMessages] = useState([]);
   let interval;
   console.log('open:', open);
 
@@ -545,16 +539,16 @@ function ChatPatient() {
   }, [CurrentUserID]);
 
   useEffect(() => {
-    const localMessages = JSON.parse(localStorage.getItem('messages'));
+    const localMessages = JSON.parse(localStorage.getItem('Patientmessages'));
     console.log(localMessages);
     if (localMessages) {
       setMessages(msgs => localMessages);
     }
-    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patientmessages', JSON.stringify(messages));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('messages', JSON.stringify(messages));
+    localStorage.setItem('Patientmessages', JSON.stringify(messages));
   });
 
   console.log(socket);
@@ -587,7 +581,7 @@ function ChatPatient() {
           time: moment().format('HH:mm'),
         },
       ]);
-      localStorage.setItem('messages', JSON.stringify(messages));
+      localStorage.setItem('Patientmessages', JSON.stringify(messages));
     }
   };
 
@@ -647,7 +641,7 @@ function ChatPatient() {
           break;
       }
       // localStorage.setItem('Patients', JSON.stringify(Patients));
-      localStorage.setItem('messages', JSON.stringify(messages));
+      localStorage.setItem('Patientmessages', JSON.stringify(messages));
     };
 
     socket.onclose = event => {
