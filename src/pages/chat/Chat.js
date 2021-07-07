@@ -280,10 +280,12 @@ function PatientList({
   selectedIndex,
   setIsEmpty,
   setPatients,
+  updatePatients,
 }) {
   const classes = useStyles();
 
   const [mileStones, setMileStones] = useState([]);
+  const [mileRegID, setMileRegID] = useState(-1);
 
   const handleListItemClick = (
     event,
@@ -299,6 +301,7 @@ function PatientList({
     setPatientName(PatientName);
     setStatus(Status);
     setRegID(regID);
+    setMileRegID(regID);
 
     const url = `/api/registration/${regID}`;
     fetch(url, {
@@ -382,12 +385,28 @@ function PatientList({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          registration_id: '10086',
+          registration_id: mileRegID,
           activity: newTodo,
         }),
-      });
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          console.log(rdata);
+          if (rdata.status === 'ok') {
+            console.log(mileStones.length);
+            const tmpArr = mileStones;
+            tmpArr.push({
+              id: mileStones[mileStones.length - 1].id + 1,
+              activity: newTodo,
+              checked: false,
+            });
+            setMileStones(tmpArr);
+            setNewTodo('');
+          }
+        });
     }
   };
+
   const handleChange = (update, index, id) => {
     const url = `/api/milestone/${id}`;
     fetch(url, {
@@ -484,6 +503,7 @@ function PatientList({
           color="secondary"
           placeholder="添加一项任务"
           size="small"
+          value={newTodo}
           onChange={handleInputTodo}
         />
         <IconButton
@@ -1246,6 +1266,7 @@ function Chat(props) {
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
         setPatients={setPatients}
+        updatePatients={updatePatients}
       />
       <div className={classes.message}>
         <TopBar
