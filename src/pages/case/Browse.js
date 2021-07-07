@@ -38,14 +38,12 @@ const useStyles = makeStyles(theme => ({
 let classes;
 
 function toDisplayItem(props) {
-  const { info, index, record, setRecord } = props;
+  const { info, index, record, setRecord, Docname } = props;
   const history = useHistory();
   const theme = useTheme();
   const handlerecord = event => {
     const state = {
       Case_id: info.ID,
-      Patient_age: info.Age,
-      Patient_name: info.PatientName,
       Patient_id: info.PatientID,
       Department: info.Department,
       Doctor_id: info.DoctorID,
@@ -53,6 +51,7 @@ function toDisplayItem(props) {
 
     setRecord(state);
   };
+  console.log(Docname);
   return (
     <Paper className={classes.paper} key={index} onClick={handlerecord}>
       <Grid
@@ -64,8 +63,8 @@ function toDisplayItem(props) {
           padding: theme.spacing(2),
         }}
       >
-        <Grid item xs={6} container direction="column" spacing={2}>
-          <Grid item xs>
+        <Grid item xs={5} container direction="column" spacing={2}>
+          <Grid item>
             <Typography gutterBottom variant="subtitle1" color="text">
               {info.Department}
             </Typography>
@@ -79,12 +78,10 @@ function toDisplayItem(props) {
             </Typography>
           </Grid>
         </Grid>
-        <Grid item xs={4}>
-          <Typography variant="subtitle1">
-            主诊医生：{info.DoctorName}
-          </Typography>
+        <Grid item xs>
+          <Typography variant="subtitle1">主诊医生：{Docname}</Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs align="right">
           <Typography variant="subtitle1">{info.Date.substr(0, 10)}</Typography>
         </Grid>
       </Grid>
@@ -113,16 +110,17 @@ export default function Browse(props) {
   classes = useStyles();
   const [display, setDisplay] = useState(Data);
   const history = useHistory();
+  const [Docname, setDocname] = useState('医生');
 
   useEffect(async () => {
-    const response = await fetch(`/api/patient/${patientId}/cases`, {
+    let response = await fetch(`/api/patient/${patientId}/cases`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
     });
     console.log(response);
-    const message = await response.json();
+    let message = await response.json();
 
     if (response.ok) {
       console.log(`The server says case initialization is succcessful`);
@@ -134,10 +132,19 @@ export default function Browse(props) {
       console.log(`Fail to display the case`);
       console.log(message);
     }
+    response = await fetch(`/api/account/getinfo`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    message = await response.json();
+    console.log(message);
+    setDocname(message.data.lastname + message.data.firstname);
   }, []);
 
   const displayItems = display.map((info, index) =>
-    toDisplayItem({ info, index, record, setRecord }),
+    toDisplayItem({ info, index, record, setRecord, Docname }),
   );
 
   const handlerecord = async () => {
@@ -159,8 +166,6 @@ export default function Browse(props) {
     setDisplay(
       Data.filter(
         c =>
-          c.DoctorName.includes(str) ||
-          c.PatientName.includes(str) ||
           c.Department.includes(str) ||
           c.Complaint.includes(str) ||
           c.Diagnosis.includes(str),
@@ -183,7 +188,7 @@ export default function Browse(props) {
           <div className={classes.input}>
             <SearchBar
               placeholder="请按以下关键字方式搜索：如医生姓名/主诉/诊断/科室"
-              label="搜索内容"
+              label="搜索"
               onChange={searchChange}
             />
           </div>

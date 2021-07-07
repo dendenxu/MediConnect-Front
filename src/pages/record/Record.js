@@ -19,6 +19,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(theme => ({
   verticalContainer: {
@@ -111,33 +112,6 @@ export default function Home(props) {
   const location = useLocation();
   const classes = useStyles();
   const [expandButton, SetExpand] = useState(false);
-  const columns = [
-    { field: 'name', headerName: '药品名', width: 200, editable: true },
-    {
-      field: 'size',
-      headerName: '数量',
-      width: 140,
-      editable: true,
-    },
-    {
-      field: 'qt',
-      headerName: '用法',
-      width: 140,
-      editable: true,
-    },
-    {
-      field: 'price',
-      headerName: '价格',
-      width: 130,
-      editable: false,
-    },
-    {
-      field: 'contraindication',
-      headerName: '禁忌症',
-      width: 140,
-      editable: false,
-    },
-  ];
 
   let defaultRows = [];
 
@@ -188,6 +162,7 @@ export default function Home(props) {
   const [patientGender, setPatientGender] = useState('女');
   const [patientAge, setPatientAge] = useState(18);
   const [allergicHistory, setAllergicHistory] = useState('无');
+  const [medlist, setmedlist] = useState([]);
   const [helperText1, setHelper1] = useState('');
   const [helperText2, setHelper2] = useState('');
   const [helperText3, setHelper3] = useState('');
@@ -237,6 +212,7 @@ export default function Home(props) {
     desID = tmpPres.ID;
     const tmpGL = tmpPres.Guidelines;
     for (let i = 0; i < tmpGL.length; i += 1) {
+      console.log(i);
       tempprescription = tempprescription.concat([
         CreatePrescriptionDataBackEnd(
           i + 1,
@@ -261,31 +237,81 @@ export default function Home(props) {
       ]);
       // console.log(tempprescription);
       // console.log(temprows);
-      defaultRows = temprows;
-      defaultPrescription = tempprescription;
-      setPrescriptions(tempprescription);
-      setRows(temprows);
-      tempprescription = [];
-      temprows = [];
-      linecount = tmpGL.length + 1;
     }
-    tmpresponse = await fetch(`api/account/getinfobypatid/${tmpPatientID}`, {
+    defaultRows = temprows;
+    defaultPrescription = tempprescription;
+    setPrescriptions(tempprescription);
+    console.log(temprows);
+    setRows(temprows);
+    tempprescription = [];
+    temprows = [];
+    linecount = tmpGL.length + 1;
+    console.log(linecount);
+    tmpresponse = await fetch(`/api/account/getinfobypatid/${tmpPatientID}`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
     });
     tmpmessage = await tmpresponse.json();
-    const actualAge =
-      Number(tmpmessage.data.Birthday.substr(0, 4)) -
-      Number(Date().getFullYear());
+    const thisYear = new Date().getFullYear();
+    const birth = String(tmpmessage.data.birthday);
+    const actualAge = Number(thisYear) - Number(birth.substr(0, 4));
     setPatientAge(actualAge);
-    setPatientGender(tmpmessage.data.Gender);
-    setPatientName(tmpmessage.data.LastName + tmpmessage.data.FirstName);
-    setAllergicHistory(tmpmessage.data.Allergy);
-    // console.log(rows);
-    // console.log(allprescriptions);
+    if (tmpmessage.data.gender === 'male') {
+      setPatientGender('男');
+    } else {
+      setPatientGender('女');
+    }
+    setPatientName(tmpmessage.data.lastname + tmpmessage.data.firstname);
+    setAllergicHistory(tmpmessage.data.allergy);
+    if (tmpmessage.data.allergy === '') {
+      setAllergicHistory('无');
+    }
+    const medname = '';
+    tmpresponse = await fetch(`/api/medicine?q=${medname}}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    tmpmessage = await tmpresponse.json();
+    setmedlist(tmpmessage.data);
+    console.log(tmpmessage.data);
   }, []);
+
+  const columns = [
+    {
+      field: 'name',
+      headerName: '药品名',
+      flex: 200,
+      editable: true,
+    },
+    {
+      field: 'size',
+      headerName: '数量',
+      flex: 140,
+      editable: true,
+    },
+    {
+      field: 'qt',
+      headerName: '用法',
+      flex: 140,
+      editable: true,
+    },
+    {
+      field: 'price',
+      headerName: '价格',
+      flex: 130,
+      editable: false,
+    },
+    {
+      field: 'contraindication',
+      headerName: '禁忌症',
+      flex: 140,
+      editable: false,
+    },
+  ];
 
   const handleEditCellChangeCommitted = async ({ id, field, props }) => {
     if (field === 'name') {
@@ -805,10 +831,13 @@ export default function Home(props) {
               color="primary"
               variant="outlined"
               className={classes.button}
+              disabled
             >
               <ContactsIcon Icon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
-                <Typography component="h4">处方</Typography>
+                <Typography component="h4" color="primary">
+                  处方
+                </Typography>
               </Container>
             </Button>
           ) : (
@@ -817,7 +846,6 @@ export default function Home(props) {
               variant="outlined"
               onClick={HandleOnAddPrescrption}
               className={classes.button}
-              disabled
             >
               <AddIcon color="primary" fontSize="small" />
               <Container className={classes.buttontext}>
@@ -831,16 +859,20 @@ export default function Home(props) {
             <Box className={classes.borderedContainer}>
               <TransitionAlerts />
               <div style={{ height: 300, width: '100%' }}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  onEditCellChangeCommitted={handleEditCellChangeCommitted}
-                />
-                <Container className={classes.addIcon}>
-                  <Fab size="small" color="primary" aria-label="add">
-                    <AddIcon onClick={HandleOnAddLine} />
-                  </Fab>
-                </Container>
+                <div style={{ display: 'flex', height: '100%' }}>
+                  <div style={{ flexGrow: 1 }}>
+                    <DataGrid
+                      rows={rows}
+                      columns={columns}
+                      onEditCellChangeCommitted={handleEditCellChangeCommitted}
+                    />
+                    <Container className={classes.addIcon}>
+                      <Fab size="small" color="primary" aria-label="add">
+                        <AddIcon onClick={HandleOnAddLine} />
+                      </Fab>
+                    </Container>
+                  </div>
+                </div>
               </div>
             </Box>
           </Container>

@@ -37,14 +37,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 const tempBrowse = {
-  doctorId: 1,
+  doctorId: 3,
   patientId: 2,
-  department: '太平间',
-  patientname: '肖 瑞轩',
-  doctorname: '于 成笑',
-  patientgender: '男',
-  patientage: 18,
-  caseID: 999,
 };
 export default function Home(props) {
   const classes = useStyles();

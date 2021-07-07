@@ -99,7 +99,6 @@ const useStyles = makeStyles(theme => ({
 let linecount = 1;
 let tempprescription = [];
 let temprows = [];
-let initial = -2;
 
 export default function Home() {
   const history = useHistory();
@@ -161,74 +160,75 @@ export default function Home() {
   const [rows, setRows] = React.useState(defaultRows);
 
   useEffect(async () => {
-    if (initial <= 0) {
-      console.log(initial);
-      initial += 1;
-      let tmpresponse = await fetch(
-        `/api/patient/${tmpPatientID}/cases/${CaseID}`,
-        {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      // console.log(tmpresponse);
-      let tmpmessage = await tmpresponse.json();
-      console.log(tmpmessage);
-      tmpDoctorID = tmpmessage.data.DoctorID;
-      tmpDepartment = tmpmessage.data.Department;
-      // setPatientName(tmpmessage.data.PatientName);
-      // setPatientGender(tmpmessage.data.Gender);
-      setDiagnosis(tmpmessage.data.Diagnosis);
-      setMedicalHistory(tmpmessage.data.History);
-      setChiefComplaint(tmpmessage.data.Complaint);
-      setOpinions(tmpmessage.data.Treatment);
-      console.log(tmpmessage.data.Prescriptions);
-      console.log(tmpmessage.data.Prescriptions.length);
-      if (tmpmessage.data.Prescriptions.length === 0) {
-        setRows(defaultRows);
-      } else {
-        SetExpand(true);
-        const tmpPres = tmpmessage.data.Prescriptions[0];
-        const tmpGL = tmpPres.Guidelines;
-        for (let i = 0; i < tmpGL.length; i += 1) {
-          temprows = temprows.concat([
-            CreatePrescriptionData(
-              i + 1,
-              tmpGL[i].Medicine.Name,
-              tmpGL[i].Quantity,
-              tmpGL[i].Dosage,
-              tmpGL[i].Medicine.Price,
-              tmpGL[i].Medicine.Contraindication,
-            ),
-          ]);
-        }
-        console.log(temprows);
-        setRows(temprows);
-        tempprescription = [];
-        temprows = [];
-        linecount = tmpGL.length + 1;
-      }
-      tmpresponse = await fetch(`api/account/getinfobypatid/${tmpPatientID}`, {
+    let tmpresponse = await fetch(
+      `/api/patient/${tmpPatientID}/cases/${CaseID}`,
+      {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
         },
-      });
-      tmpmessage = await tmpresponse.json();
-      const actualAge =
-        Number(tmpmessage.data.Birthday.substr(0, 4)) -
-        Number(Date().getFullYear());
-      setPatientAge(actualAge);
-      setPatientGender(tmpmessage.data.Gender);
-      setPatientName(tmpmessage.data.LastName + tmpmessage.data.FirstName);
-      setAllergicHistory(tmpmessage.data.Allergy);
+      },
+    );
+    // console.log(tmpresponse);
+    let tmpmessage = await tmpresponse.json();
+    console.log(tmpmessage);
+    tmpDoctorID = tmpmessage.data.DoctorID;
+    tmpDepartment = tmpmessage.data.Department;
+    // setPatientName(tmpmessage.data.PatientName);
+    // setPatientGender(tmpmessage.data.Gender);
+    setDiagnosis(tmpmessage.data.Diagnosis);
+    setMedicalHistory(tmpmessage.data.History);
+    setChiefComplaint(tmpmessage.data.Complaint);
+    setOpinions(tmpmessage.data.Treatment);
+    console.log(tmpmessage.data.Prescriptions);
+    console.log(tmpmessage.data.Prescriptions.length);
+    if (tmpmessage.data.Prescriptions.length === 0) {
+      setRows(defaultRows);
     } else {
-      initial = -2;
+      SetExpand(true);
+      const tmpPres = tmpmessage.data.Prescriptions[0];
+      const tmpGL = tmpPres.Guidelines;
+      for (let i = 0; i < tmpGL.length; i += 1) {
+        temprows = temprows.concat([
+          CreatePrescriptionData(
+            i + 1,
+            tmpGL[i].Medicine.Name,
+            tmpGL[i].Quantity,
+            tmpGL[i].Dosage,
+            tmpGL[i].Medicine.Price,
+            tmpGL[i].Medicine.Contraindication,
+          ),
+        ]);
+      }
+      console.log(temprows);
+      setRows(temprows);
+      tempprescription = [];
+      temprows = [];
+      linecount = tmpGL.length + 1;
+    }
+    tmpresponse = await fetch(`/api/account/getinfobypatid/${tmpPatientID}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    tmpmessage = await tmpresponse.json();
+    const thisYear = new Date().getFullYear();
+    const birth = String(tmpmessage.data.birthday);
+    const actualAge = Number(thisYear) - Number(birth.substr(0, 4));
+    setPatientAge(actualAge);
+    if (tmpmessage.data.gender === 'male') {
+      setPatientGender('男');
+    } else {
+      setPatientGender('女');
+    }
+    setPatientName(tmpmessage.data.lastname + tmpmessage.data.firstname);
+    setAllergicHistory(tmpmessage.data.allergy);
+    if (tmpmessage.data.allergy === '') {
+      setAllergicHistory('无');
     }
     console.log(rows);
-  }, [initial]);
+  }, []);
 
   const HandleGoback = async () => {
     history.push({
