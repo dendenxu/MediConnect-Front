@@ -99,7 +99,7 @@ export default function Patient() {
     console.log(`Getting new text: ${text}`);
   };
   return (
-    <Container component="main" className={classes.page} onClick={getInfo}>
+    <Container component="main" className={classes.page}>
       <CssBaseline />
       <Box className={classes.start} bgcolor="#87CEFA" p={1}>
         <Box>

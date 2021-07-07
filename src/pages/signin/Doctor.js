@@ -56,8 +56,7 @@ export default function Doctor() {
   const [introduction, setIntr] = useState('default value');
   const [inputContent, setInputContent] = useState('1');
   const [index, setIndex] = useState();
-  const [department, setDepartment] = useState('');
-  const [dpID,setdpID]= useState('')
+  const [department, setDepartment] = useState(0);
   const getInfo = async () => {
     const response = await fetch('/api/account/getinfo');
     const body = await response.json();
@@ -67,7 +66,7 @@ export default function Doctor() {
       console.log(body);
       setName(`${body.data.lastname}${body.data.firstname}`);
       setEmail(body.data.email);
-      setDepartment(body.data.department)
+      setDepartment(body.data.department);
     }
   };
 
@@ -92,7 +91,7 @@ export default function Doctor() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          departmentid:dpID
+          departmentid: department,
         }),
       });
       console.log(response);
@@ -115,14 +114,13 @@ export default function Doctor() {
     console.log(`Getting new text: ${text}`);
   };
   const handleDepartmentChange = event => {
-    const dp = event.target.value
+    const dp = event.target.value;
     console.log(dp);
     setDepartment(dp);
-    setdpID(dp)
   };
 
   return (
-    <Container component="main" className={classes.page} onClick={getInfo}>
+    <Container component="main" className={classes.page}>
       <CssBaseline />
       <Box className={classes.start} bgcolor="#87CEFA" p={1}>
         <Box>
@@ -148,7 +146,6 @@ export default function Doctor() {
         p={1}
         borderBottom={5}
         borderColor="primary.main"
-        onLoad={getInfo}
       >
         <Box display="flex" width="33%">
           <Typography>姓名：{myName}</Typography>
