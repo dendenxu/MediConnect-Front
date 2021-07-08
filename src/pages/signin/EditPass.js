@@ -213,18 +213,21 @@ function EditPass(props) {
     registering,
     modifying,
   } = props.location.state;
-  const birthdayYear = birthDate.getFullYear().toString();
-  let birthdayMonth = (birthDate.getMonth() + 1).toString();
-  if (birthDate.getMonth() + 1 < 10)
-    birthdayMonth = '0'.toString() + birthdayMonth;
-  let birthdayDate = birthDate.getDate().toString();
-  if (birthDate.getDate() < 10) birthdayDate = '0'.toString() + birthdayDate;
-  const birthday =
-    birthdayYear +
-    '-'.toString() +
-    birthdayMonth +
-    '-'.toString() +
-    birthdayDate;
+  let birthday = '2000-01-01';
+  if (registering) {
+    const birthdayYear = birthDate.getFullYear().toString();
+    let birthdayMonth = (birthDate.getMonth() + 1).toString();
+    if (birthDate.getMonth() + 1 < 10)
+      birthdayMonth = '0'.toString() + birthdayMonth;
+    let birthdayDate = birthDate.getDate().toString();
+    if (birthDate.getDate() < 10) birthdayDate = '0'.toString() + birthdayDate;
+    birthday =
+      birthdayYear +
+      '-'.toString() +
+      birthdayMonth +
+      '-'.toString() +
+      birthdayDate;
+  }
 
   const [avatarClicked, setAvatarClicked] = useState(false);
   const [identifyCode, setIdentifyCode] = useState('');
