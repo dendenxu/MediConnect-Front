@@ -145,7 +145,7 @@ export default function Home() {
     if (initial <= 0) {
       console.log(initial);
       initial += 1;
-      const tmpresponse = await fetch(
+      let tmpresponse = await fetch(
         `/api/patient/${tmpPatientID}/cases/${CaseID}`,
         {
           method: 'get',
@@ -155,11 +155,9 @@ export default function Home() {
         },
       );
       // console.log(tmpresponse);
-      const tmpmessage = await tmpresponse.json();
+      let tmpmessage = await tmpresponse.json();
       tmpDoctorID = tmpmessage.data.DoctorID;
       tmpDepartment = tmpmessage.data.Department;
-      setPatientName(tmpmessage.data.PatientName);
-      setPatientGender(tmpmessage.data.Gender);
       setDiagnosis(tmpmessage.data.Diagnosis);
       setMedicalHistory(tmpmessage.data.History);
       setChiefComplaint(tmpmessage.data.Complaint);
@@ -188,6 +186,27 @@ export default function Home() {
         temprows = [];
         linecount = tmpGL.length + 1;
       }
+      tmpresponse = await fetch(`/api/account/getinfobypatid/${tmpPatientID}`, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      tmpmessage = await tmpresponse.json();
+      const thisYear = new Date().getFullYear();
+      const birth = String(tmpmessage.data.birthday);
+      const actualAge = Number(thisYear) - Number(birth.substr(0, 4));
+      setPatientAge(actualAge);
+      if (tmpmessage.data.gender === 'male') {
+        setPatientGender('男');
+      } else {
+        setPatientGender('女');
+      }
+      setPatientName(tmpmessage.data.lastname + tmpmessage.data.firstname);
+      setAllergicHistory(tmpmessage.data.allergy);
+      if (tmpmessage.data.allergy === '') {
+        setAllergicHistory('无');
+      }
     } else {
       initial = -2;
     }
@@ -211,8 +230,9 @@ export default function Home() {
 
   const HandleGoback = async () => {
     history.push({
-      pathname: '/browse_p',
+      pathname: '/search',
     });
+    // history.pop();
   };
 
   return (

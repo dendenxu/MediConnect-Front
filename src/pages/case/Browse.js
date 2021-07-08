@@ -24,8 +24,8 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     flexGrow: 1,
     border: 5,
-    borderRadius: 16,
-    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
+    borderRadius: `16px !important`,
+    boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3) !important',
   },
   highlight: {
     // backgroundColor: '#4e89ae',
