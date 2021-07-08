@@ -118,7 +118,7 @@ export default function Header(props) {
             >
               <IconButton
                 onClick={() => {
-                  const account = localStorage.getItem('account');
+                  const account = JSON.parse(localStorage.getItem('account'));
                   // ! what is with these APIs? can we at least all use the same naming style? like camel case maybe?
                   const url =
                     account && account.Type === 'doctor'

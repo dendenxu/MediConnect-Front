@@ -521,12 +521,12 @@ function Messages({ messages, CurrentUserID }) {
   );
 }
 
-function ChatPatient() {
+function ChatPatient(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [closed, setClosed] = useState(false);
   const [socket, setSocket] = useState(null);
-  const [CurrentUserID, setCurrentUserID] = useState(9);
+  const [CurrentUserID, setCurrentUserID] = useState(5);
   const [DoctorName, setDoctorName] = useState('内科王医生');
   const [CurrentDoctorID, setCurrentDoctorID] = useState(1);
   const [message, setMessage] = useState('');
@@ -539,12 +539,20 @@ function ChatPatient() {
   }, [CurrentUserID]);
 
   useEffect(() => {
+    const localAccount = JSON.parse(localStorage.getItem('account'));
+    setCurrentUserID(localAccount.ID);
     const localMessages = JSON.parse(localStorage.getItem('Patientmessages'));
     console.log(localMessages);
     if (localMessages) {
       setMessages(msgs => localMessages);
     }
     localStorage.setItem('Patientmessages', JSON.stringify(messages));
+    console.log('Props:');
+    // console.log(props.location.state);d
+    console.log('DoctorName: ', props.location.state.data.doctorName);
+    console.log('DoctorID: ', props.location.state.data.doctorID);
+    setDoctorName(props.location.state.data.doctorName);
+    setCurrentDoctorID(props.location.state.data.doctorID);
   }, []);
 
   useEffect(() => {
@@ -596,7 +604,7 @@ function ChatPatient() {
     interval = setInterval(() => {
       socket.send('ping!');
       // console.log('ping!');
-    }, 1000);
+    }, 30000);
 
     socket.onmessage = msg => {
       console.log('Backend testing, receive message: ', msg);

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
+import Input from '@material-ui/core/Input';
 import { Map } from 'immutable';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -10,18 +11,25 @@ import Badge from '@material-ui/core/Badge';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, Checkbox, IconButton } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Popover from '@material-ui/core/Popover';
 import Picker from 'emoji-picker-react';
 import ReactFileReader from 'react-file-reader';
+
 // import { ReactComponent as MedicineIcon } from '../../assets/images/medicine.svg';
-import { AdjustOutlined, FilterTiltShiftOutlined } from '@material-ui/icons';
+
+import AddBoxIcon from '@material-ui/icons/AddBox';
+
+import {
+  AdjustOutlined,
+  DeleteOutline,
+  FilterTiltShiftOutlined,
+} from '@material-ui/icons';
 import { ReactComponent as QuestionsIcon } from '../../assets/images/questions.svg';
 import { ReactComponent as RecordIcon } from '../../assets/images/record.svg';
 import { ReactComponent as EmojiIcon } from '../../assets/images/emoji.svg';
 import { ReactComponent as PicIcon } from '../../assets/images/picture.svg';
-import MileStone from '../components/MileStone';
 
 const useStyles = makeStyles(theme => ({
   MessagePaddingdiv: {
@@ -272,10 +280,12 @@ function PatientList({
   selectedIndex,
   setIsEmpty,
   setPatients,
+  updatePatients,
 }) {
   const classes = useStyles();
 
   const [mileStones, setMileStones] = useState([]);
+  const [mileRegID, setMileRegID] = useState(-1);
 
   const handleListItemClick = (
     event,
@@ -291,6 +301,7 @@ function PatientList({
     setPatientName(PatientName);
     setStatus(Status);
     setRegID(regID);
+    setMileRegID(regID);
 
     const url = `/api/registration/${regID}`;
     fetch(url, {
@@ -301,10 +312,8 @@ function PatientList({
     })
       .then(res => res.json())
       .then(rdata => {
-        console.log(rdata);
         if (rdata.status === 'ok') {
           setMileStones(rdata.data.milestone);
-          console.log(rdata.data.milestone);
         }
       });
 
@@ -361,6 +370,85 @@ function PatientList({
     </ListItem>
   ));
 
+  const [newTodo, setNewTodo] = useState(['']);
+
+  const handleInputTodo = e => {
+    setNewTodo(e.target.value);
+  };
+  const handleAddTodo = () => {
+    if (newTodo !== '') {
+      console.log(newTodo);
+      const url = `/api/milestones`;
+      fetch(url, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          registration_id: mileRegID,
+          activity: newTodo,
+        }),
+      })
+        .then(res => res.json())
+        .then(rdata => {
+          console.log(rdata);
+          if (rdata.status === 'ok') {
+            console.log(mileStones.length);
+            const tmpArr = mileStones;
+            tmpArr.push({
+              id: mileStones[mileStones.length - 1].id + 1,
+              activity: newTodo,
+              checked: false,
+            });
+            setMileStones(tmpArr);
+            setNewTodo('');
+          }
+        });
+    }
+  };
+
+  const handleChange = (update, index, id) => {
+    const url = `/api/milestone/${id}`;
+    fetch(url, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        checked: update,
+      }),
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'ok') {
+          mileStones[index].checked = update;
+          setMileStones([]);
+          setMileStones(mileStones);
+        }
+      });
+  };
+
+  const handleDelete = (index, id) => {
+    const url = `/api/milestone/${id}`;
+    fetch(url, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(rdata => {
+        console.log(rdata);
+        if (rdata.status === 'ok') {
+          console.log('.........');
+          mileStones.splice(index, 1);
+          setMileStones([]);
+          setMileStones(mileStones);
+        }
+      });
+  };
+
   return (
     <div className={classes.list}>
       <List component="nav" aria-label="Patient List">
@@ -368,8 +456,64 @@ function PatientList({
       </List>
       <Divider style={{ background: 'whitesmoke' }} />
       <List>
-        {mileStones && mileStones.map(data => <MileStone data={data} />)}
+        {mileStones &&
+          mileStones
+            .sort((a, b) => (a.id > b.id ? 1 : -1))
+            .map((data, index) => (
+              <ListItem>
+                <Checkbox
+                  checked={data.checked}
+                  onChange={() => {
+                    handleChange(!data.checked, index, data.id);
+                  }}
+                  style={{ color: '#ffffff' }}
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+                <ListItemText
+                  primary={
+                    <Typography
+                      style={{ color: '#FFFFFF', overflowX: 'hidden' }}
+                    >
+                      {data.activity}
+                    </Typography>
+                  }
+                />
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    handleDelete(index, data.id);
+                  }}
+                  style={{ color: '#ffffff' }}
+                >
+                  <DeleteOutline />
+                </IconButton>
+              </ListItem>
+            ))}
       </List>
+      <form
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderRadius: '10px',
+          paddingLeft: '10px',
+        }}
+      >
+        <Input
+          color="secondary"
+          placeholder="添加一项任务"
+          size="small"
+          value={newTodo}
+          onChange={handleInputTodo}
+        />
+        <IconButton
+          color="secondary"
+          onClick={handleAddTodo}
+          aria-label="add a milestone"
+        >
+          <AddBoxIcon />
+        </IconButton>
+      </form>
     </div>
   );
 }
@@ -896,6 +1040,7 @@ function Chat(props) {
       .then(data => {
         // setPatients(pas => data.data);
         setPatients([]);
+        console.log('data.data:', data.data);
         data.data.map(p => {
           setPatients(pas => [
             ...pas,
@@ -984,6 +1129,9 @@ function Chat(props) {
   };
 
   useEffect(() => {
+    const localAccount = JSON.parse(localStorage.getItem('account'));
+    console.log('Account: ', localAccount.ID);
+    setCurrentUserID(localAccount.ID);
     const localMessages = JSON.parse(localStorage.getItem('messages'));
     console.log('Initial localMessages: ', localMessages);
     if (localMessages) {
@@ -1010,7 +1158,7 @@ function Chat(props) {
     interval = setInterval(() => {
       socket.send('ping!');
       // console.log('ping!');
-    }, 1000);
+    }, 30000);
 
     socket.onmessage = msg => {
       const dataFromServer = JSON.parse(msg.data);
@@ -1122,10 +1270,8 @@ function Chat(props) {
         selectedIndex={selectedIndex}
         setIsEmpty={setIsEmpty}
         setPatients={setPatients}
+        updatePatients={updatePatients}
       />
-      {/* </Grid> */}
-      {/* <Divider orientation="vertical" flexItem /> */}
-      {/* <Grid div item xs spacing={3}> */}
       <div className={classes.message}>
         <TopBar
           Patients={Patients}
@@ -1153,8 +1299,6 @@ function Chat(props) {
           IsEmpty={IsEmpty}
           CurrentPatientID={CurrentPatientID}
         />
-        {/* <Divider className={classes.divider} /> */}
-        {/* <Divider className={classes.divider} variant="middle" /> */}
         <ToolBar
           CurrentPatientID={CurrentPatientID}
           CurrentUserID={CurrentUserID}
@@ -1172,8 +1316,6 @@ function Chat(props) {
           sendMessage={sendMessage}
         />
       </div>
-      {/* </Grid> */}
-      {/* </Grid> */}
     </div>
   );
 }

@@ -251,7 +251,7 @@ function Signin(props) {
         console.log(body);
         const { token, account } = body.data; // trusting the server
 
-        localStorage.setItem('account', account);
+        localStorage.setItem('account', JSON.stringify(account));
         localStorage.setItem('token', token);
 
         // doctors will be redirected to /home

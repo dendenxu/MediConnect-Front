@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 
 import Header from '../components/Header';
 import theme from '../../theme/theme';
@@ -45,6 +45,7 @@ export default function RegInfo() {
   const classes = useStyles();
   const location = useLocation();
   const [regData, setRegData] = useState({});
+  const history = useHistory();
 
   useEffect(async () => {
     await fetch(`/api/registration/${location.state}`, {
@@ -57,8 +58,7 @@ export default function RegInfo() {
       .then(data => {
         console.log(data.data);
         setRegData(data.data);
-      });
-    // console.log(result)
+      }); // console.log(result)
   }, []);
 
   let { status } = regData;
@@ -88,6 +88,18 @@ export default function RegInfo() {
           console.log(regData);
         }
       });
+  };
+
+  const handleEnterChat = () => {
+    history.push({
+      pathname: '/ChatPatient',
+      state: {
+        data: {
+          doctorID: regData.doctor_id,
+          doctorName: regData.doctor,
+        },
+      },
+    });
   };
 
   const rows = [
@@ -158,6 +170,14 @@ export default function RegInfo() {
           )}
         </div>
       </div>
+      <Button
+        className={classes.bottombutton}
+        variant="contained"
+        color="secondary"
+        onClick={handleEnterChat}
+      >
+        开始会话
+      </Button>
     </ThemeProvider>
   );
 }
