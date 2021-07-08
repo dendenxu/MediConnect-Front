@@ -1040,6 +1040,7 @@ function Chat(props) {
       .then(data => {
         // setPatients(pas => data.data);
         setPatients([]);
+        console.log('data.data:', data.data);
         data.data.map(p => {
           setPatients(pas => [
             ...pas,
@@ -1153,7 +1154,7 @@ function Chat(props) {
 
     interval = setInterval(() => {
       socket.send('ping!');
-      console.log('ping!');
+      // console.log('ping!');
     }, 30000);
 
     socket.onmessage = msg => {
