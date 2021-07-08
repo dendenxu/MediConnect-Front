@@ -148,7 +148,9 @@ export default function RegResult(props) {
                   {props.location.state.data.year}年
                   {props.location.state.data.mon}月
                   {props.location.state.data.day}日
-                  {props.location.state.data.tim === 0 ? '上午' : '下午'}
+                  {props.location.state.data.tim === 'morning'
+                    ? '上午'
+                    : '下午'}
                 </Box>
               </Box>
             </Box>
