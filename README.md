@@ -2,8 +2,6 @@
 
 This is the front-end repository for our 2021 Software Engineering course project.
 
-# [未满足的验收要求](https://github.com/dendenxu/MediConnect-Front/wiki/7.1%E5%89%8D%E9%9C%80%E8%A6%81%E5%90%84%E7%BB%84check%E6%8E%89%E7%9A%84%E9%94%85%E9%94%85)
-
 7.1 前请各组处理上面列出的问题。
 
 ## Production Build Quick Start
