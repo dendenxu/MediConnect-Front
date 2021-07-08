@@ -1129,6 +1129,9 @@ function Chat(props) {
   };
 
   useEffect(() => {
+    const localAccount = JSON.parse(localStorage.getItem('account'));
+    console.log('Account: ', localAccount.ID);
+    setCurrentUserID(localAccount.ID);
     const localMessages = JSON.parse(localStorage.getItem('messages'));
     console.log('Initial localMessages: ', localMessages);
     if (localMessages) {
