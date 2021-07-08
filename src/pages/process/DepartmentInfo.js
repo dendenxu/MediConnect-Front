@@ -67,6 +67,7 @@ export default function DepartmentInfo() {
       .then(res => res.json())
       .then(rdata => {
         console.log(rdata);
+
         if (rdata.status === 'error') {
           history.push({
             pathname: '/reg-result',
@@ -77,39 +78,29 @@ export default function DepartmentInfo() {
             },
           });
         } else {
-          fetch(`/api/department/${depid}`, {
+          fetch(`/api/registration/${rdata.data}`, {
             method: 'get',
             headers: {
               'Content-Type': 'application/json',
             },
           })
             .then(res => res.json())
-            .then(depinfo => {
-              console.log(depinfo);
-              fetch('/api/registration/1', {
-                method: 'get',
-                headers: {
-                  'Content-Type': 'application/json',
+            .then(reginfo => {
+              console.log(reginfo);
+              history.push({
+                pathname: '/reg-result',
+                state: {
+                  data: {
+                    dep: reginfo.data.department,
+                    doc: reginfo.data.doctor,
+                    name: reginfo.data.patient,
+                    year: reginfo.data.year,
+                    mon: reginfo.data.month,
+                    day: reginfo.data.day,
+                    tim: reginfo.data.halfday,
+                  },
                 },
-              })
-                .then(res => res.json())
-                .then(reginfo => {
-                  console.log(reginfo);
-                  history.push({
-                    pathname: '/reg-result',
-                    state: {
-                      data: {
-                        dep: depinfo.data.name,
-                        doc: reginfo.data.doctor,
-                        name: reginfo.data.patient,
-                        year: ryear,
-                        mon: rmonth,
-                        day: rdate,
-                        tim: rhalfday === 'morning' ? 0 : 1,
-                      },
-                    },
-                  });
-                });
+              });
             });
         }
       });
