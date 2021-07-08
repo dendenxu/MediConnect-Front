@@ -54,7 +54,7 @@ export default function Home(props) {
   const [browse, setBrowse] = useState(tempBrowse);
   const [record, setRecord] = useState(null);
   const [creation, setCreation] = useState(null);
-  const [CurrentPatientID, setCurrentPatientID] = useState(2);
+  const [CurrentPatientID, setCurrentPatientID] = useState(0);
   return (
     <div className={classes.root}>
       <Header isRoot style={{}} />

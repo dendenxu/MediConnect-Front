@@ -95,9 +95,7 @@ function toDisplayItem(props) {
           </Grid>
         </Grid>
         <Grid item xs={4}>
-          <Typography variant="subtitle1">
-            主诊医生：{info.DoctorName}
-          </Typography>
+          <Typography variant="subtitle1">主诊医生：张诗敏</Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="subtitle1">{info.Date.substr(0, 10)}</Typography>
