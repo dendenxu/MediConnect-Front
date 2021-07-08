@@ -54,12 +54,16 @@ export default function Home(props) {
   const [browse, setBrowse] = useState(tempBrowse);
   const [record, setRecord] = useState(null);
   const [creation, setCreation] = useState(null);
-
+  const [CurrentPatientID, setCurrentPatientID] = useState(2);
   return (
     <div className={classes.root}>
       <Header isRoot style={{}} />
       <div className={classes.content}>
-        <Chat className={classes.full} />
+        <Chat
+          className={classes.full}
+          CurrentPatientID={CurrentPatientID}
+          setCurrentPatientID={setCurrentPatientID}
+        />
 
         {record && (
           <Record
@@ -88,6 +92,8 @@ export default function Home(props) {
             setRecord={setRecord}
             creation={creation}
             setCreation={setCreation}
+            CurrentPatientID={CurrentPatientID}
+            setCurrentPatientID={setCurrentPatientID}
           />
         )}
       </div>

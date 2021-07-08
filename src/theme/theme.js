@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 
 const captionStyle = {
   // fontWeight: '300',
@@ -6,7 +6,7 @@ const captionStyle = {
   // transform: 'translate(0px,3px)',
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#4e89ae',

@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { DataGrid } from '@material-ui/data-grid';
-import { Fab } from '@material-ui/core';
+import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { useLocation, useHistory } from 'react-router-dom';
 import CheckIcon from '@material-ui/icons/Check';
@@ -88,7 +88,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(0, 1, 1),
   },
   addIcon: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0),
+    padding: theme.spacing(0),
     display: 'flex',
     flexDirection: 'row-reverse',
     justifyContent: 'flex-start',
@@ -186,7 +187,9 @@ export default function Home(props) {
   // todo initialize these 4 IDs(maybe using get method),
   const [patientName, setPatientName] = useState('张三');
   const [patientGender, setPatientGender] = useState('女');
+  const [allergicHistory, setAllergicHistory] = useState('无');
   const [patientAge, setPatientAge] = useState(18);
+  const [medlist, setmedlist] = useState([]);
   const [helperText1, setHelper1] = useState('');
   const [helperText2, setHelper2] = useState('');
   const [helperText3, setHelper3] = useState('');
@@ -206,7 +209,7 @@ export default function Home(props) {
 
   useEffect(async () => {
     // console.log(initial);
-    const tmpresponse = await fetch(
+    let tmpresponse = await fetch(
       `/api/patient/${tmpPatientID}/cases/${tmpCaseID}`,
       {
         method: 'get',
@@ -216,7 +219,11 @@ export default function Home(props) {
       },
     );
     // // console.log(tmpresponse);
-    const tmpmessage = await tmpresponse.json();
+    setInputError1(false);
+    setInputError2(false);
+    setInputError3(false);
+    setInputError4(false);
+    let tmpmessage = await tmpresponse.json();
     setPatientName(tmpmessage.data.PatientName);
     setPatientGender(tmpmessage.data.Gender);
     setDiagnosis(tmpmessage.data.Diagnosis);
@@ -232,6 +239,7 @@ export default function Home(props) {
     desID = tmpPres.ID;
     const tmpGL = tmpPres.Guidelines;
     for (let i = 0; i < tmpGL.length; i += 1) {
+      console.log(i);
       tempprescription = tempprescription.concat([
         CreatePrescriptionDataBackEnd(
           i + 1,
@@ -256,17 +264,47 @@ export default function Home(props) {
       ]);
       // console.log(tempprescription);
       // console.log(temprows);
-      defaultRows = temprows;
-      defaultPrescription = tempprescription;
-      setPrescriptions(tempprescription);
-      setRows(temprows);
-      tempprescription = [];
-      temprows = [];
-      linecount = tmpGL.length + 1;
     }
-
-    // console.log(rows);
-    // console.log(allprescriptions);
+    defaultRows = temprows;
+    defaultPrescription = tempprescription;
+    setPrescriptions(tempprescription);
+    console.log(temprows);
+    setRows(temprows);
+    tempprescription = [];
+    temprows = [];
+    linecount = tmpGL.length + 1;
+    console.log(linecount);
+    tmpresponse = await fetch(`/api/account/getinfobypatid/${tmpPatientID}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    tmpmessage = await tmpresponse.json();
+    const thisYear = new Date().getFullYear();
+    const birth = String(tmpmessage.data.birthday);
+    const actualAge = Number(thisYear) - Number(birth.substr(0, 4));
+    setPatientAge(actualAge);
+    if (tmpmessage.data.gender === 'male') {
+      setPatientGender('男');
+    } else {
+      setPatientGender('女');
+    }
+    setPatientName(tmpmessage.data.lastname + tmpmessage.data.firstname);
+    setAllergicHistory(tmpmessage.data.allergy);
+    if (tmpmessage.data.allergy === '') {
+      setAllergicHistory('无');
+    }
+    const medname = '';
+    tmpresponse = await fetch(`/api/medicine?q=${medname}}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    tmpmessage = await tmpresponse.json();
+    setmedlist(tmpmessage.data);
+    console.log(tmpmessage.data);
   }, []);
 
   const handleEditCellChangeCommitted = async ({ id, field, props }) => {

@@ -818,7 +818,7 @@ function Chat(props) {
   const [PatientName, setPatientName] = useState('');
   const [Status, setStatus] = useState('');
   const [Patients, setPatients] = useState([]);
-  const [CurrentPatientID, setCurrentPatientID] = useState('');
+  const { CurrentPatientID, setCurrentPatientID } = props;
   const [message, setMessage] = useState('');
   const [regID, setRegID] = useState();
   // const [messages, setMessages] = useState(

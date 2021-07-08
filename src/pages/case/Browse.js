@@ -27,6 +27,15 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 16,
     boxShadow: '0 0px 5px 1px rgba(33, 33, 33, .3)',
   },
+  highlight: {
+    // backgroundColor: '#4e89ae',
+    // borderWidth: 10,
+    borderColor: '#4e89ae',
+    border: '3px solid',
+    // borderRadius: 20,
+    // borderColor: '#000',
+    // padding: 50,
+  },
 
   input: {
     borderRadius: 16,
@@ -54,7 +63,13 @@ function toDisplayItem(props) {
     setRecord(state);
   };
   return (
-    <Paper className={classes.paper} key={index} onClick={handlerecord}>
+    <Paper
+      className={
+        index === 0 ? `${classes.paper} ${classes.highlight}` : classes.paper
+      }
+      key={index}
+      onClick={handlerecord}
+    >
       <Grid
         item
         xs={12}
@@ -108,14 +123,20 @@ export default function Browse(props) {
     caseID,
   } = props.state;
 
-  const { record, setRecord, creation, setCreation } = props;
-
+  const {
+    record,
+    setRecord,
+    creation,
+    setCreation,
+    CurrentPatientID,
+    setCurrentPatientID,
+  } = props;
   classes = useStyles();
   const [display, setDisplay] = useState(Data);
   const history = useHistory();
 
   useEffect(async () => {
-    const response = await fetch(`/api/patient/${patientId}/cases`, {
+    const response = await fetch(`/api/patient/${CurrentPatientID}/cases`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -134,25 +155,11 @@ export default function Browse(props) {
       console.log(`Fail to display the case`);
       console.log(message);
     }
-  }, []);
+  }, [CurrentPatientID]);
 
   const displayItems = display.map((info, index) =>
     toDisplayItem({ info, index, record, setRecord }),
   );
-
-  const handlerecord = async () => {
-    const state = {
-      // Case_id: tmpcaseID,
-      Patient_age: patientage,
-      Patient_gender: patientgender,
-      Patient_name: patientname,
-      Patient_id: patientId,
-      Department: department,
-      Doctor_id: doctorId,
-    };
-
-    setCreation(state);
-  };
 
   const searchChange = event => {
     const str = event.target.value;
@@ -205,24 +212,6 @@ export default function Browse(props) {
             alignItems="center"
           >
             {displayItems}
-          </Grid>
-        </Grid>
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Paper className={classes.paper} onClick={handlerecord}>
-              <Grid container spacing={2} display="flex">
-                <Grid item xs={12} sm container>
-                  <AddCircleOutlinedIcon
-                    style={{ color: '#4e89ae', margin: 'auto', fontSize: 50 }}
-                  />
-                </Grid>
-              </Grid>
-            </Paper>
           </Grid>
         </Grid>
       </Grid>

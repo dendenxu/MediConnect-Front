@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     // margin: theme.spacing(0, 2),
   },
   buttonStyle: {
-    margin: 0,
+    margin: theme.spacing(1),
     minWidth: 32,
   },
 }));
@@ -130,7 +130,7 @@ export default function Header(props) {
                   color: '#FFFFFF',
                 }}
               >
-                <AccountCircleIcon fontSize="default" />
+                <AccountCircleIcon fontSize="medium" />
               </IconButton>
               <IconButton
                 onClick={() => {
@@ -141,7 +141,7 @@ export default function Header(props) {
                   color: '#FFFFFF',
                 }}
               >
-                <ExitToAppIcon fontSize="default" />
+                <ExitToAppIcon fontSize="medium" />
               </IconButton>
             </div>
           )}
