@@ -1012,8 +1012,8 @@ function Chat(props) {
 
     interval = setInterval(() => {
       socket.send('ping!');
-      // console.log('ping!');
-    }, 1000);
+      console.log('ping!');
+    }, 30000);
 
     socket.onmessage = msg => {
       const dataFromServer = JSON.parse(msg.data);
