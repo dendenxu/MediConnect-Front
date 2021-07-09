@@ -2,8 +2,6 @@
 
 This is the front-end repository for our 2021 Software Engineering course project.
 
-7.1 前请各组处理上面列出的问题。
-
 ## Production Build Quick Start
 
 ### Frontend Setup
